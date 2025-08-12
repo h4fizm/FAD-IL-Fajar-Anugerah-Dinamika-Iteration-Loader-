@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FAD-IL</title>
+    <link rel="icon" type="image/jpeg" href="img/logo.jpg" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "fad-yellow": "#F9A825",
+              "fad-red": "#E53E3E",
+              "fad-green": "#38A169",
+              "fad-dark": "#1A202C",
+              "fad-light": "#F7FAFC",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body
+    class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4 overflow-hidden relative"
+  >
+    <div
+      class="absolute top-0 left-0 w-3/4 h-2/3 bg-fad-green transform -skew-y-12 -translate-x-1/2 -translate-y-1/2 opacity-20"
+    ></div>
+    <div
+      class="absolute bottom-0 right-0 w-2/3 h-2/3 bg-fad-yellow transform -skew-y-12 translate-x-1/2 translate-y-1/2 opacity-20"
+    ></div>
+
+    <div class="relative z-10 w-full max-w-sm flex flex-col items-center">
+      <header class="w-full flex flex-col items-center mb-8 text-center">
+        <div class="w-20 h-20 mb-4">
+          <img
+            src="img/logo.jpg"
+            alt="FAD-IL Logo"
+            class="w-full h-full object-contain"
+          />
+        </div>
+        <h1 class="text-3xl font-bold text-fad-dark mb-1">FAD-IL</h1>
+        <p class="text-sm font-medium text-gray-600">
+          (Fajar Anugerah Dinamika Iteration Loader)
+        </p>
+      </header>
+
+      <main class="w-full bg-white p-6 rounded-lg shadow-xl">
+        <h2 class="text-lg font-semibold text-center text-fad-dark mb-6">
+          Input Data Cycle Time Loader
+        </h2>
+
+        <form class="space-y-4">
+          <div>
+            <select
+              class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-500 hover:text-gray-700"
+            >
+              <option disabled selected>UNIT</option>
+              <option value="unit1">Unit 1</option>
+              <option value="unit2">Unit 2</option>
+            </select>
+          </div>
+
+          <div>
+            <select
+              class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-500 hover:text-gray-700"
+            >
+              <option disabled selected>JENIS MATERIAL</option>
+              <option value="material1">Material A</option>
+              <option value="material2">Material B</option>
+            </select>
+          </div>
+
+          <div>
+            <select
+              class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-500 hover:text-gray-700"
+            >
+              <option disabled selected>NAMA OPERATOR</option>
+              <option value="operator1">Operator A</option>
+              <option value="operator2">Operator B</option>
+            </select>
+          </div>
+
+          <div>
+            <input
+              type="text"
+              placeholder="OBSERVER (DIKETIK)"
+              class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-700"
+            />
+          </div>
+
+          <div class="pt-4">
+            <a
+              href="index2.html"
+              class="w-full bg-fad-green hover:bg-green-700 text-white font-bold py-3 rounded-lg shadow-lg transition duration-300 transform hover:scale-105 text-center block"
+            >
+              SUBMIT
+            </a>
+          </div>
+        </form>
+      </main>
+    </div>
+  </body>
+</html>

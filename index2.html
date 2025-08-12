@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FAD-IL - Proses</title>
+    <link rel="icon" type="image/jpeg" href="img/logo.jpg" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@heroicons/react@2.0.18/dist/heroicons.min.js"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "fad-yellow": "#F9A825",
+              "fad-red": "#E53E3E",
+              "fad-green": "#38A169",
+              "fad-dark": "#1A202C",
+              "fad-light": "#F7FAFC",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body
+    class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4 overflow-hidden relative"
+  >
+    <div
+      class="absolute top-0 left-0 w-3/4 h-2/3 bg-fad-green transform -skew-y-12 -translate-x-1/2 -translate-y-1/2 opacity-20"
+    ></div>
+    <div
+      class="absolute bottom-0 right-0 w-2/3 h-2/3 bg-fad-yellow transform -skew-y-12 translate-x-1/2 translate-y-1/2 opacity-20"
+    ></div>
+
+    <div class="relative z-10 w-full max-w-sm flex flex-col items-center">
+      <header
+        class="w-full text-center mb-6 flex flex-col items-center space-y-4"
+      >
+        <div class="mb-4 w-20 h-20">
+          <img
+            src="img/logo.jpg"
+            alt="FAD-IL Logo"
+            class="w-full h-full object-contain"
+          />
+        </div>
+
+        <div class="w-full p-2">
+          <p class="text-sm font-bold text-fad-dark">OBSERVER</p>
+          <p class="text-md font-semibold text-gray-700">[Nama Observer]</p>
+        </div>
+
+        <div class="w-full p-2">
+          <p class="text-sm font-bold text-fad-dark">
+            Fajar Anugerah Dinamika Iteration Loader
+          </p>
+        </div>
+      </header>
+
+      <main class="w-full grid grid-cols-2 gap-4">
+        <button
+          class="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            class="w-12 h-12 text-fad-green mb-2"
+          >
+            <path
+              d="M11.602 2.221A.75.75 0 0011 2.5v4.569l-1.09-1.09a.75.75 0 00-1.06 1.06l2.5 2.5a.75.75 0 001.06 0l2.5-2.5a.75.75 0 00-1.06-1.06l-1.09 1.09V2.5a.75.75 0 00-.602-.279zM3.75 6.75a.75.75 0 00-1.5 0v.75c0 1.06.419 2.059 1.194 2.834.775.775 1.774 1.194 2.834 1.194h.75a.75.75 0 000-1.5H6.25c-.53 0-1.039-.211-1.414-.586a1.996 1.996 0 01-.586-1.414V7.5a.75.75 0 00-.75-.75zm1.5 7.5a.75.75 0 000 1.5h.75A4.502 4.502 0 0012 21.75a4.502 4.502 0 004.5-4.5v-.75a.75.75 0 00-1.5 0v.75a3 3 0 01-3 3 3 3 0 01-3-3v-.75a.75.75 0 00-.75-.75zM17.25 14.25a.75.75 0 000 1.5h.75a1.996 1.996 0 011.414.586c.375.375.586.884.586 1.414v.75a.75.75 0 001.5 0v-.75a3 3 0 00-3-3h-.75z"
+            />
+          </svg>
+          <span class="font-bold text-sm text-fad-dark">DIGGING</span>
+        </button>
+
+        <button
+          class="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            class="w-12 h-12 text-fad-green mb-2"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v4.733l-1.921-1.92a.75.75 0 10-1.06 1.06l3.25 3.25a.75.75 0 001.06 0l3.25-3.25a.75.75 0 10-1.06-1.06l-1.92 1.92V9z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          <span class="font-bold text-sm text-fad-dark">SWING</span>
+        </button>
+
+        <button
+          class="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            class="w-12 h-12 text-fad-green mb-2"
+          >
+            <path
+              d="M19.006 3.705a.75.75 0 00-1.009-.206L5.753 9.426A.75.75 0 005.62 10.3L9.425 19.006a.75.75 0 00.957.206l12.253-5.921a.75.75 0 00.187-1.06z"
+            />
+            <path
+              d="M4.5 16.5v-6a.75.75 0 00-1.5 0v6a3 3 0 003 3h7.5a.75.75 0 000-1.5H6a1.5 1.5 0 01-1.5-1.5z"
+            />
+          </svg>
+          <span class="font-bold text-sm text-fad-dark">DUMP BUCKET</span>
+        </button>
+
+        <button
+          class="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            class="w-12 h-12 text-fad-green mb-2"
+          >
+            <path d="M4.5 18.75a.75.75 0 000 1.5h15a.75.75 0 000-1.5H4.5z" />
+            <path
+              fill-rule="evenodd"
+              d="M11.72 5.097a.75.75 0 011.06 0l2.5 2.5a.75.75 0 01-1.06 1.06L13.5 7.683V16.5a.75.75 0 01-1.5 0V7.683L10.28 8.657a.75.75 0 01-1.06-1.06l2.5-2.5z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          <span class="font-bold text-sm text-fad-dark">SWING EMPTY</span>
+        </button>
+
+        <button
+          class="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            class="w-12 h-12 text-fad-green mb-2"
+          >
+            <path
+              d="M12 2.25a.75.75 0 01.75.75v5.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.75 7.5a.75.75 0 00-1.5 0v3a.75.75 0 001.5 0v-3zM21 12a.75.75 0 01-.75.75H18a.75.75 0 010-1.5h2.25c.414 0 .75.336.75.75zM15.75 18.75a.75.75 0 00-1.5 0v3a.75.75 0 001.5 0v-3zM12 15a.75.75 0 01-.75.75H8.25a.75.75 0 010-1.5H11.25a.75.75 0 01.75.75zM6.75 18.75a.75.75 0 000-1.5H3.75a.75.75 0 000 1.5h3zM3 12a.75.75 0 01.75-.75h3a.75.75 0 010 1.5h-3c-.414 0-.75-.336-.75-.75z"
+            />
+          </svg>
+          <span class="font-bold text-sm text-fad-dark">SECONDARY</span>
+        </button>
+
+        <a
+          href="index3.html"
+          class="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            class="w-12 h-12 text-fad-green mb-2"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          <span class="font-bold text-sm text-fad-dark">FINISH</span>
+        </a>
+      </main>
+
+      <div class="w-full flex justify-between mt-8 space-x-4">
+        <a
+          href="index.html"
+          class="flex-1 text-center bg-gray-200 text-gray-700 font-bold py-3 rounded-lg transition duration-300 hover:bg-gray-300"
+        >
+          KEMBALI
+        </a>
+        <button
+          type="button"
+          class="flex-1 bg-fad-red hover:bg-red-700 text-white font-bold py-3 rounded-lg transition duration-300"
+        >
+          RESET
+        </button>
+      </div>
+    </div>
+  </body>
+</html>
