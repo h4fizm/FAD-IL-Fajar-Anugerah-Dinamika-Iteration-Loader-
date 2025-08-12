@@ -2,11 +2,24 @@
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
     <title>FAD-IL - Proses</title>
     <link rel="icon" type="image/jpeg" href="img/logo.jpg" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@heroicons/react@2.0.18/dist/heroicons.min.js"></script>
     <script>
       tailwind.config = {
         theme: {
@@ -86,7 +99,7 @@
     </style>
   </head>
   <body
-    class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4 overflow-hidden relative"
+    class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4 relative"
   >
     <div id="preloader">
       <div class="loader"></div>
@@ -96,10 +109,12 @@
       class="absolute top-0 left-0 w-3/4 h-2/3 bg-fad-green transform -skew-y-12 -translate-x-1/2 -translate-y-1/2 opacity-20"
     ></div>
     <div
-      class="absolute bottom-0 right-0 w-2/3 h-2/3 bg-fad-yellow transform -skew-y-12 translate-x-1/2 translate-y-1/2 opacity-20"
+      class="absolute bottom-0 right-0 w-2/3 h-2/3 bg-fad-yellow transform -skew-y-12 translate-x-1/2 -translate-y-1/2 opacity-20"
     ></div>
 
-    <div class="relative z-10 w-full max-w-sm flex flex-col items-center">
+    <div
+      class="relative z-10 w-full max-w-sm mx-auto flex flex-col items-center"
+    >
       <header
         class="w-full text-center mb-6 flex flex-col items-center space-y-4"
       >
@@ -274,7 +289,10 @@
       </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
     <script>
+      AOS.init();
       let mainTimer = 0; // Total waktu dalam milidetik
       let mainInterval;
       let cardTimers = {
