@@ -8,7 +8,6 @@
     />
     <title>FAD-IL - Proses</title>
     <link rel="icon" type="image/jpeg" href="img/logo.jpg" />
-
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
@@ -18,8 +17,8 @@
       rel="stylesheet"
     />
     <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
-
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@heroicons/react@2.0.18/dist/heroicons.min.js"></script>
     <script>
       tailwind.config = {
         theme: {
@@ -36,14 +35,13 @@
       };
     </script>
     <style>
-      /* Style untuk Preloader */
       #preloader {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: #f7fafc; /* fad-light */
+        background-color: #f7fafc;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -51,8 +49,8 @@
         transition: opacity 0.5s ease-in-out;
       }
       .loader {
-        border: 8px solid #cbd5e0; /* Gray border */
-        border-top: 8px solid #38a169; /* fad-green */
+        border: 8px solid #cbd5e0;
+        border-top: 8px solid #38a169;
         border-radius: 50%;
         width: 60px;
         height: 60px;
@@ -66,13 +64,10 @@
           transform: rotate(360deg);
         }
       }
-
-      /* Menggunakan font monospasi untuk kesan digital */
       .digital-font {
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
           "Liberation Mono", "Courier New", monospace;
       }
-      /* Desain untuk lingkaran stopwatch */
       .stopwatch-container {
         position: relative;
         display: inline-flex;
@@ -85,25 +80,23 @@
         position: absolute;
         width: 100%;
         height: 100%;
-        border-radius: 9999px; /* Tailwind's rounded-full */
-        border: 4px solid #e2e8f0; /* bg-gray-200 */
+        border-radius: 9999px;
+        border: 4px solid #e2e8f0;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-          0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Tailwind's shadow */
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
       }
       .stopwatch-time {
         z-index: 10;
-        font-size: 2.5rem; /* text-4xl */
-        font-weight: 700; /* font-bold */
-        color: #1a202c; /* fad-dark */
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #1a202c;
       }
     </style>
   </head>
   <body
     class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4 relative"
   >
-    <div id="preloader">
-      <div class="loader"></div>
-    </div>
+    <div id="preloader"><div class="loader"></div></div>
 
     <div
       class="absolute top-0 left-0 w-3/4 h-2/3 bg-fad-green transform -skew-y-12 -translate-x-1/2 -translate-y-1/2 opacity-20"
@@ -125,12 +118,10 @@
             class="w-full h-full object-contain"
           />
         </div>
-
         <div class="w-full p-2">
           <p class="text-sm font-bold text-fad-dark">OBSERVER</p>
           <p class="text-md font-semibold text-gray-700">[Nama Observer]</p>
         </div>
-
         <div class="w-full flex justify-center mt-4">
           <div
             class="stopwatch-container w-40 h-40 bg-white rounded-full shadow-lg"
@@ -144,7 +135,6 @@
             </p>
           </div>
         </div>
-
         <div class="w-full p-2">
           <p class="text-sm font-bold text-fad-dark">
             Fajar Anugerah Dinamika Iteration Loader
@@ -170,7 +160,6 @@
           <span class="font-bold text-sm text-fad-dark">DIGGING</span>
           <span class="digital-font text-lg text-gray-500 mt-1">00:00:00</span>
         </button>
-
         <button
           id="btn-swing"
           class="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
@@ -190,7 +179,6 @@
           <span class="font-bold text-sm text-fad-dark">SWING</span>
           <span class="digital-font text-lg text-gray-500 mt-1">00:00:00</span>
         </button>
-
         <button
           id="btn-dump-bucket"
           class="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
@@ -211,7 +199,6 @@
           <span class="font-bold text-sm text-fad-dark">DUMP BUCKET</span>
           <span class="digital-font text-lg text-gray-500 mt-1">00:00:00</span>
         </button>
-
         <button
           id="btn-swing-empty"
           class="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
@@ -232,7 +219,6 @@
           <span class="font-bold text-sm text-fad-dark">SWING EMPTY</span>
           <span class="digital-font text-lg text-gray-500 mt-1">00:00:00</span>
         </button>
-
         <button
           id="btn-secondary"
           class="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
@@ -250,7 +236,6 @@
           <span class="font-bold text-sm text-fad-dark">SECONDARY</span>
           <span class="digital-font text-lg text-gray-500 mt-1">00:00:00</span>
         </button>
-
         <a
           id="btn-finish"
           href="index3.html"
@@ -276,9 +261,8 @@
         <a
           href="index.html"
           class="flex-1 text-center bg-gray-200 text-gray-700 font-bold py-3 rounded-lg transition duration-300 hover:bg-gray-300"
+          >KEMBALI</a
         >
-          KEMBALI
-        </a>
         <button
           id="reset-btn"
           type="button"
@@ -289,11 +273,11 @@
       </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
       AOS.init();
-      let mainTimer = 0; // Total waktu dalam milidetik
+      let mainTimer = 0;
       let mainInterval;
       let cardTimers = {
         digging: 0,
@@ -305,7 +289,6 @@
       let cardIntervals = {};
       let activeCard = null;
 
-      // Fungsi formatTime yang baru, hanya menampilkan menit, detik, dan milidetik
       const formatTime = (milliseconds) => {
         const totalSeconds = Math.floor(milliseconds / 1000);
         const totalMinutes = Math.floor(totalSeconds / 60);
@@ -322,7 +305,6 @@
         document.getElementById("main-stopwatch").textContent =
           formatTime(mainTimer);
       };
-
       const updateCardStopwatch = (cardName) => {
         const cardElement = document.getElementById(`btn-${cardName}`);
         if (cardElement) {
@@ -348,12 +330,10 @@
         if (activeCard && cardIntervals[activeCard]) {
           clearInterval(cardIntervals[activeCard]);
         }
-
         cardIntervals[cardName] = setInterval(() => {
           cardTimers[cardName] += 10;
           updateCardStopwatch(cardName);
         }, 10);
-
         activeCard = cardName;
       };
 
@@ -362,13 +342,11 @@
         mainInterval = null;
         mainTimer = 0;
         updateMainStopwatch();
-
         for (const cardName in cardIntervals) {
           clearInterval(cardIntervals[cardName]);
         }
         cardIntervals = {};
         activeCard = null;
-
         for (const cardName in cardTimers) {
           cardTimers[cardName] = 0;
           updateCardStopwatch(cardName);
@@ -385,9 +363,7 @@
           }
         }
       });
-
       document.getElementById("reset-btn").addEventListener("click", resetAll);
-
       window.addEventListener("load", function () {
         const preloader = document.getElementById("preloader");
         if (preloader) {
