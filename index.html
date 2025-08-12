@@ -22,7 +22,7 @@
       };
     </script>
     <style>
-      /* Style untuk Preloader */
+      /* Memperbaiki posisi preloader agar selalu di tengah */
       #preloader {
         position: fixed;
         top: 0;
@@ -52,10 +52,15 @@
           transform: rotate(360deg);
         }
       }
+
+      /* Menghilangkan scrollbar dari halaman */
+      body {
+        overflow: hidden;
+      }
     </style>
   </head>
   <body
-    class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4 overflow-hidden relative"
+    class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4 relative"
   >
     <div id="preloader">
       <div class="loader"></div>
