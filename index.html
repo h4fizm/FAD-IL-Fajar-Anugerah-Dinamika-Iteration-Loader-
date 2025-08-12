@@ -22,7 +22,12 @@
       };
     </script>
     <style>
-      /* Memperbaiki posisi preloader agar selalu di tengah */
+      /* Mengatasi masalah scrolling pada body */
+      body {
+        overflow: hidden;
+      }
+
+      /* Memperbaiki posisi preloader agar selalu di tengah layar */
       #preloader {
         position: fixed;
         top: 0;
@@ -51,11 +56,6 @@
         100% {
           transform: rotate(360deg);
         }
-      }
-
-      /* Menghilangkan scrollbar dari halaman */
-      body {
-        overflow: hidden;
       }
     </style>
   </head>
