@@ -2,9 +2,23 @@
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
     <title>FAD-IL</title>
     <link rel="icon" type="image/jpeg" href="img/logo.jpg" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -22,12 +36,7 @@
       };
     </script>
     <style>
-      /* Mengatasi masalah scrolling pada body */
-      body {
-        overflow: hidden;
-      }
-
-      /* Memperbaiki posisi preloader agar selalu di tengah layar */
+      /* Preloader sekarang ada di dalam head untuk pemuatan yang lebih cepat */
       #preloader {
         position: fixed;
         top: 0;
@@ -73,7 +82,9 @@
       class="absolute bottom-0 right-0 w-2/3 h-2/3 bg-fad-yellow transform -skew-y-12 translate-x-1/2 translate-y-1/2 opacity-20"
     ></div>
 
-    <div class="relative z-10 w-full max-w-sm flex flex-col items-center">
+    <div
+      class="relative z-10 w-full max-w-sm mx-auto flex flex-col items-center"
+    >
       <header class="w-full flex flex-col items-center mb-8 text-center">
         <div class="w-20 h-20 mb-4">
           <img
@@ -144,7 +155,10 @@
       </main>
     </div>
 
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
+      AOS.init();
       // Sembunyikan preloader setelah halaman selesai dimuat
       window.addEventListener("load", function () {
         const preloader = document.getElementById("preloader");
