@@ -22,10 +22,76 @@
         },
       };
     </script>
+    <style>
+      /* Style untuk Preloader */
+      #preloader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #f7fafc; /* fad-light */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease-in-out;
+      }
+      .loader {
+        border: 8px solid #cbd5e0; /* Gray border */
+        border-top: 8px solid #38a169; /* fad-green */
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Menggunakan font monospasi untuk kesan digital */
+      .digital-font {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+      }
+      /* Desain untuk lingkaran stopwatch */
+      .stopwatch-container {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+      }
+      .stopwatch-circle {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 9999px; /* Tailwind's rounded-full */
+        border: 4px solid #e2e8f0; /* bg-gray-200 */
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Tailwind's shadow */
+      }
+      .stopwatch-time {
+        z-index: 10;
+        font-size: 2.5rem; /* text-4xl */
+        font-weight: 700; /* font-bold */
+        color: #1a202c; /* fad-dark */
+      }
+    </style>
   </head>
   <body
     class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4 overflow-hidden relative"
   >
+    <div id="preloader">
+      <div class="loader"></div>
+    </div>
+
     <div
       class="absolute top-0 left-0 w-3/4 h-2/3 bg-fad-green transform -skew-y-12 -translate-x-1/2 -translate-y-1/2 opacity-20"
     ></div>
@@ -50,6 +116,20 @@
           <p class="text-md font-semibold text-gray-700">[Nama Observer]</p>
         </div>
 
+        <div class="w-full flex justify-center mt-4">
+          <div
+            class="stopwatch-container w-40 h-40 bg-white rounded-full shadow-lg"
+          >
+            <div class="stopwatch-circle"></div>
+            <p
+              id="main-stopwatch"
+              class="stopwatch-time digital-font text-5xl text-fad-dark"
+            >
+              00:00:00
+            </p>
+          </div>
+        </div>
+
         <div class="w-full p-2">
           <p class="text-sm font-bold text-fad-dark">
             Fajar Anugerah Dinamika Iteration Loader
@@ -57,8 +137,9 @@
         </div>
       </header>
 
-      <main class="w-full grid grid-cols-2 gap-4">
+      <main class="w-full grid grid-cols-2 gap-4" id="main-grid">
         <button
+          id="btn-digging"
           class="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
         >
           <svg
@@ -72,9 +153,11 @@
             />
           </svg>
           <span class="font-bold text-sm text-fad-dark">DIGGING</span>
+          <span class="digital-font text-lg text-gray-500 mt-1">00:00:00</span>
         </button>
 
         <button
+          id="btn-swing"
           class="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
         >
           <svg
@@ -90,9 +173,11 @@
             />
           </svg>
           <span class="font-bold text-sm text-fad-dark">SWING</span>
+          <span class="digital-font text-lg text-gray-500 mt-1">00:00:00</span>
         </button>
 
         <button
+          id="btn-dump-bucket"
           class="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
         >
           <svg
@@ -109,9 +194,11 @@
             />
           </svg>
           <span class="font-bold text-sm text-fad-dark">DUMP BUCKET</span>
+          <span class="digital-font text-lg text-gray-500 mt-1">00:00:00</span>
         </button>
 
         <button
+          id="btn-swing-empty"
           class="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
         >
           <svg
@@ -128,9 +215,11 @@
             />
           </svg>
           <span class="font-bold text-sm text-fad-dark">SWING EMPTY</span>
+          <span class="digital-font text-lg text-gray-500 mt-1">00:00:00</span>
         </button>
 
         <button
+          id="btn-secondary"
           class="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
         >
           <svg
@@ -144,9 +233,11 @@
             />
           </svg>
           <span class="font-bold text-sm text-fad-dark">SECONDARY</span>
+          <span class="digital-font text-lg text-gray-500 mt-1">00:00:00</span>
         </button>
 
         <a
+          id="btn-finish"
           href="index3.html"
           class="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
         >
@@ -174,6 +265,7 @@
           KEMBALI
         </a>
         <button
+          id="reset-btn"
           type="button"
           class="flex-1 bg-fad-red hover:bg-red-700 text-white font-bold py-3 rounded-lg transition duration-300"
         >
@@ -181,5 +273,112 @@
         </button>
       </div>
     </div>
+
+    <script>
+      let mainTimer = 0; // Total waktu dalam milidetik
+      let mainInterval;
+      let cardTimers = {
+        digging: 0,
+        swing: 0,
+        "dump-bucket": 0,
+        "swing-empty": 0,
+        secondary: 0,
+      };
+      let cardIntervals = {};
+      let activeCard = null;
+
+      // Fungsi formatTime yang baru, hanya menampilkan menit, detik, dan milidetik
+      const formatTime = (milliseconds) => {
+        const totalSeconds = Math.floor(milliseconds / 1000);
+        const totalMinutes = Math.floor(totalSeconds / 60);
+        const m = String(totalMinutes % 60).padStart(2, "0");
+        const s = String(totalSeconds % 60).padStart(2, "0");
+        const ms = String(Math.floor((milliseconds % 1000) / 10)).padStart(
+          2,
+          "0"
+        );
+        return `${m}:${s}:${ms}`;
+      };
+
+      const updateMainStopwatch = () => {
+        document.getElementById("main-stopwatch").textContent =
+          formatTime(mainTimer);
+      };
+
+      const updateCardStopwatch = (cardName) => {
+        const cardElement = document.getElementById(`btn-${cardName}`);
+        if (cardElement) {
+          const timerDisplay = cardElement.querySelector(
+            ".digital-font:last-child"
+          );
+          if (timerDisplay) {
+            timerDisplay.textContent = formatTime(cardTimers[cardName]);
+          }
+        }
+      };
+
+      const startMainStopwatch = () => {
+        if (!mainInterval) {
+          mainInterval = setInterval(() => {
+            mainTimer += 10;
+            updateMainStopwatch();
+          }, 10);
+        }
+      };
+
+      const startCardStopwatch = (cardName) => {
+        if (activeCard && cardIntervals[activeCard]) {
+          clearInterval(cardIntervals[activeCard]);
+        }
+
+        cardIntervals[cardName] = setInterval(() => {
+          cardTimers[cardName] += 10;
+          updateCardStopwatch(cardName);
+        }, 10);
+
+        activeCard = cardName;
+      };
+
+      const resetAll = () => {
+        clearInterval(mainInterval);
+        mainInterval = null;
+        mainTimer = 0;
+        updateMainStopwatch();
+
+        for (const cardName in cardIntervals) {
+          clearInterval(cardIntervals[cardName]);
+        }
+        cardIntervals = {};
+        activeCard = null;
+
+        for (const cardName in cardTimers) {
+          cardTimers[cardName] = 0;
+          updateCardStopwatch(cardName);
+        }
+      };
+
+      document.getElementById("main-grid").addEventListener("click", (e) => {
+        const button = e.target.closest("button");
+        if (button) {
+          const cardName = button.id.replace("btn-", "");
+          if (cardName) {
+            startMainStopwatch();
+            startCardStopwatch(cardName);
+          }
+        }
+      });
+
+      document.getElementById("reset-btn").addEventListener("click", resetAll);
+
+      window.addEventListener("load", function () {
+        const preloader = document.getElementById("preloader");
+        if (preloader) {
+          preloader.style.opacity = "0";
+          setTimeout(() => {
+            preloader.style.display = "none";
+          }, 500);
+        }
+      });
+    </script>
   </body>
 </html>

@@ -22,10 +22,51 @@
         },
       };
     </script>
+    <style>
+      /* Style untuk Preloader */
+      #preloader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #f7fafc; /* fad-light */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease-in-out;
+      }
+      .loader {
+        border: 8px solid #cbd5e0; /* Gray border */
+        border-top: 8px solid #38a169; /* fad-green */
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .digital-font {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+      }
+    </style>
   </head>
   <body
     class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4 overflow-hidden relative"
   >
+    <div id="preloader">
+      <div class="loader"></div>
+    </div>
+
     <div
       class="absolute top-0 left-0 w-3/4 h-2/3 bg-fad-green transform -skew-y-12 -translate-x-1/2 -translate-y-1/2 opacity-20"
     ></div>
@@ -72,7 +113,9 @@
               </svg>
               <span class="font-medium text-gray-500">OBSERVER</span>
             </div>
-            <span class="font-bold text-fad-dark">[Nama Observer]</span>
+            <span id="observer-name" class="font-bold text-fad-dark"
+              >[Nama Observer]</span
+            >
           </div>
 
           <div class="flex items-center justify-between py-2">
@@ -93,7 +136,7 @@
               </svg>
               <span class="font-medium text-gray-500">NAMA UNIT</span>
             </div>
-            <span class="font-bold text-fad-dark">[Unit]</span>
+            <span id="unit-name" class="font-bold text-fad-dark">[Unit]</span>
           </div>
 
           <div class="flex items-center justify-between py-2">
@@ -114,7 +157,9 @@
               </svg>
               <span class="font-medium text-gray-500">JENIS MATERIAL</span>
             </div>
-            <span class="font-bold text-fad-dark">[Material]</span>
+            <span id="material-type" class="font-bold text-fad-dark"
+              >[Material]</span
+            >
           </div>
 
           <div class="flex items-center justify-between py-2">
@@ -135,7 +180,9 @@
               </svg>
               <span class="font-medium text-gray-500">NAMA OPERATOR</span>
             </div>
-            <span class="font-bold text-fad-dark">[Operator]</span>
+            <span id="operator-name" class="font-bold text-fad-dark"
+              >[Operator]</span
+            >
           </div>
 
           <div class="flex items-center justify-between py-2">
@@ -143,7 +190,7 @@
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
-                viewBox="0 0 24 24"
+                viewbox="0 0 24 24"
                 stroke-width="1.5"
                 stroke="currentColor"
                 class="w-6 h-6 text-gray-400"
@@ -156,7 +203,9 @@
               </svg>
               <span class="font-medium text-gray-500">JUMLAH PASSING</span>
             </div>
-            <span class="font-bold text-fad-dark">[Jumlah]</span>
+            <span id="total-passing" class="font-bold text-fad-dark"
+              >[Jumlah]</span
+            >
           </div>
 
           <div class="flex items-center justify-between py-2">
@@ -164,7 +213,7 @@
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
-                viewBox="0 0 24 24"
+                viewbox="0 0 24 24"
                 stroke-width="1.5"
                 stroke="currentColor"
                 class="w-6 h-6 text-gray-400"
@@ -177,7 +226,9 @@
               </svg>
               <span class="font-medium text-gray-500">DIGGING TIME</span>
             </div>
-            <span class="font-bold text-fad-dark">[Waktu]</span>
+            <span id="digging-time" class="font-bold text-fad-dark digital-font"
+              >[Waktu]</span
+            >
           </div>
 
           <div class="flex items-center justify-between py-2">
@@ -185,7 +236,7 @@
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
-                viewBox="0 0 24 24"
+                viewbox="0 0 24 24"
                 stroke-width="1.5"
                 stroke="currentColor"
                 class="w-6 h-6 text-gray-400"
@@ -198,7 +249,9 @@
               </svg>
               <span class="font-medium text-gray-500">SWING TIME</span>
             </div>
-            <span class="font-bold text-fad-dark">[Waktu]</span>
+            <span id="swing-time" class="font-bold text-fad-dark digital-font"
+              >[Waktu]</span
+            >
           </div>
 
           <div class="flex items-center justify-between py-2">
@@ -206,7 +259,7 @@
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
-                viewBox="0 0 24 24"
+                viewbox="0 0 24 24"
                 stroke-width="1.5"
                 stroke="currentColor"
                 class="w-6 h-6 text-gray-400"
@@ -219,7 +272,11 @@
               </svg>
               <span class="font-medium text-gray-500">BUCKET DUMP TIME</span>
             </div>
-            <span class="font-bold text-fad-dark">[Waktu]</span>
+            <span
+              id="dump-bucket-time"
+              class="font-bold text-fad-dark digital-font"
+              >[Waktu]</span
+            >
           </div>
 
           <div class="flex items-center justify-between py-2">
@@ -227,7 +284,7 @@
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
-                viewBox="0 0 24 24"
+                viewbox="0 0 24 24"
                 stroke-width="1.5"
                 stroke="currentColor"
                 class="w-6 h-6 text-gray-400"
@@ -240,7 +297,11 @@
               </svg>
               <span class="font-medium text-gray-500">SWING EMPTY TIME</span>
             </div>
-            <span class="font-bold text-fad-dark">[Waktu]</span>
+            <span
+              id="swing-empty-time"
+              class="font-bold text-fad-dark digital-font"
+              >[Waktu]</span
+            >
           </div>
 
           <div class="flex items-center justify-between py-2">
@@ -248,7 +309,7 @@
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
-                viewBox="0 0 24 24"
+                viewbox="0 0 24 24"
                 stroke-width="1.5"
                 stroke="currentColor"
                 class="w-6 h-6 text-gray-400"
@@ -261,7 +322,11 @@
               </svg>
               <span class="font-medium text-gray-500">SECONDARY TIME</span>
             </div>
-            <span class="font-bold text-fad-dark">[Waktu]</span>
+            <span
+              id="secondary-time"
+              class="font-bold text-fad-dark digital-font"
+              >[Waktu]</span
+            >
           </div>
 
           <div
@@ -270,7 +335,7 @@
             <div class="flex items-center space-x-2">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
+                viewbox="0 0 24 24"
                 fill="currentColor"
                 class="w-6 h-6 text-fad-green"
               >
@@ -282,7 +347,9 @@
               </svg>
               <span class="text-fad-dark">CYCLE TIME</span>
             </div>
-            <span class="text-fad-dark">[Waktu]</span>
+            <span id="cycle-time" class="text-fad-dark digital-font"
+              >[Waktu]</span
+            >
           </div>
 
           <div
@@ -291,7 +358,7 @@
             <div class="flex items-center space-x-2">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
+                viewbox="0 0 24 24"
                 fill="currentColor"
                 class="w-6 h-6 text-fad-green"
               >
@@ -306,7 +373,9 @@
               </svg>
               <span class="text-fad-dark">LOADING TIME</span>
             </div>
-            <span class="text-fad-dark">[Waktu]</span>
+            <span id="loading-time" class="text-fad-dark digital-font"
+              >[Waktu]</span
+            >
           </div>
         </div>
       </main>
@@ -326,5 +395,73 @@
         </button>
       </div>
     </div>
+
+    <script>
+      // Fungsi untuk mengubah detik menjadi format HH:MM:SS
+      const formatTime = (seconds) => {
+        const h = String(Math.floor(seconds / 3600)).padStart(2, "0");
+        const m = String(Math.floor((seconds % 3600) / 60)).padStart(2, "0");
+        const s = String(seconds % 60).padStart(2, "0");
+        return `${h}:${m}:${s}`;
+      };
+
+      // Data dummy
+      const dummyData = {
+        observer: "John Doe",
+        unit: "Excavator Cat 320D",
+        material: "Batu Bara",
+        operator: "Jane Smith",
+        passing: 15,
+        diggingTime: 30, // dalam detik
+        swingTime: 25, // dalam detik
+        dumpBucketTime: 12, // dalam detik
+        swingEmptyTime: 18, // dalam detik
+        secondaryTime: 5, // dalam detik
+      };
+
+      // Hitung Cycle Time dan Loading Time
+      const cycleTime =
+        dummyData.diggingTime +
+        dummyData.swingTime +
+        dummyData.dumpBucketTime +
+        dummyData.swingEmptyTime;
+      const loadingTime = dummyData.diggingTime + dummyData.swingTime;
+
+      // Masukkan data dummy ke dalam elemen HTML
+      document.getElementById("observer-name").textContent = dummyData.observer;
+      document.getElementById("unit-name").textContent = dummyData.unit;
+      document.getElementById("material-type").textContent = dummyData.material;
+      document.getElementById("operator-name").textContent = dummyData.operator;
+      document.getElementById("total-passing").textContent = dummyData.passing;
+      document.getElementById("digging-time").textContent = formatTime(
+        dummyData.diggingTime
+      );
+      document.getElementById("swing-time").textContent = formatTime(
+        dummyData.swingTime
+      );
+      document.getElementById("dump-bucket-time").textContent = formatTime(
+        dummyData.dumpBucketTime
+      );
+      document.getElementById("swing-empty-time").textContent = formatTime(
+        dummyData.swingEmptyTime
+      );
+      document.getElementById("secondary-time").textContent = formatTime(
+        dummyData.secondaryTime
+      );
+      document.getElementById("cycle-time").textContent = formatTime(cycleTime);
+      document.getElementById("loading-time").textContent =
+        formatTime(loadingTime);
+
+      // Sembunyikan preloader setelah halaman selesai dimuat
+      window.addEventListener("load", function () {
+        const preloader = document.getElementById("preloader");
+        if (preloader) {
+          preloader.style.opacity = "0";
+          setTimeout(() => {
+            preloader.style.display = "none";
+          }, 500); // Tunggu sampai transisi opacity selesai
+        }
+      });
+    </script>
   </body>
 </html>
