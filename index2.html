@@ -56,7 +56,9 @@
         </div>
         <div class="w-full p-2">
           <p class="text-sm font-bold text-fad-dark">OBSERVER</p>
-          <p class="text-md font-semibold text-gray-700">[Nama Observer]</p>
+          <p id="observerName" class="text-md font-semibold text-gray-700">
+            [Nama Observer]
+          </p>
         </div>
         <div class="w-full flex justify-center mt-4">
           <div
@@ -150,10 +152,26 @@
       </div>
     </div>
 
+    <!-- custom js -->
     <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+      // --- VALIDASI AKSES HALAMAN ---
+      const formData = localStorage.getItem("formData");
+      if (!formData) {
+        Swal.fire({
+          icon: "error",
+          title: "Akses Ditolak",
+          text: "Silakan isi data terlebih dahulu di halaman utama.",
+          showConfirmButton: false,
+          timer: 2000,
+        }).then(() => {
+          window.location.href = "index.html";
+        });
+      }
+      // --- AKHIR VALIDASI ---
+
       AOS.init();
       let mainTimer = 0;
       let mainInterval;
@@ -166,6 +184,20 @@
       };
       let cardIntervals = {};
       let activeCard = null;
+      let processHistory = [];
+
+      const loadHistory = () => {
+        const savedHistory = localStorage.getItem("processHistory");
+        if (savedHistory) {
+          processHistory = JSON.parse(savedHistory);
+          console.log("Riwayat proses sebelumnya dimuat:", processHistory);
+        }
+      };
+
+      const saveHistory = () => {
+        localStorage.setItem("processHistory", JSON.stringify(processHistory));
+        console.log("Riwayat proses disimpan:", processHistory);
+      };
 
       const formatTime = (milliseconds) => {
         const totalSeconds = Math.floor(milliseconds / 1000);
@@ -199,26 +231,34 @@
       const startMainStopwatch = () => {
         if (!mainInterval) {
           mainInterval = setInterval(() => {
-            mainTimer += 10; // Menggunakan 10ms untuk presisi milisekon
+            mainTimer += 10;
             updateMainStopwatch();
           }, 10);
         }
       };
 
       const startCardStopwatch = (cardName) => {
-        // Menghapus kelas 'active' dari semua tombol
         document.querySelectorAll("#main-grid button").forEach((button) => {
           button.classList.remove("active");
         });
 
-        // Jika ada stopwatch lain yang sedang berjalan, hentikan dan reset
         if (activeCard && activeCard !== cardName) {
+          const elapsedTime = cardTimers[activeCard];
+          const processName = document
+            .getElementById(`btn-${activeCard}`)
+            .querySelector(".font-bold").textContent;
+          const newProcess = {
+            name: processName,
+            time: elapsedTime,
+          };
+          processHistory.push(newProcess);
+          saveHistory();
+
           clearInterval(cardIntervals[activeCard]);
           cardTimers[activeCard] = 0;
           updateCardStopwatch(activeCard);
         }
 
-        // Jika stopwatch yang baru dimulai adalah yang sama, tampilkan SweetAlert
         if (activeCard === cardName) {
           Swal.fire({
             icon: "warning",
@@ -230,7 +270,6 @@
           return;
         }
 
-        // Hentikan stopwatch sebelumnya (jika ada) dan mulai yang baru
         if (cardIntervals[cardName]) {
           clearInterval(cardIntervals[cardName]);
           delete cardIntervals[cardName];
@@ -242,7 +281,6 @@
         }, 10);
 
         activeCard = cardName;
-        // Tambahkan kelas active ke tombol yang sedang berjalan
         document.getElementById(`btn-${cardName}`).classList.add("active");
       };
 
@@ -251,6 +289,29 @@
         mainInterval = null;
         mainTimer = 0;
         updateMainStopwatch();
+
+        if (activeCard) {
+          const elapsedTime = cardTimers[activeCard];
+          const processName = document
+            .getElementById(`btn-${activeCard}`)
+            .querySelector(".font-bold").textContent;
+          const newProcess = {
+            name: processName,
+            time: elapsedTime,
+          };
+          processHistory.push(newProcess);
+          saveHistory();
+        }
+
+        processHistory = [];
+        localStorage.removeItem("processHistory");
+
+        // --- KODE BERIKUT DIHAPUS UNTUK MENCEGAH PENGALIHAN ---
+        // localStorage.removeItem("formData");
+        // window.location.href = "index.html";
+        // --- AKHIR KODE YANG DIHAPUS ---
+
+        console.log("Riwayat proses direset.");
 
         for (const cn in cardIntervals) {
           clearInterval(cardIntervals[cn]);
@@ -262,7 +323,6 @@
           cardTimers[cn] = 0;
           updateCardStopwatch(cn);
         }
-        // Hapus semua kelas active dari tombol
         document.querySelectorAll("#main-grid button").forEach((button) => {
           button.classList.remove("active");
         });
@@ -281,9 +341,19 @@
 
       document.getElementById("reset-btn").addEventListener("click", resetAll);
 
-      // Stop semua timer saat tombol FINISH diklik
       document.getElementById("btn-finish").addEventListener("click", () => {
-        resetAll();
+        if (activeCard) {
+          const elapsedTime = cardTimers[activeCard];
+          const processName = document
+            .getElementById(`btn-${activeCard}`)
+            .querySelector(".font-bold").textContent;
+          const newProcess = {
+            name: processName,
+            time: elapsedTime,
+          };
+          processHistory.push(newProcess);
+          saveHistory();
+        }
       });
 
       window.addEventListener("load", function () {
@@ -293,6 +363,13 @@
           setTimeout(() => {
             preloader.style.display = "none";
           }, 500);
+        }
+
+        loadHistory();
+
+        if (formData) {
+          const data = JSON.parse(formData);
+          document.getElementById("observerName").textContent = data.observer;
         }
       });
     </script>
