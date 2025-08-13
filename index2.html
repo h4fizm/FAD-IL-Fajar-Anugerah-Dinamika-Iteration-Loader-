@@ -152,12 +152,10 @@
       </div>
     </div>
 
-    <!-- custom js -->
     <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-      // --- VALIDASI AKSES HALAMAN ---
       const formData = localStorage.getItem("formData");
       if (!formData) {
         Swal.fire({
@@ -170,7 +168,6 @@
           window.location.href = "index.html";
         });
       }
-      // --- AKHIR VALIDASI ---
 
       AOS.init();
       let mainTimer = 0;
@@ -305,12 +302,6 @@
 
         processHistory = [];
         localStorage.removeItem("processHistory");
-
-        // --- KODE BERIKUT DIHAPUS UNTUK MENCEGAH PENGALIHAN ---
-        // localStorage.removeItem("formData");
-        // window.location.href = "index.html";
-        // --- AKHIR KODE YANG DIHAPUS ---
-
         console.log("Riwayat proses direset.");
 
         for (const cn in cardIntervals) {
@@ -354,6 +345,8 @@
           processHistory.push(newProcess);
           saveHistory();
         }
+        // Tambahkan total waktu main timer ke localStorage sebelum pindah halaman
+        localStorage.setItem("loadingTime", mainTimer);
       });
 
       window.addEventListener("load", function () {
@@ -364,7 +357,6 @@
             preloader.style.display = "none";
           }, 500);
         }
-
         loadHistory();
 
         if (formData) {
