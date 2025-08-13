@@ -1,93 +1,78 @@
-const stopwatchCount = 5; // jumlah stopwatch
-const container = document.getElementById("stopwatches");
+// INDEX FUNCTION
+AOS.init();
 
-// Membuat stopwatch dinamis
-for (let i = 1; i <= stopwatchCount; i++) {
-  container.innerHTML += `
-        <div style="margin-bottom:20px; border:1px solid #ccc; padding:10px;">
-            <h3>Stopwatch ${i}</h3>
-            <div id="display-${i}">00:00:00</div>
-            <button id="playBtn-${i}">Play</button>
-            <button id="stopBtn-${i}">Stop</button>
-            <button id="resetBtn-${i}">Reset</button>
-            <button id="exportBtn-${i}">Export Excel</button>
-        </div>
-    `;
-}
+// Menambahkan kode JavaScript untuk menyimpan data
+const form = document.getElementById("dataForm");
 
-let stopwatches = {};
+form.addEventListener("submit", function (event) {
+  // Mencegah form untuk melakukan reload halaman
+  event.preventDefault();
 
-// Fungsi membuat setiap stopwatch
-function createStopwatch(id) {
-  let startTime;
-  let timerInterval;
-  let isStopped = false;
+  // Mengambil nilai dari setiap input
+  const unitLoader = document.getElementById("unitLoader").value;
+  const jenisMaterial = document.getElementById("jenisMaterial").value;
+  const namaOperator = document.getElementById("namaOperator").value;
+  const observer = document.getElementById("observer").value;
 
-  function updateDisplay() {
-    const elapsedTime = Date.now() - startTime;
-    const totalSeconds = Math.floor(elapsedTime / 1000);
-
-    const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
-    const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(
-      2,
-      "0"
-    );
-    const seconds = String(totalSeconds % 60).padStart(2, "0");
-
-    document.getElementById(
-      `display-${id}`
-    ).textContent = `${hours}:${minutes}:${seconds}`;
+  // Validasi form
+  if (
+    unitLoader === "UNIT LOADER" ||
+    jenisMaterial === "JENIS MATERIAL" ||
+    namaOperator === "NAMA OPERATOR" ||
+    observer === ""
+  ) {
+    // Tampilkan SweetAlert jika ada form yang kosong
+    Swal.fire({
+      icon: "error",
+      title: "Gagal",
+      text: "Semua form harus diisi!",
+    });
+    return; // Hentikan eksekusi kode selanjutnya
   }
 
-  document
-    .getElementById(`playBtn-${id}`)
-    .addEventListener("click", function () {
-      if (isStopped) return;
-      startTime = Date.now();
-      clearInterval(timerInterval);
-      timerInterval = setInterval(updateDisplay, 1000);
-    });
+  // Membuat objek JavaScript
+  const data = {
+    unit_loader: unitLoader,
+    jenis_material: jenisMaterial,
+    nama_operator: namaOperator,
+    observer: observer,
+    // [2025-08-11] Tanggal pengajuan dalam format hari, tanggal bulan tahun.
+    tanggal_pengajuan: new Date().toLocaleDateString("id-ID", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }),
+  };
 
-  document
-    .getElementById(`stopBtn-${id}`)
-    .addEventListener("click", function () {
-      if (isStopped) return;
-      clearInterval(timerInterval);
-      isStopped = true;
+  // Mengubah objek menjadi string JSON
+  const jsonData = JSON.stringify(data);
 
-      const finalTime = document.getElementById(`display-${id}`).textContent;
-      let historyKey = `history${id}`;
-      let history = JSON.parse(localStorage.getItem(historyKey)) || [];
-      let newId = history.length > 0 ? history[history.length - 1].id + 1 : 1;
-      history.push({ id: newId, time: finalTime });
-      localStorage.setItem(historyKey, JSON.stringify(history));
-    });
+  // Menyimpan string JSON ke Local Storage
+  localStorage.setItem("formData", jsonData);
 
-  document
-    .getElementById(`resetBtn-${id}`)
-    .addEventListener("click", function () {
-      clearInterval(timerInterval);
-      document.getElementById(`display-${id}`).textContent = "00:00:00";
-      isStopped = false;
-      localStorage.removeItem(`history${id}`);
-    });
+  console.log("Data berhasil disimpan di Local Storage:", jsonData);
 
-  document
-    .getElementById(`exportBtn-${id}`)
-    .addEventListener("click", function () {
-      let history = JSON.parse(localStorage.getItem(`history${id}`)) || [];
-      if (history.length === 0) {
-        alert(`Stopwatch ${id}: Tidak ada data untuk diexport!`);
-        return;
-      }
-      const worksheet = XLSX.utils.json_to_sheet(history);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, `History-${id}`);
-      XLSX.writeFile(workbook, `stopwatch${id}_history.xlsx`);
-    });
-}
+  // Tampilkan SweetAlert jika berhasil
+  Swal.fire({
+    icon: "success",
+    title: "Berhasil!",
+    text: "Data berhasil disimpan.",
+    showConfirmButton: false,
+    timer: 1500, // SweetAlert akan tertutup otomatis setelah 1.5 detik
+  }).then(() => {
+    // Arahkan ke halaman selanjutnya setelah SweetAlert tertutup
+    window.location.href = "index2.html";
+  });
+});
 
-// Buat semua stopwatch
-for (let i = 1; i <= stopwatchCount; i++) {
-  stopwatches[i] = createStopwatch(i);
-}
+// Sembunyikan preloader setelah halaman selesai dimuat
+window.addEventListener("load", function () {
+  const preloader = document.getElementById("preloader");
+  if (preloader) {
+    preloader.style.opacity = "0";
+    setTimeout(() => {
+      preloader.style.display = "none";
+    }, 500);
+  }
+});

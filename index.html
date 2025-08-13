@@ -64,9 +64,10 @@
           Input Data Cycle Time Loader
         </h2>
 
-        <form class="space-y-4">
+        <form id="dataForm" class="space-y-4">
           <div>
             <select
+              id="unitLoader"
               class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-500 hover:text-gray-700"
             >
               <option disabled selected>UNIT LOADER</option>
@@ -78,6 +79,7 @@
 
           <div>
             <select
+              id="jenisMaterial"
               class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-500 hover:text-gray-700"
             >
               <option disabled selected>JENIS MATERIAL</option>
@@ -90,6 +92,7 @@
 
           <div>
             <select
+              id="namaOperator"
               class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-500 hover:text-gray-700"
             >
               <option disabled selected>NAMA OPERATOR</option>
@@ -108,18 +111,19 @@
           <div>
             <input
               type="text"
+              id="observer"
               placeholder="OBSERVER"
               class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-700"
             />
           </div>
 
           <div class="pt-4">
-            <a
-              href="index2.html"
-              class="w-full bg-fad-green hover:bg-green-700 text-white font-bold py-3 rounded-lg shadow-lg transition duration-300 transform hover:scale-105 text-center block"
+            <button
+              type="submit"
+              class="w-full bg-fad-green hover:bg-green-700 text-white font-bold py-3 rounded-lg shadow-lg transition duration-300 transform hover:scale-105 text-center"
             >
               SUBMIT
-            </a>
+            </button>
           </div>
         </form>
       </main>
@@ -127,18 +131,7 @@
 
     <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script>
-      AOS.init();
-      // Sembunyikan preloader setelah halaman selesai dimuat
-      window.addEventListener("load", function () {
-        const preloader = document.getElementById("preloader");
-        if (preloader) {
-          preloader.style.opacity = "0";
-          setTimeout(() => {
-            preloader.style.display = "none";
-          }, 500);
-        }
-      });
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/script.js"></script>
   </body>
 </html>
