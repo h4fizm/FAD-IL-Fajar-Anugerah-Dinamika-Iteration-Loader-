@@ -152,6 +152,7 @@
 
     <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
       AOS.init();
       let mainTimer = 0;
@@ -169,7 +170,7 @@
       const formatTime = (milliseconds) => {
         const totalSeconds = Math.floor(milliseconds / 1000);
         const totalMinutes = Math.floor(totalSeconds / 60);
-        const m = String(totalMinutes % 60).padStart(2, "0");
+        const m = String(totalMinutes).padStart(2, "0");
         const s = String(totalSeconds % 60).padStart(2, "0");
         const ms = String(Math.floor((milliseconds % 1000) / 10)).padStart(
           2,
@@ -177,10 +178,12 @@
         );
         return `${m}:${s}:${ms}`;
       };
+
       const updateMainStopwatch = () => {
         document.getElementById("main-stopwatch").textContent =
           formatTime(mainTimer);
       };
+
       const updateCardStopwatch = (cardName) => {
         const cardElement = document.getElementById(`btn-${cardName}`);
         if (cardElement) {
@@ -192,39 +195,79 @@
           }
         }
       };
+
       const startMainStopwatch = () => {
         if (!mainInterval) {
           mainInterval = setInterval(() => {
-            mainTimer += 10;
+            mainTimer += 10; // Menggunakan 10ms untuk presisi milisekon
             updateMainStopwatch();
           }, 10);
         }
       };
+
       const startCardStopwatch = (cardName) => {
-        if (activeCard && cardIntervals[activeCard]) {
+        // Menghapus kelas 'active' dari semua tombol
+        document.querySelectorAll("#main-grid button").forEach((button) => {
+          button.classList.remove("active");
+        });
+
+        // Jika ada stopwatch lain yang sedang berjalan, hentikan dan reset
+        if (activeCard && activeCard !== cardName) {
           clearInterval(cardIntervals[activeCard]);
+          cardTimers[activeCard] = 0;
+          updateCardStopwatch(activeCard);
         }
+
+        // Jika stopwatch yang baru dimulai adalah yang sama, tampilkan SweetAlert
+        if (activeCard === cardName) {
+          Swal.fire({
+            icon: "warning",
+            title: "Oops...",
+            text: "Anda tidak dapat memulai proses yang sama!",
+            timer: 2000,
+            showConfirmButton: false,
+          });
+          return;
+        }
+
+        // Hentikan stopwatch sebelumnya (jika ada) dan mulai yang baru
+        if (cardIntervals[cardName]) {
+          clearInterval(cardIntervals[cardName]);
+          delete cardIntervals[cardName];
+        }
+
         cardIntervals[cardName] = setInterval(() => {
           cardTimers[cardName] += 10;
           updateCardStopwatch(cardName);
         }, 10);
+
         activeCard = cardName;
+        // Tambahkan kelas active ke tombol yang sedang berjalan
+        document.getElementById(`btn-${cardName}`).classList.add("active");
       };
+
       const resetAll = () => {
         clearInterval(mainInterval);
         mainInterval = null;
         mainTimer = 0;
         updateMainStopwatch();
+
         for (const cn in cardIntervals) {
           clearInterval(cardIntervals[cn]);
         }
         cardIntervals = {};
         activeCard = null;
+
         for (const cn in cardTimers) {
           cardTimers[cn] = 0;
           updateCardStopwatch(cn);
         }
+        // Hapus semua kelas active dari tombol
+        document.querySelectorAll("#main-grid button").forEach((button) => {
+          button.classList.remove("active");
+        });
       };
+
       document.getElementById("main-grid").addEventListener("click", (e) => {
         const button = e.target.closest("button");
         if (button) {
@@ -235,7 +278,14 @@
           }
         }
       });
+
       document.getElementById("reset-btn").addEventListener("click", resetAll);
+
+      // Stop semua timer saat tombol FINISH diklik
+      document.getElementById("btn-finish").addEventListener("click", () => {
+        resetAll();
+      });
+
       window.addEventListener("load", function () {
         const preloader = document.getElementById("preloader");
         if (preloader) {
