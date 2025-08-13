@@ -7,7 +7,10 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
     <title>FAD-IL - Proses</title>
-    <link rel="icon" type="image/jpeg" href="img/logo.jpg" />
+
+    <!-- GANTI favicon -->
+    <link rel="icon" type="image/jpeg" href="img/picture.jpg" />
+
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
@@ -35,13 +38,14 @@
       };
     </script>
     <style>
-      /* Memperbaiki overflow dan lebar untuk mencegah scroll horizontal */
       html,
       body {
         width: 100%;
         max-width: 100vw;
         overflow-x: hidden;
       }
+
+      /* Preloader */
       #preloader {
         position: fixed;
         top: 0;
@@ -71,6 +75,7 @@
           transform: rotate(360deg);
         }
       }
+
       .digital-font {
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
           "Liberation Mono", "Courier New", monospace;
@@ -98,6 +103,16 @@
         font-weight: 700;
         color: #1a202c;
       }
+
+      /* === BACKGROUND: gradient putih-dominan hijau-oranye === */
+      body {
+        background: linear-gradient(
+          135deg,
+          #ffffff 60%,
+          #38a169 85%,
+          #f9a825 100%
+        );
+      }
     </style>
   </head>
   <body
@@ -105,22 +120,18 @@
   >
     <div id="preloader"><div class="loader"></div></div>
 
-    <div
-      class="absolute top-0 left-0 w-3/4 h-2/3 bg-fad-green transform -skew-y-12 -translate-x-1/2 -translate-y-1/2 opacity-20 pointer-events-none"
-    ></div>
-    <div
-      class="absolute bottom-0 right-0 w-2/3 h-2/3 bg-fad-yellow transform -skew-y-12 translate-x-1/2 -translate-y-1/2 opacity-20 pointer-events-none"
-    ></div>
+    <!-- HAPUS elemen background kotak miring -->
 
     <div
-      class="relative z-10 w-full max-w-sm mx-auto flex flex-col items-center pt-8 pb-12"
+      class="relative z-10 w-full max-w-sm mx-auto flex flex-col items-center pt-8 pb-12 px-4"
     >
       <header
         class="w-full text-center mb-6 flex flex-col items-center space-y-4"
       >
-        <div class="mb-4 w-20 h-20">
+        <div class="mb-4 w-64 h-32">
+          <!-- GANTI gambar header ke picture.jpg (tanpa efek timbul) -->
           <img
-            src="img/logo.jpg"
+            src="img/picture.jpg"
             alt="FAD-IL Logo"
             class="w-full h-full object-contain"
           />
@@ -149,10 +160,11 @@
         </div>
       </header>
 
+      <!-- KECILKAN SEDIKIT padding kartu + beri ruang samping dari px-4 kontainer -->
       <main class="w-full grid grid-cols-2 gap-4" id="main-grid">
         <button
           id="btn-digging"
-          class="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
+          class="bg-white p-5 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -167,9 +179,10 @@
           <span class="font-bold text-sm text-fad-dark">DIGGING</span>
           <span class="digital-font text-lg text-gray-500 mt-1">00:00:00</span>
         </button>
+
         <button
           id="btn-swing"
-          class="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
+          class="bg-white p-5 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -186,9 +199,10 @@
           <span class="font-bold text-sm text-fad-dark">SWING</span>
           <span class="digital-font text-lg text-gray-500 mt-1">00:00:00</span>
         </button>
+
         <button
           id="btn-dump-bucket"
-          class="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
+          class="bg-white p-5 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -206,9 +220,10 @@
           <span class="font-bold text-sm text-fad-dark">DUMP BUCKET</span>
           <span class="digital-font text-lg text-gray-500 mt-1">00:00:00</span>
         </button>
+
         <button
           id="btn-swing-empty"
-          class="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
+          class="bg-white p-5 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -226,9 +241,10 @@
           <span class="font-bold text-sm text-fad-dark">SWING EMPTY</span>
           <span class="digital-font text-lg text-gray-500 mt-1">00:00:00</span>
         </button>
+
         <button
           id="btn-secondary"
-          class="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
+          class="bg-white p-5 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -243,10 +259,11 @@
           <span class="font-bold text-sm text-fad-dark">SECONDARY</span>
           <span class="digital-font text-lg text-gray-500 mt-1">00:00:00</span>
         </button>
+
         <a
           id="btn-finish"
           href="index3.html"
-          class="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
+          class="bg-white p-5 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -307,7 +324,6 @@
         );
         return `${m}:${s}:${ms}`;
       };
-
       const updateMainStopwatch = () => {
         document.getElementById("main-stopwatch").textContent =
           formatTime(mainTimer);
@@ -323,7 +339,6 @@
           }
         }
       };
-
       const startMainStopwatch = () => {
         if (!mainInterval) {
           mainInterval = setInterval(() => {
@@ -332,7 +347,6 @@
           }, 10);
         }
       };
-
       const startCardStopwatch = (cardName) => {
         if (activeCard && cardIntervals[activeCard]) {
           clearInterval(cardIntervals[activeCard]);
@@ -343,23 +357,21 @@
         }, 10);
         activeCard = cardName;
       };
-
       const resetAll = () => {
         clearInterval(mainInterval);
         mainInterval = null;
         mainTimer = 0;
         updateMainStopwatch();
-        for (const cardName in cardIntervals) {
-          clearInterval(cardIntervals[cardName]);
+        for (const cn in cardIntervals) {
+          clearInterval(cardIntervals[cn]);
         }
         cardIntervals = {};
         activeCard = null;
-        for (const cardName in cardTimers) {
-          cardTimers[cardName] = 0;
-          updateCardStopwatch(cardName);
+        for (const cn in cardTimers) {
+          cardTimers[cn] = 0;
+          updateCardStopwatch(cn);
         }
       };
-
       document.getElementById("main-grid").addEventListener("click", (e) => {
         const button = e.target.closest("button");
         if (button) {

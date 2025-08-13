@@ -7,7 +7,7 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
     <title>FAD-IL</title>
-    <link rel="icon" type="image/jpeg" href="img/logo.jpg" />
+    <link rel="icon" type="image/jpeg" href="img/picture.jpg" />
 
     <link
       rel="stylesheet"
@@ -36,14 +36,14 @@
       };
     </script>
     <style>
-      /* Preloader sekarang ada di dalam head untuk pemuatan yang lebih cepat */
+      /* Preloader */
       #preloader {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: #f7fafc; /* fad-light */
+        background-color: #f7fafc;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -51,8 +51,8 @@
         transition: opacity 0.5s ease-in-out;
       }
       .loader {
-        border: 8px solid #cbd5e0; /* Gray border */
-        border-top: 8px solid #38a169; /* fad-green */
+        border: 8px solid #cbd5e0;
+        border-top: 8px solid #38a169;
         border-radius: 50%;
         width: 60px;
         height: 60px;
@@ -66,35 +66,38 @@
           transform: rotate(360deg);
         }
       }
+
+      /* Gradient Background dominan putih */
+      body {
+        background: linear-gradient(
+          135deg,
+          #ffffff 60%,
+          #38a169 85%,
+          #f9a825 100%
+        );
+      }
     </style>
   </head>
   <body
-    class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4 relative overflow-x-hidden"
+    class="flex flex-col items-center justify-center min-h-screen p-4 relative overflow-x-hidden"
   >
     <div id="preloader">
       <div class="loader"></div>
     </div>
 
     <div
-      class="absolute top-0 left-0 w-3/4 h-2/3 bg-fad-green transform -skew-y-12 -translate-x-1/2 -translate-y-1/2 opacity-20"
-    ></div>
-    <div
-      class="absolute bottom-0 right-0 w-2/3 h-2/3 bg-fad-yellow transform -skew-y-12 translate-x-1/2 translate-y-1/2 opacity-20"
-    ></div>
-
-    <div
       class="relative z-10 w-full max-w-sm mx-auto flex flex-col items-center"
     >
       <header class="w-full flex flex-col items-center mb-8 text-center">
-        <div class="w-20 h-20 mb-4">
+        <div class="w-64 h-32 mb-4">
           <img
-            src="img/logo.jpg"
+            src="img/picture.jpg"
             alt="FAD-IL Logo"
             class="w-full h-full object-contain"
           />
         </div>
         <h1 class="text-3xl font-bold text-fad-dark mb-1">FAD-IL</h1>
-        <p class="text-sm font-medium text-gray-600">
+        <p class="text-sm font-medium text-gray-700">
           (Fajar Anugerah Dinamika Iteration Loader)
         </p>
       </header>
@@ -138,7 +141,7 @@
           <div>
             <input
               type="text"
-              placeholder="OBSERVER (DIKETIK)"
+              placeholder="OBSERVER"
               class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-700"
             />
           </div>
@@ -166,7 +169,7 @@
           preloader.style.opacity = "0";
           setTimeout(() => {
             preloader.style.display = "none";
-          }, 500); // Tunggu sampai transisi opacity selesai
+          }, 500);
         }
       });
     </script>
