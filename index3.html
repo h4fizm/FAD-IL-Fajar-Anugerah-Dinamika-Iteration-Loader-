@@ -21,10 +21,24 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
       .text-fad-red {
-        color: #e53e3e;
+        color: #e53e3e !important;
       }
       .text-fad-green {
-        color: #38a169;
+        color: #38a169 !important;
+      }
+
+      /* Pastikan tidak ada override dari Tailwind atau CSS lain */
+      #digging-time,
+      #swing-time,
+      #dump-bucket-time,
+      #swing-empty-time,
+      #secondary-time,
+      #cycle-time,
+      #loading-time {
+        font-family: inherit;
+        font-size: inherit;
+        font-weight: bold;
+        color: inherit;
       }
     </style>
     <script>
@@ -184,7 +198,9 @@
               <span class="font-medium text-gray-500">DIGGING TIME</span>
             </div>
             <div class="flex flex-col items-end space-y-1">
-              <span id="digging-time" class="font-bold digital-font"
+              <span
+                id="digging-time"
+                class="font-bold digital-font text-fad-dark"
                 >[Waktu]</span
               >
               <p id="digging-warning" class="text-sm"></p>
@@ -196,7 +212,7 @@
               <span class="font-medium text-gray-500">SWING TIME</span>
             </div>
             <div class="flex flex-col items-end space-y-1">
-              <span id="swing-time" class="font-bold digital-font"
+              <span id="swing-time" class="font-bold digital-font text-fad-dark"
                 >[Waktu]</span
               >
               <p id="swing-warning" class="text-sm"></p>
@@ -208,7 +224,9 @@
               <span class="font-medium text-gray-500">BUCKET DUMP TIME</span>
             </div>
             <div class="flex flex-col items-end space-y-1">
-              <span id="dump-bucket-time" class="font-bold digital-font"
+              <span
+                id="dump-bucket-time"
+                class="font-bold digital-font text-fad-dark"
                 >[Waktu]</span
               >
               <p id="dump-bucket-warning" class="text-sm"></p>
@@ -220,7 +238,9 @@
               <span class="font-medium text-gray-500">SWING EMPTY TIME</span>
             </div>
             <div class="flex flex-col items-end space-y-1">
-              <span id="swing-empty-time" class="font-bold digital-font"
+              <span
+                id="swing-empty-time"
+                class="font-bold digital-font text-fad-dark"
                 >[Waktu]</span
               >
               <p id="swing-empty-warning" class="text-sm"></p>
@@ -232,7 +252,9 @@
               <span class="font-medium text-gray-500">SECONDARY TIME</span>
             </div>
             <div class="flex flex-col items-end space-y-1">
-              <span id="secondary-time" class="font-bold digital-font"
+              <span
+                id="secondary-time"
+                class="font-bold digital-font text-fad-dark"
                 >[Waktu]</span
               >
               <p id="secondary-warning" class="text-sm"></p>
@@ -348,12 +370,17 @@
           "OB FREE DIG": { digging: 14500, cycle: 29000, loading: 275000 },
           "OB BLASTING": { digging: 10000, cycle: 24500, loading: 240000 },
           "OB RIPPING": { digging: 12500, cycle: 27000, loading: 245000 },
-          common: { swing: 7000, "dump-bucket": 2500, "swing-empty": 5000 },
+          common: {
+            swing: 7000,
+            "dump-bucket": 2500,
+            "swing-empty": 5000,
+            secondary: 0,
+          },
         };
 
         const processHistory = JSON.parse(savedHistory);
         const dataForm = JSON.parse(formData);
-        const materialType = dataForm.jenis_material;
+        const materialType = dataForm.jenis_material.toUpperCase().trim();
 
         const formatTime = (milliseconds) => {
           const totalSeconds = Math.floor(milliseconds / 1000);
@@ -416,85 +443,54 @@
         document.getElementById("loading-time").textContent =
           formatTime(totalLoadingTime);
 
-        const applyWarning = (
-          elementId,
-          calculatedTime,
-          standardTime,
-          warningMessage
-        ) => {
+        const applyColor = (elementId, calculatedTime, standardTime) => {
           const timeElement = document.getElementById(elementId);
           const warningElement = document.getElementById(
             elementId + "-warning"
           );
 
+          if (!timeElement) return;
+
+          // Hapus kelas warna default dan warning yang mungkin ada
+          timeElement.classList.remove(
+            "text-fad-dark",
+            "text-fad-red",
+            "text-fad-green"
+          );
+          if (warningElement) warningElement.innerHTML = "";
+
+          // Terapkan warna berdasarkan perbandingan nilai
           if (calculatedTime > standardTime) {
-            timeElement.classList.remove("text-fad-green");
             timeElement.classList.add("text-fad-red");
-            warningElement.innerHTML = `
-              <span class="text-sm text-fad-red flex items-center space-x-1">
-                <span class="material-icons text-base">warning</span>
-                <span>${warningMessage}</span>
-              </span>
-            `;
           } else {
-            timeElement.classList.remove("text-fad-red");
             timeElement.classList.add("text-fad-green");
-            warningElement.innerHTML = `
-              <span class="text-sm text-fad-green flex items-center space-x-1">
-                <span class="material-icons text-base">check_circle</span>
-                <span>Bagus: Sesuai standar!</span>
-              </span>
-            `;
           }
         };
 
-        const materialStandards = standards[materialType.toUpperCase()];
+        const materialStandards = standards[materialType];
         if (materialStandards) {
-          applyWarning(
-            "digging-time",
-            avgDiggingTime,
-            materialStandards.digging,
-            `Buruk: Waktu harapan < ${formatTime(materialStandards.digging)}`
-          );
-          applyWarning(
-            "swing-time",
-            avgSwingTime,
-            standards.common.swing,
-            `Buruk: Waktu harapan < ${formatTime(standards.common.swing)}`
-          );
-          applyWarning(
+          applyColor("digging-time", avgDiggingTime, materialStandards.digging);
+          applyColor("swing-time", avgSwingTime, standards.common.swing);
+          applyColor(
             "dump-bucket-time",
             avgDumpBucketTime,
-            standards.common["dump-bucket"],
-            `Buruk: Waktu harapan < ${formatTime(
-              standards.common["dump-bucket"]
-            )}`
+            standards.common["dump-bucket"]
           );
-          applyWarning(
+          applyColor(
             "swing-empty-time",
             avgSwingEmptyTime,
-            standards.common["swing-empty"],
-            `Buruk: Waktu harapan < ${formatTime(
-              standards.common["swing-empty"]
-            )}`
+            standards.common["swing-empty"]
           );
-          applyWarning(
+          applyColor(
             "secondary-time",
             avgSecondaryTime,
-            0,
-            `Waktu sekunder seharusnya 0`
+            standards.common.secondary
           );
-          applyWarning(
-            "cycle-time",
-            cycleTimeMs,
-            materialStandards.cycle,
-            `Buruk: Waktu harapan < ${formatTime(materialStandards.cycle)}`
-          );
-          applyWarning(
+          applyColor("cycle-time", cycleTimeMs, materialStandards.cycle);
+          applyColor(
             "loading-time",
             totalLoadingTime,
-            materialStandards.loading,
-            `Buruk: Waktu harapan < ${formatTime(materialStandards.loading)}`
+            materialStandards.loading
           );
         }
       });
