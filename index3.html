@@ -451,7 +451,6 @@
 
           if (!timeElement) return;
 
-          // Hapus kelas warna default dan warning yang mungkin ada
           timeElement.classList.remove(
             "text-fad-dark",
             "text-fad-red",
@@ -459,7 +458,6 @@
           );
           if (warningElement) warningElement.innerHTML = "";
 
-          // Terapkan warna berdasarkan perbandingan nilai
           if (calculatedTime > standardTime) {
             timeElement.classList.add("text-fad-red");
           } else {
@@ -481,11 +479,18 @@
             avgSwingEmptyTime,
             standards.common["swing-empty"]
           );
-          applyColor(
-            "secondary-time",
-            avgSecondaryTime,
-            standards.common.secondary
-          );
+
+          // Logika baru: Secondary Time selalu hijau
+          const secondaryTimeElement =
+            document.getElementById("secondary-time");
+          if (secondaryTimeElement) {
+            secondaryTimeElement.classList.remove(
+              "text-fad-dark",
+              "text-fad-red"
+            );
+            secondaryTimeElement.classList.add("text-fad-green");
+          }
+
           applyColor("cycle-time", cycleTimeMs, materialStandards.cycle);
           applyColor(
             "loading-time",
