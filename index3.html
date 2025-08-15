@@ -325,6 +325,7 @@
         >
         <button
           type="button"
+          id="btn-kirim-data"
           class="flex-1 bg-green-700 hover:bg-green-800 text-white font-bold py-3 rounded-lg transition duration-300"
         >
           KIRIM DATA
@@ -335,6 +336,7 @@
     <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- custom js -->
     <script>
       AOS.init();
 
@@ -503,6 +505,147 @@
       document.getElementById("btn-beranda").addEventListener("click", () => {
         localStorage.clear();
       });
+    </script>
+    <!-- export spreadsheet -->
+    <script>
+      const APP_SCRIPT_URL =
+        "https://script.google.com/macros/s/AKfycbw1435mP306JScVFq_17Z8KbH4vOeNJcTVGsmO6fv_QSCMsIhqBksgmQgMw1Q-IP80c/exec";
+      document
+        .getElementById("btn-kirim-data")
+        .addEventListener("click", function () {
+          const formData = localStorage.getItem("formData");
+          const savedHistory = localStorage.getItem("processHistory");
+          const loadingTime = localStorage.getItem("loadingTime");
+
+          if (!formData || !savedHistory || !loadingTime) {
+            Swal.fire({
+              icon: "error",
+              title: "Data Tidak Ditemukan",
+              text: "Pastikan Anda telah mengisi dan menyimpan data terlebih dahulu.",
+            });
+            return;
+          }
+
+          const dataForm = JSON.parse(formData);
+          const processHistory = JSON.parse(savedHistory);
+          const totalLoadingTime = parseInt(loadingTime, 10);
+
+          // Perhitungan yang sama seperti sebelumnya
+          const calculateAverage = (processName) => {
+            const filteredProcess = processHistory.filter(
+              (p) => p.name.toUpperCase() === processName.toUpperCase()
+            );
+            if (filteredProcess.length === 0) return 0;
+            const totalTime = filteredProcess.reduce(
+              (sum, p) => sum + p.time,
+              0
+            );
+            return totalTime / filteredProcess.length;
+          };
+
+          const calculatePassing = () => {
+            return processHistory.filter(
+              (p) => p.name.toUpperCase() === "DUMP BUCKET"
+            ).length;
+          };
+
+          const avgDiggingTime = calculateAverage("DIGGING");
+          const avgSwingTime = calculateAverage("SWING");
+          const avgDumpBucketTime = calculateAverage("DUMP BUCKET");
+          const avgSwingEmptyTime = calculateAverage("SWING EMPTY");
+          const avgSecondaryTime = calculateAverage("SECONDARY");
+          const totalPassing = calculatePassing();
+          const cycleTimeMs =
+            avgDiggingTime +
+            avgSwingTime +
+            avgDumpBucketTime +
+            avgSwingEmptyTime;
+
+          // PERBAIKAN: Bungkus objek data di dalam array
+          const postData = [
+            {
+              observer: dataForm.observer,
+              unit_loader: dataForm.unit_loader,
+              jenis_material: dataForm.jenis_material,
+              nama_operator: dataForm.nama_operator,
+              totalPassing: totalPassing,
+              avgDiggingTime: avgDiggingTime,
+              avgSwingTime: avgSwingTime,
+              avgDumpBucketTime: avgDumpBucketTime,
+              avgSwingEmptyTime: avgSwingEmptyTime,
+              avgSecondaryTime: avgSecondaryTime,
+              cycleTimeMs: cycleTimeMs,
+              totalLoadingTime: totalLoadingTime,
+            },
+          ];
+
+          Swal.fire({
+            title: "Mengirim Data...",
+            text: "Mohon tunggu sebentar.",
+            allowOutsideClick: false,
+            didOpen: () => {
+              Swal.showLoading();
+            },
+          });
+
+          fetch(APP_SCRIPT_URL, {
+            method: "POST",
+            body: JSON.stringify(postData),
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log("Success:", data);
+              if (data.status === "success" && data.url) {
+                Swal.fire({
+                  icon: "success",
+                  title: "Berhasil!",
+                  html: `
+                    <div style="text-align:center;">
+                      <p style="margin-bottom: 20px;">Data berhasil dikirim ke spreadsheet.</p>
+                      <a href="${data.url}" target="_blank"
+                        style="
+                          display: inline-block;
+                          background-color: #15803d;
+                          color: white;
+                          padding: 10px 20px;
+                          border-radius: 8px;
+                          text-decoration: none;
+                          font-weight: bold;
+                          transition: background-color 0.3s ease;
+                        "
+                        onmouseover="this.style.backgroundColor='#166534'"
+                        onmouseout="this.style.backgroundColor='#15803d'"
+                      >
+                        📄 Tampilkan Spreadsheet
+                      </a>
+                    </div>
+                  `,
+                  showConfirmButton: false,
+                  allowOutsideClick: true,
+                  customClass: {
+                    popup: "swal2-popup-custom",
+                  },
+                });
+              } else {
+                Swal.fire({
+                  icon: "error",
+                  title: "Gagal!",
+                  text:
+                    data.message ||
+                    "Terjadi kesalahan saat mengirim data. Coba lagi.",
+                });
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              Swal.fire({
+                icon: "error",
+                title: "Gagal!",
+                text: "Terjadi kesalahan jaringan. Coba lagi.",
+              });
+            });
+        });
     </script>
   </body>
 </html>
