@@ -509,7 +509,7 @@
     <!-- export spreadsheet -->
     <script>
       const APP_SCRIPT_URL =
-        "https://script.google.com/macros/s/AKfycbw1435mP306JScVFq_17Z8KbH4vOeNJcTVGsmO6fv_QSCMsIhqBksgmQgMw1Q-IP80c/exec";
+        "https://script.google.com/macros/s/AKfycbzLd5bLxNvn4dJFev_G0BdM72csNksbIfMrLg3dtEAIp7wOfEsWuVC93YI2bLyRJ9nQGA/exec";
       document
         .getElementById("btn-kirim-data")
         .addEventListener("click", function () {
@@ -530,7 +530,7 @@
           const processHistory = JSON.parse(savedHistory);
           const totalLoadingTime = parseInt(loadingTime, 10);
 
-          // Perhitungan yang sama seperti sebelumnya
+          // Fungsi hitung rata-rata waktu proses
           const calculateAverage = (processName) => {
             const filteredProcess = processHistory.filter(
               (p) => p.name.toUpperCase() === processName.toUpperCase()
@@ -561,7 +561,7 @@
             avgDumpBucketTime +
             avgSwingEmptyTime;
 
-          // PERBAIKAN: Bungkus objek data di dalam array
+          // Data yang dikirim
           const postData = [
             {
               observer: dataForm.observer,
@@ -596,36 +596,11 @@
             .then((response) => response.json())
             .then((data) => {
               console.log("Success:", data);
-              if (data.status === "success" && data.url) {
+              if (data.status === "success") {
                 Swal.fire({
                   icon: "success",
                   title: "Berhasil!",
-                  html: `
-                    <div style="text-align:center;">
-                      <p style="margin-bottom: 20px;">Data berhasil dikirim ke spreadsheet.</p>
-                      <a href="${data.url}" target="_blank"
-                        style="
-                          display: inline-block;
-                          background-color: #15803d;
-                          color: white;
-                          padding: 10px 20px;
-                          border-radius: 8px;
-                          text-decoration: none;
-                          font-weight: bold;
-                          transition: background-color 0.3s ease;
-                        "
-                        onmouseover="this.style.backgroundColor='#166534'"
-                        onmouseout="this.style.backgroundColor='#15803d'"
-                      >
-                        📄 Tampilkan Spreadsheet
-                      </a>
-                    </div>
-                  `,
-                  showConfirmButton: false,
-                  allowOutsideClick: true,
-                  customClass: {
-                    popup: "swal2-popup-custom",
-                  },
+                  text: "Data berhasil diexport ke spreadsheet.",
                 });
               } else {
                 Swal.fire({
