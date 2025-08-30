@@ -31,8 +31,9 @@ function initializeProcess() {
   let loaderInterval, haulerInterval;
   let activeProcess = null;
   let processHistory = JSON.parse(localStorage.getItem("processHistory")) || [];
-
-  let activeCycle = null; // null, 'loader', atau 'hauler'
+  let activeCycle = null;
+  let loaderSessionCount = 0;
+  let haulerSessionCount = 0;
 
   const loaderProcesses = [
     "digging",
@@ -138,10 +139,9 @@ function initializeProcess() {
       processHistory.push({
         name: processLabel,
         time: processTimers[processName],
+        cycle: activeCycle,
       });
       saveHistory();
-      if (processName === "out") lastHaulerAction = "out";
-      if (processName === "in") lastHaulerAction = null;
       processTimers[processName] = 0;
       updateProcessTimerDisplay(processName);
       button.classList.remove("active");
@@ -179,12 +179,15 @@ function initializeProcess() {
       return;
     }
 
+    // --- PERBAIKAN BUG 1: TOMBOL 'IN' TIDAK MENYALA JIKA GAGAL VALIDASI ---
     if (processName === "in" && activeProcess !== "out") {
       Swal.fire(
         "Urutan Salah",
         "Proses Hauler harus diawali dengan 'OUT'.",
         "error"
       );
+      // Secara eksplisit pastikan tombol 'in' tidak memiliki class 'active'
+      document.getElementById("btn-in").classList.remove("active");
       return;
     }
 
@@ -204,58 +207,66 @@ function initializeProcess() {
     }, 10);
   };
 
-  const resetCycleData = (cycleType) => {
+  // --- PERBAIKAN BUG 2: FUNGSI RESET SPESIFIK PER SIKLUS ---
+  const resetSpecificCycle = (cycleType) => {
+    const processesToReset =
+      cycleType === "loader" ? loaderProcesses : haulerProcesses;
+
+    // Hentikan timer utama & proses aktif jika sesuai dengan siklus yang direset
     if (cycleType === "loader") {
       clearInterval(loaderInterval);
       loaderInterval = null;
       loaderTimer = 0;
+      loaderSessionCount = 0;
       updateMainTimerDisplay("loader");
-      if (activeProcess && loaderProcesses.includes(activeProcess))
-        stopProcess(activeProcess);
-      loaderProcesses.forEach((pName) => {
-        if (processIntervals[pName]) clearInterval(processIntervals[pName]);
-        processTimers[pName] = 0;
-        updateProcessTimerDisplay(pName);
-      });
     } else {
       // hauler
       clearInterval(haulerInterval);
       haulerInterval = null;
       haulerTimer = 0;
+      haulerSessionCount = 0;
       updateMainTimerDisplay("hauler");
-      if (activeProcess && haulerProcesses.includes(activeProcess))
-        stopProcess(activeProcess);
-      haulerProcesses.forEach((pName) => {
-        if (processIntervals[pName]) clearInterval(processIntervals[pName]);
-        processTimers[pName] = 0;
-        updateProcessTimerDisplay(pName);
-      });
-      lastHaulerAction = null;
     }
-  };
 
-  const fullReset = () => {
-    resetCycleData("loader");
-    resetCycleData("hauler");
-    activeProcess = null;
-    activeCycle = null;
-    toggleButtons(loaderActionButtons, false);
-    toggleButtons(haulerActionButtons, false);
+    // Hentikan proses yang mungkin masih aktif
+    if (activeCycle === cycleType && activeProcess) {
+      stopProcess(activeProcess);
+      activeProcess = null;
+    }
+
+    // Reset semua timer proses individual untuk siklus ini
+    processesToReset.forEach((pName) => {
+      if (processIntervals[pName]) clearInterval(processIntervals[pName]);
+      processTimers[pName] = 0;
+      updateProcessTimerDisplay(pName);
+      document.getElementById(`btn-${pName}`).classList.remove("active");
+    });
+
+    // Hapus histori yang relevan
+    processHistory = processHistory.filter((p) => p.cycle !== cycleType);
+    saveHistory();
+
+    // Jika siklus yang direset sedang aktif, kembalikan ke state netral
+    if (activeCycle === cycleType) {
+      activeCycle = null;
+      toggleButtons(loaderActionButtons, false);
+      toggleButtons(haulerActionButtons, false);
+    }
+
+    Swal.fire({
+      icon: "info",
+      title: `Data Siklus ${
+        cycleType.charAt(0).toUpperCase() + cycleType.slice(1)
+      } Direset!`,
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 2000,
+    });
   };
 
   const finishLoaderCycle = () => {
-    if (
-      !activeProcess &&
-      processHistory.filter((p) =>
-        loaderProcesses
-          .map(
-            (lp) =>
-              document.getElementById(`btn-${lp}`).querySelector(".uppercase")
-                .textContent
-          )
-          .includes(p.name)
-      ).length === 0
-    ) {
+    if (!activeProcess && loaderTimer === 0) {
       Swal.fire(
         "Proses Belum Dimulai",
         "Anda harus menjalankan setidaknya satu proses loader.",
@@ -263,60 +274,31 @@ function initializeProcess() {
       );
       return;
     }
-    if (activeProcess && loaderProcesses.includes(activeProcess))
+
+    if (activeProcess && loaderProcesses.includes(activeProcess)) {
       stopProcess(activeProcess);
+    }
 
     clearInterval(loaderInterval);
+    loaderInterval = null;
     activeProcess = null;
+    loaderSessionCount++;
 
     Swal.fire({
-      title: "Siklus Loader Selesai!",
       icon: "success",
-      showDenyButton: true,
-      showCancelButton: true, // Tambahkan tombol Cancel
-      confirmButtonText: "Lanjut ke Hauler",
-      denyButtonText: "Sesi Baru (Loader)",
-      cancelButtonText: "Sudahi Sesi", // Teks untuk tombol Cancel
-      confirmButtonColor: "#38A169",
-      denyButtonColor: "#F9A825",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // Lanjut ke Hauler
-        activeCycle = "hauler";
-        toggleButtons(loaderActionButtons, true);
-        toggleButtons(haulerActionButtons, false);
-      } else if (result.isDenied) {
-        // Sesi Baru Loader
-        resetCycleData("loader");
-        activeCycle = "loader";
-        toggleButtons(haulerActionButtons, true);
-        toggleButtons(loaderActionButtons, false);
-      } else if (result.dismiss === Swal.DismissReason.cancel) {
-        // Sudahi Sesi
-        toggleButtons(loaderActionButtons, true);
-        toggleButtons(haulerActionButtons, true);
-        Swal.fire(
-          "Sesi Diakhiri",
-          "Silakan tekan SUBMIT ALL untuk menyimpan.",
-          "info"
-        );
-      }
+      title: `Siklus Loader Sesi ${loaderSessionCount} Selesai!`,
+      text: "Data untuk siklus ini telah direkam.",
+      timer: 2000,
+      showConfirmButton: false,
     });
+
+    activeCycle = null;
+    toggleButtons(loaderActionButtons, false);
+    toggleButtons(haulerActionButtons, false);
   };
 
   const finishHaulerCycle = () => {
-    if (
-      !activeProcess &&
-      processHistory.filter((p) =>
-        haulerProcesses
-          .map(
-            (hp) =>
-              document.getElementById(`btn-${hp}`).querySelector(".uppercase")
-                .textContent
-          )
-          .includes(p.name)
-      ).length === 0
-    ) {
+    if (!activeProcess && haulerTimer === 0) {
       Swal.fire(
         "Proses Belum Dimulai",
         "Anda harus menjalankan setidaknya satu proses hauler.",
@@ -324,46 +306,27 @@ function initializeProcess() {
       );
       return;
     }
-    if (activeProcess && haulerProcesses.includes(activeProcess))
+
+    if (activeProcess && haulerProcesses.includes(activeProcess)) {
       stopProcess(activeProcess);
+    }
 
     clearInterval(haulerInterval);
+    haulerInterval = null;
     activeProcess = null;
+    haulerSessionCount++;
 
     Swal.fire({
-      title: "Siklus Hauler Selesai!",
       icon: "success",
-      showDenyButton: true,
-      showCancelButton: true, // Tambahkan tombol Cancel
-      confirmButtonText: "Lanjut ke Loader",
-      denyButtonText: "Sesi Baru (Hauler)",
-      cancelButtonText: "Sudahi Sesi", // Teks untuk tombol Cancel
-      confirmButtonColor: "#3085d6",
-      denyButtonColor: "#F9A825",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // Lanjut ke Loader
-        resetCycleData("hauler");
-        activeCycle = "loader";
-        toggleButtons(haulerActionButtons, true);
-        toggleButtons(loaderActionButtons, false);
-      } else if (result.isDenied) {
-        // Sesi Baru Hauler
-        resetCycleData("hauler");
-        activeCycle = "hauler";
-        toggleButtons(loaderActionButtons, true);
-        toggleButtons(haulerActionButtons, false);
-      } else if (result.dismiss === Swal.DismissReason.cancel) {
-        // Sudahi Sesi
-        toggleButtons(loaderActionButtons, true);
-        toggleButtons(haulerActionButtons, true);
-        Swal.fire(
-          "Sesi Diakhiri",
-          "Silakan tekan SUBMIT ALL untuk menyimpan.",
-          "info"
-        );
-      }
+      title: `Siklus Hauler Sesi ${haulerSessionCount} Selesai!`,
+      text: "Data untuk siklus ini telah direkam.",
+      timer: 2000,
+      showConfirmButton: false,
     });
+
+    activeCycle = null;
+    toggleButtons(loaderActionButtons, false);
+    toggleButtons(haulerActionButtons, false);
   };
 
   const submitAllData = () => {
@@ -379,13 +342,42 @@ function initializeProcess() {
 
     clearInterval(loaderInterval);
     clearInterval(haulerInterval);
-    const finalData = {
+
+    const pengajuanData = {
+      hari: new Date().toLocaleDateString("id-ID", { weekday: "long" }),
+      tanggal: new Date().toLocaleDateString("id-ID", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      }),
+    };
+
+    const loaderHistory = processHistory.filter((p) => p.cycle === "loader");
+    const haulerHistory = processHistory.filter((p) => p.cycle === "hauler");
+
+    const loaderFinalData = {
+      pengajuan: pengajuanData,
       initialData: JSON.parse(formData),
       totalLoaderTime: loaderTimer,
-      totalHaulerTime: haulerTimer,
-      processHistory: processHistory,
+      processHistory: loaderHistory,
     };
-    localStorage.setItem("finalCycleData", JSON.stringify(finalData));
+
+    const haulerFinalData = {
+      pengajuan: pengajuanData,
+      initialData: JSON.parse(formData),
+      totalHaulerTime: haulerTimer,
+      processHistory: haulerHistory,
+    };
+
+    localStorage.setItem(
+      "cycleTimeLoaderData",
+      JSON.stringify(loaderFinalData)
+    );
+    localStorage.setItem(
+      "cycleTimeHaulerData",
+      JSON.stringify(haulerFinalData)
+    );
+
     Swal.fire({
       icon: "success",
       title: "Semua Data Tersimpan!",
@@ -398,7 +390,7 @@ function initializeProcess() {
     });
   };
 
-  // --- EVENT LISTENERS ---
+  // --- EVENT LISTENERS (diperbarui untuk reset spesifik) ---
   mainContainer.addEventListener("click", (e) => {
     const button = e.target.closest("button");
     if (!button) return;
@@ -411,9 +403,9 @@ function initializeProcess() {
       button.classList.add("process-button");
       startProcess(processName);
     } else if (id === "btn-reset") {
-      fullReset();
+      resetSpecificCycle("loader"); // Memanggil reset untuk loader
     } else if (id === "btn-reset-hauler") {
-      fullReset();
+      resetSpecificCycle("hauler"); // Memanggil reset untuk hauler
     } else if (id === "btn-finish") {
       finishLoaderCycle();
     } else if (id === "btn-finish-hauler") {
