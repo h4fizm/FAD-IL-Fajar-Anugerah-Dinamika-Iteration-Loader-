@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>FAD Monitoring & Evaluation Productivity</title>
+    <link rel="icon" type="image/jpeg" href="img/logo.jpg" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "fad-yellow": "#F9A825",
+              "fad-red": "#E53E3E",
+              "fad-green": "#38A169",
+              "fad-dark": "#1A202C",
+              "fad-light": "#F7FAFC",
+            },
+            fontFamily: {
+              sans: ["Poppins", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body
+    class="font-sans flex flex-col items-center justify-center min-h-screen p-4 relative overflow-x-hidden"
+  >
+    <div id="preloader">
+      <div class="loader"></div>
+    </div>
+
+    <div
+      class="relative z-10 w-full max-w-sm mx-auto flex flex-col items-center"
+    >
+      <header class="w-full flex flex-col items-center mb-8 text-center">
+        <div class="w-64 h-32 mb-4">
+          <img
+            src="img/picture.jpg"
+            alt="FAD Logo"
+            class="w-full h-full object-contain"
+          />
+        </div>
+
+        <h1 class="text-4xl font-bold text-fad-dark mb-1">FAD-MAP</h1>
+        <p class="text-sm font-medium text-gray-600">
+          (Fajar Anugerah Dinamika Monitoring & Evaluation Productivity)
+        </p>
+      </header>
+
+      <main class="w-full bg-white p-6 rounded-lg shadow-xl">
+        <h2 class="text-md font-semibold text-center text-fad-dark mb-6">
+          ANALISA PROBLEM PRODUCTIVITY
+        </h2>
+
+        <form id="dataForm" class="space-y-4">
+          <div>
+            <select
+              id="manProblem"
+              class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-500 hover:text-gray-700"
+            >
+              <option disabled selected>MAN</option>
+              <option value="">-- Kosong --</option>
+              <option value="O1 : Opt Exca OJT">O1 : Opt Exca OJT</option>
+              <option value="O2 : Opt DT OJT">O2 : Opt DT OJT</option>
+              <option value="O3 : Skill Opt">O3 : Skill Opt</option>
+            </select>
+          </div>
+
+          <div>
+            <select
+              id="machineProblem"
+              class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-500 hover:text-gray-700"
+            >
+              <option disabled selected>MACHINE</option>
+              <option value="">-- Kosong --</option>
+              <option value="U1 : Boom Loader Low Power">
+                U1 : Boom Loader Low Power
+              </option>
+              <option value="U2 : Engine Loader Low Power">
+                U2 : Engine Loader Low Power
+              </option>
+              <option value="U3 : Tooth Bucket Problem">
+                U3 : Tooth Bucket Problem
+              </option>
+              <option value="U4 : Loader Bersihkan Vessel Hauler">
+                U4 : Loader Bersihkan Vessel Hauler
+              </option>
+              <option value="U5 : Track Problem">U5 : Track Problem</option>
+              <option value="H1 : DT Amblas-amblasan di Disposal">
+                H1 : DT Amblas-amblasan di Disposal
+              </option>
+              <option value="H2 : DT Refueling">H2 : DT Refueling</option>
+              <option value="H3 : DT Kurang (Breakdown)">
+                H3 : DT Kurang (Breakdown)
+              </option>
+              <option value="H4 : DT Kurang (Jarak Buang Jauh)">
+                H4 : DT Kurang (Jarak Buang Jauh)
+              </option>
+              <option value="H5 : DT Kurang (No Oprator)">
+                H5 : DT Kurang (No Oprator)
+              </option>
+              <option value="H6 : Opt DT Menghadap">
+                H6 : Opt DT Menghadap
+              </option>
+              <option value="H7 : Opt DT Cek Fatigue">
+                H7 : Opt DT Cek Fatigue
+              </option>
+              <option value="H8 : Opt DT Ambil MK">H8 : Opt DT Ambil MK</option>
+              <option value="H9 : Opt DT ke Toilet">
+                H9 : Opt DT ke Toilet
+              </option>
+              <option value="H10 : DT Kerok Vessel">
+                H10 : DT Kerok Vessel
+              </option>
+              <option value="H11 : DT Masuk PIT Stop">
+                H11 : DT Masuk PIT Stop
+              </option>
+            </select>
+          </div>
+
+          <div>
+            <select
+              id="materialProblem"
+              class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-500 hover:text-gray-700"
+            >
+              <option disabled selected>MATERIAL</option>
+              <option value="">-- Kosong --</option>
+              <option value="M1 : Non Volume">M1 : Non Volume</option>
+              <option value="M2 : Material Boulder - Blasting">
+                M2 : Material Boulder - Blasting
+              </option>
+              <option value="M3 : Material Keras - Blasting">
+                M3 : Material Keras - Blasting
+              </option>
+              <option value="M4 : Material Keras - Blasting - Ripping">
+                M4 : Material Keras - Blasting - Ripping
+              </option>
+              <option value="M5 : Material Keras - Non Blasting - Non Ripping">
+                M5 : Material Keras - Non Blasting - Non Ripping
+              </option>
+              <option value="M6 : Material Keras - Non Blasting - Ripping">
+                M6 : Material Keras - Non Blasting - Ripping
+              </option>
+              <option value="M7 : Material Lumpur">M7 : Material Lumpur</option>
+              <option value="M8 : Material Tipis">M8 : Material Tipis</option>
+              <option value="M9 : Material Clearing">
+                M9 : Material Clearing
+              </option>
+              <option value="M10 : Material Longsoran">
+                M10 : Material Longsoran
+              </option>
+            </select>
+          </div>
+
+          <div>
+            <select
+              id="methodProblem"
+              class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-500 hover:text-gray-700"
+            >
+              <option disabled selected>METHOD</option>
+              <option value="">-- Kosong --</option>
+              <option value="L1 : Double Bench">L1 : Double Bench</option>
+              <option value="L2 : Drop Cut">L2 : Drop Cut</option>
+              <option value="L3 : Top Loading">L3 : Top Loading</option>
+              <option value="L4 : Back Loading">L4 : Back Loading</option>
+              <option value="L5 : Drop Cut (Mencangkul)">
+                L5 : Drop Cut (Mencangkul)
+              </option>
+              <option value="L6 : Selective Loading">
+                L6 : Selective Loading
+              </option>
+            </select>
+          </div>
+
+          <div>
+            <select
+              id="environmentProblem"
+              class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-500 hover:text-gray-700"
+            >
+              <option disabled selected>ENVIRONMENT</option>
+              <option value="">-- Kosong --</option>
+              <option value="D1 : Disp. Crowded">D1 : Disp. Crowded</option>
+              <option value="D2 : Disposal Lembek/Berair/Licin/Amblas">
+                D2 : Disposal Lembek/Berair/Licin/Amblas
+              </option>
+              <option value="D3 : Disposal Undulating">
+                D3 : Disposal Undulating
+              </option>
+              <option value="F1 : Front Undulating">
+                F1 : Front Undulating
+              </option>
+              <option value="F2 : Front Menanjak">F2 : Front Menanjak</option>
+              <option value="F3 : Front Melorong">F3 : Front Melorong</option>
+              <option value="F4 : Front Berdebu">F4 : Front Berdebu</option>
+              <option value="F5 : Front Crowded">F5 : Front Crowded</option>
+              <option value="F6 : Front Lembek/Licin/Berair /Amblas">
+                F6 : Front Lembek/Licin/Berair /Amblas
+              </option>
+              <option value="F7 : Front Sempit">F7 : Front Sempit</option>
+              <option value="F8 : Dudukan PC Lembek">
+                F8 : Dudukan PC Lembek
+              </option>
+              <option value="R1 : Road Berdebu">R1 : Road Berdebu</option>
+              <option value="R2 : Road Undulating">R2 : Road Undulating</option>
+              <option value="R3 : Road Berkabut">R3 : Road Berkabut</option>
+              <option value="R4 : Road Crowded">R4 : Road Crowded</option>
+              <option value="R5 : Road Licin">R5 : Road Licin</option>
+              <option value="R6 : Road Rusak">R6 : Road Rusak</option>
+              <option value="R7 : Road Sempit">R7 : Road Sempit</option>
+              <option value="R8 : Road Maintenance">
+                R8 : Road Maintenance
+              </option>
+            </select>
+          </div>
+
+          <div>
+            <textarea
+              id="remaksTambahan"
+              placeholder="REMAKS TAMBAHAN (opsional)"
+              rows="3"
+              class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-700"
+            ></textarea>
+          </div>
+
+          <div class="pt-4 flex items-center space-x-4">
+            <a
+              href="index.html"
+              class="w-1/2 bg-fad-yellow hover:bg-yellow-500 text-white font-bold py-3 rounded-lg shadow-lg transition duration-300 transform hover:scale-105 text-center"
+            >
+              MULAI ULANG
+            </a>
+            <button
+              type="submit"
+              class="w-1/2 bg-fad-green hover:bg-green-700 text-white font-bold py-3 rounded-lg shadow-lg transition duration-300 transform hover:scale-105 text-center"
+            >
+              SUBMIT ALL
+            </button>
+          </div>
+        </form>
+      </main>
+    </div>
+
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/analisa-form.js"></script>
+    <script>
+      const preloader = document.getElementById("preloader");
+
+      window.addEventListener("load", function () {
+        // Tambahkan delay sedikit agar transisi lebih mulus
+        setTimeout(function () {
+          preloader.style.display = "none";
+        }, 500); // 0.5 detik
+      });
+    </script>
+  </body>
+</html>
