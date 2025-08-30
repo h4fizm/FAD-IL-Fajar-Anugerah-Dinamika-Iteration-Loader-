@@ -64,6 +64,7 @@
       </header>
 
       <main class="w-full flex flex-col space-y-6">
+        <!-- cycle time loader -->
         <div class="bg-white p-5 rounded-xl shadow-lg">
           <h2 class="text-center text-lg font-bold text-fad-dark mb-3">
             CYCLE TIME LOADER
@@ -78,33 +79,61 @@
           </div>
           <div id="loader-grid" class="grid grid-cols-3 gap-3">
             <button
+              id="btn-spotting"
+              class="flex flex-col items-center justify-center bg-gray-200 hover:bg-gray-300 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
+            >
+              <span class="text-3xl">⚙️</span>
+              <span class="text-[11px] mt-1 uppercase font-bold">SPOTTING</span>
+              <span class="font-mono text-gray-500 text-sm mt-1">00:00</span>
+            </button>
+
+            <button
               id="btn-digging"
               class="flex flex-col items-center justify-center bg-gray-200 hover:bg-gray-300 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
             >
-              <span class="text-3xl">🚜</span>
+              <img
+                src="img/shovel.png"
+                alt="Digging Icon"
+                class="w-10 h-10 object-contain"
+              />
               <span class="text-[11px] mt-1 uppercase font-bold">DIGGING</span>
               <span class="font-mono text-gray-500 text-sm mt-1">00:00</span>
             </button>
+
             <button
               id="btn-swing-load"
               class="flex flex-col items-center justify-center bg-gray-200 hover:bg-gray-300 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
             >
-              <span class="text-3xl">🏗️</span>
+              <span class="text-3xl">↪️</span>
               <span class="text-[11px] mt-1 uppercase font-bold"
                 >SWING LOAD</span
               >
               <span class="font-mono text-gray-500 text-sm mt-1">00:00</span>
             </button>
+
+            <button
+              id="btn-reset"
+              class="flex flex-col items-center justify-center bg-fad-red hover:bg-red-600 text-white font-semibold py-3 rounded-lg shadow-md transition-transform transform hover:scale-105"
+            >
+              <span class="text-3xl">🔄</span>
+              <span class="text-xs mt-1 uppercase">RESET</span>
+            </button>
+
             <button
               id="btn-bucket-dump"
               class="flex flex-col items-center justify-center bg-gray-200 hover:bg-gray-300 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
             >
-              <span class="text-3xl">🚚</span>
+              <img
+                src="img/excavator.png"
+                alt="Bucket Dump Icon"
+                class="w-10 h-10 object-contain"
+              />
               <span class="text-[11px] mt-1 uppercase font-bold"
                 >BUCKET DUMP</span
               >
               <span class="font-mono text-gray-500 text-sm mt-1">00:00</span>
             </button>
+
             <button
               id="btn-swing-empty"
               class="flex flex-col items-center justify-center bg-gray-200 hover:bg-gray-300 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
@@ -115,21 +144,7 @@
               >
               <span class="font-mono text-gray-500 text-sm mt-1">00:00</span>
             </button>
-            <button
-              id="btn-spotting"
-              class="flex flex-col items-center justify-center bg-gray-200 hover:bg-gray-300 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
-            >
-              <span class="text-3xl">⚙️</span>
-              <span class="text-[11px] mt-1 uppercase font-bold">SPOTTING</span>
-              <span class="font-mono text-gray-500 text-sm mt-1">00:00</span>
-            </button>
-            <button
-              id="btn-reset"
-              class="flex flex-col items-center justify-center bg-fad-red hover:bg-red-600 text-white font-semibold py-3 rounded-lg shadow-md transition-transform transform hover:scale-105"
-            >
-              <span class="text-3xl">🔄</span>
-              <span class="text-xs mt-1 uppercase">RESET</span>
-            </button>
+
             <button
               id="btn-finish"
               class="col-span-3 mt-2 flex items-center justify-center space-x-2 bg-fad-yellow hover:bg-amber-500 text-fad-dark font-bold py-3 rounded-lg shadow-md transition-transform transform hover:scale-105"
@@ -140,6 +155,7 @@
           </div>
         </div>
 
+        <!-- cycle time hauler -->
         <div class="bg-white p-5 rounded-xl shadow-lg">
           <h2 class="text-center text-lg font-bold text-fad-dark mb-3">
             CYCLE TIME HAULER
