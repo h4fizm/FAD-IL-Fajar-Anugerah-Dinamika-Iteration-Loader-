@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
-    <title>FAD-IL</title>
+    <title>FAD Monitoring & Evaluation Productivity</title>
     <link rel="icon" type="image/jpeg" href="img/logo.jpg" />
     <link rel="stylesheet" href="css/style.css" />
     <link
@@ -15,6 +15,12 @@
     />
     <link
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
     <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
@@ -30,13 +36,17 @@
               "fad-dark": "#1A202C",
               "fad-light": "#F7FAFC",
             },
+            // PERUBAHAN 4: Mengatur Poppins sebagai font default
+            fontFamily: {
+              sans: ["Poppins", "sans-serif"],
+            },
           },
         },
       };
     </script>
   </head>
   <body
-    class="flex flex-col items-center justify-center min-h-screen p-4 relative overflow-x-hidden"
+    class="font-sans flex flex-col items-center justify-center min-h-screen p-4 relative overflow-x-hidden"
   >
     <div id="preloader">
       <div class="loader"></div>
@@ -49,18 +59,19 @@
         <div class="w-64 h-32 mb-4">
           <img
             src="img/picture.jpg"
-            alt="FAD-IL Logo"
+            alt="FAD Logo"
             class="w-full h-full object-contain"
           />
         </div>
-        <h1 class="text-3xl font-bold text-fad-dark mb-1">FAD-IL</h1>
-        <p class="text-sm font-medium text-gray-700">
-          (Fajar Anugerah Dinamika Iteration Loader)
+
+        <h1 class="text-4xl font-bold text-fad-dark mb-1">FAD-MAP</h1>
+        <p class="text-sm font-medium text-gray-600">
+          (Fajar Anugerah Dinamika Monitoring & Evaluation Productivity)
         </p>
       </header>
 
       <main class="w-full bg-white p-6 rounded-lg shadow-xl">
-        <h2 class="text-lg font-semibold text-center text-fad-dark mb-6">
+        <h2 class="text-md font-semibold text-center text-fad-dark mb-6">
           Input Data Cycle Time Loader
         </h2>
 
@@ -83,10 +94,30 @@
               class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-500 hover:text-gray-700"
             >
               <option disabled selected>JENIS MATERIAL</option>
-              <option value="TOP SOIL">TOP SOIL</option>
-              <option value="OB RIPPING">OB RIPPING</option>
-              <option value="OB FREE DIG">OB FREE DIG</option>
-              <option value="OB BLASTING">OB BLASTING</option>
+              <option value="Blasting (OB)">Blasting (OB)</option>
+              <option value="Ripping (RP)">Ripping (RP)</option>
+              <option value="Selective Ripping Mud (RM)">
+                Selective Ripping Mud (RM)
+              </option>
+              <option value="Non Ripping (ON)">Non Ripping (ON)</option>
+              <option value="Top Soil (TS)">Top Soil (TS)</option>
+              <option value="MUD (MD)">MUD (MD)</option>
+              <option value="Selective Non Ripping Soil (NS)">
+                Selective Non Ripping Soil (NS)
+              </option>
+              <option value="Selective Blasting Soil (BS)">
+                Selective Blasting Soil (BS)
+              </option>
+              <option value="Selective Blasting Mud (BM)">
+                Selective Blasting Mud (BM)
+              </option>
+              <option value="Selective Blasting Non Ripping Soil (BNS)">
+                Selective Blasting Non Ripping Soil (BNS)
+              </option>
+              <option value="Selective Blasting Non Ripping (BN)">
+                Selective Blasting Non Ripping (BN)
+              </option>
+              <option value="Soil lunak (SL)">Soil lunak (SL)</option>
             </select>
           </div>
 
@@ -113,6 +144,24 @@
               type="text"
               id="observer"
               placeholder="OBSERVER"
+              class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-700"
+            />
+          </div>
+
+          <div>
+            <input
+              type="number"
+              id="jarakDumping"
+              placeholder="JARAK DUMPING (METER)"
+              class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-700"
+            />
+          </div>
+
+          <div>
+            <input
+              type="number"
+              id="jumlahHauler"
+              placeholder="JUMLAH HAULER"
               class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-700"
             />
           </div>

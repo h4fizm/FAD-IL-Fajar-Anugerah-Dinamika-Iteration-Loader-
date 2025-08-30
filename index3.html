@@ -6,41 +6,14 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
-    <title>FAD-IL - Hasil</title>
+    <title>FAD - Hasil Monitoring</title>
     <link rel="icon" type="image/jpeg" href="img/logo.jpg" />
     <link rel="stylesheet" href="css/style.css" />
     <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
-    />
-    <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
-    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-      .text-fad-red {
-        color: #e53e3e !important;
-      }
-      .text-fad-green {
-        color: #38a169 !important;
-      }
-
-      /* Pastikan tidak ada override dari Tailwind atau CSS lain */
-      #digging-time,
-      #swing-time,
-      #dump-bucket-time,
-      #swing-empty-time,
-      #secondary-time,
-      #cycle-time,
-      #loading-time {
-        font-family: inherit;
-        font-size: inherit;
-        font-weight: bold;
-        color: inherit;
-      }
-    </style>
     <script>
       tailwind.config = {
         theme: {
@@ -52,289 +25,215 @@
               "fad-dark": "#1A202C",
               "fad-light": "#F7FAFC",
             },
+            fontFamily: {
+              sans: ["Poppins", "sans-serif"],
+              mono: [
+                "ui-monospace",
+                "SFMono-Regular",
+                "Menlo",
+                "Monaco",
+                "Consolas",
+                "Liberation Mono",
+                "Courier New",
+                "monospace",
+              ],
+            },
           },
         },
       };
     </script>
   </head>
   <body
-    class="flex flex-col items-center justify-center min-h-screen p-4 relative"
+    class="bg-fad-light flex flex-col items-center justify-start min-h-screen font-sans p-4"
   >
-    <div id="preloader"><div class="loader"></div></div>
-
     <div
       class="relative z-10 w-full max-w-sm mx-auto flex flex-col items-center"
     >
-      <header class="w-full flex flex-col items-center mb-8 text-center">
-        <div class="mb-4 w-64 h-32">
-          <img
-            src="img/picture.jpg"
-            alt="FAD-IL Logo"
-            class="w-full h-full object-contain"
-          />
-        </div>
-        <h1 class="text-3xl font-bold text-fad-dark mb-1">FAD-IL</h1>
-        <p class="text-sm font-medium text-gray-700">
-          (Fajar Anugerah Dinamika Iteration Loader)
+      <header class="w-full text-center my-6">
+        <img
+          src="img/picture.jpg"
+          alt="FAD Logo"
+          class="w-48 h-auto object-contain mx-auto mb-4"
+        />
+        <h1 class="text-3xl font-bold text-fad-dark mb-1">
+          Fajar Anugerah Dinamika
+        </h1>
+        <p class="text-sm font-medium text-gray-600">
+          (Monitoring & Evaluation Productivity)
         </p>
       </header>
 
-      <main class="w-full bg-white p-6 rounded-lg shadow-xl">
-        <h2 class="text-lg font-semibold text-center text-fad-dark mb-6">
-          Ringkasan Data
-        </h2>
-        <div class="divide-y divide-gray-200 space-y-2">
-          <div class="flex items-center justify-between py-2">
-            <div class="flex items-center space-x-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-6 h-6 text-gray-400"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
-                />
-              </svg>
-              <span class="font-medium text-gray-500">OBSERVER</span>
-            </div>
-            <span id="observer-name" class="font-bold text-fad-dark"
-              >[Nama Observer]</span
+      <main class="w-full bg-white p-6 rounded-xl shadow-lg">
+        <div class="text-center mb-6">
+          <h2 class="text-xl font-bold text-fad-dark">RESUME MONITORING</h2>
+          <p id="perhitungan-count" class="text-sm text-gray-500 font-medium">
+            Perhitungan (2 kali)
+          </p>
+        </div>
+
+        <div class="space-y-3">
+          <h3 class="font-bold text-fad-dark border-b pb-2 mb-2">
+            Informasi Umum
+          </h3>
+          <div class="flex text-sm">
+            <span class="w-3/5 text-gray-600">Nama Unit</span>
+            <span id="nama-unit" class="w-2/5 font-semibold text-fad-dark"
+              >: FEX 1211</span
             >
           </div>
-          <div class="flex items-center justify-between py-2">
-            <div class="flex items-center space-x-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-6 h-6 text-gray-400"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.437 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.129-1.125V13.5m-18.75 0h16.5m-16.5 0a1.125 1.125 0 00-1.125 1.125v3.75m18.75-3.75v3.75m-12-7.5h.008v.008H12v-.008zM12 11.25h.008v.008H12v-.008zM12 8.25h.008v.008H12V8.25zM12 5.25h.008v.008H12V5.25z"
-                />
-              </svg>
-              <span class="font-medium text-gray-500">NAMA UNIT</span>
-            </div>
-            <span id="unit-name" class="font-bold text-fad-dark">[Unit]</span>
-          </div>
-          <div class="flex items-center justify-between py-2">
-            <div class="flex items-center space-x-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-6 h-6 text-gray-400"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125.504 1.125 1.125v3.75c0 .621-.504 1.125-1.125 1.125h-4.25v-2.25a.75.75 0 00-.75-.75h-2.25a.75.75 0 00-.75.75v2.25h-4.25a1.125 1.125 0 01-1.125-1.125v-3.75c0-.621.504-1.125 1.125-1.125z"
-                />
-              </svg>
-              <span class="font-medium text-gray-500">JENIS MATERIAL</span>
-            </div>
-            <span id="material-type" class="font-bold text-fad-dark"
-              >[Material]</span
+          <div class="flex text-sm">
+            <span class="w-3/5 text-gray-600">Jenis Material</span>
+            <span id="jenis-material" class="w-2/5 font-semibold text-fad-dark"
+              >: Blasting (OB)</span
             >
           </div>
-          <div class="flex items-center justify-between py-2">
-            <div class="flex items-center space-x-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-6 h-6 text-gray-400"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a7.498 7.498 0 01-.755 1.579A7.5 7.5 0 0112 21.75a7.5 7.5 0 01-5.24-2.356A7.498 7.498 0 015.018 18.725M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
-              <span class="font-medium text-gray-500">NAMA OPERATOR</span>
-            </div>
-            <span id="operator-name" class="font-bold text-fad-dark"
-              >[Operator]</span
+          <div class="flex text-sm">
+            <span class="w-3/5 text-gray-600">Nama Operator</span>
+            <span id="nama-operator" class="w-2/5 font-semibold text-fad-dark"
+              >: HERU WIBISONO</span
             >
           </div>
-          <div class="flex items-center justify-between py-2">
-            <div class="flex items-center space-x-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-6 h-6 text-gray-400"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.007 6.75H3.75v.008h.007v-.008zm-.007 6.75H3.75v.008h.007v-.008z"
-                />
-              </svg>
-              <span class="font-medium text-gray-500">JUMLAH PASSING</span>
-            </div>
-            <span id="total-passing" class="font-bold text-fad-dark"
-              >[Jumlah]</span
+        </div>
+
+        <div class="mt-6 space-y-3">
+          <h3 class="font-bold text-fad-dark border-b pb-2 mb-2">
+            Analisis Loader
+          </h3>
+          <div class="flex text-sm">
+            <span class="w-3/5 text-gray-600">Rata-rata Jumlah Passing</span>
+            <span id="rata-passing" class="w-2/5 font-semibold text-fad-dark"
+              >: 5</span
             >
           </div>
-          <div class="flex items-center justify-between py-2">
-            <div class="flex items-center space-x-2">
-              <span class="text-5xl">🚜</span>
-              <span class="font-medium text-gray-500">DIGGING TIME</span>
-            </div>
-            <div class="flex flex-col items-end space-y-1">
-              <span
-                id="digging-time"
-                class="font-bold digital-font text-fad-dark"
-                >[Waktu]</span
-              >
-              <p id="digging-warning" class="text-sm"></p>
-            </div>
+          <div class="flex text-sm">
+            <span class="w-3/5 text-gray-600">Rata-rata Digging Time</span>
+            <span id="rata-digging" class="w-2/5 font-semibold text-fad-dark"
+              >: 10.52 detik</span
+            >
           </div>
-          <div class="flex items-center justify-between py-2">
-            <div class="flex items-center space-x-2">
-              <span class="text-5xl">🏗️</span>
-              <span class="font-medium text-gray-500">SWING TIME</span>
-            </div>
-            <div class="flex flex-col items-end space-y-1">
-              <span id="swing-time" class="font-bold digital-font text-fad-dark"
-                >[Waktu]</span
-              >
-              <p id="swing-warning" class="text-sm"></p>
-            </div>
+          <div class="flex text-sm">
+            <span class="w-3/5 text-gray-600">Rata-rata Swing Load</span>
+            <span id="rata-swing-load" class="w-2/5 font-semibold text-fad-dark"
+              >: 8.11 detik</span
+            >
           </div>
-          <div class="flex items-center justify-between py-2">
-            <div class="flex items-center space-x-2">
-              <span class="text-5xl">🚚</span>
-              <span class="font-medium text-gray-500">BUCKET DUMP TIME</span>
-            </div>
-            <div class="flex flex-col items-end space-y-1">
-              <span
-                id="dump-bucket-time"
-                class="font-bold digital-font text-fad-dark"
-                >[Waktu]</span
-              >
-              <p id="dump-bucket-warning" class="text-sm"></p>
-            </div>
+          <div class="flex text-sm">
+            <span class="w-3/5 text-gray-600">Rata-rata Bucket Dump</span>
+            <span
+              id="rata-bucket-dump"
+              class="w-2/5 font-semibold text-fad-dark"
+              >: 6.98 detik</span
+            >
           </div>
-          <div class="flex items-center justify-between py-2">
-            <div class="flex items-center space-x-2">
-              <span class="text-5xl">↩️</span>
-              <span class="font-medium text-gray-500">SWING EMPTY TIME</span>
-            </div>
-            <div class="flex flex-col items-end space-y-1">
-              <span
-                id="swing-empty-time"
-                class="font-bold digital-font text-fad-dark"
-                >[Waktu]</span
-              >
-              <p id="swing-empty-warning" class="text-sm"></p>
-            </div>
+          <div class="flex text-sm">
+            <span class="w-3/5 text-gray-600">Rata-rata Swing Empty</span>
+            <span
+              id="rata-swing-empty"
+              class="w-2/5 font-semibold text-fad-dark"
+              >: 7.45 detik</span
+            >
           </div>
-          <div class="flex items-center justify-between py-2">
-            <div class="flex items-center space-x-2">
-              <span class="text-5xl">⚙️</span>
-              <span class="font-medium text-gray-500">SECONDARY TIME</span>
-            </div>
-            <div class="flex flex-col items-end space-y-1">
-              <span
-                id="secondary-time"
-                class="font-bold digital-font text-fad-dark"
-                >[Waktu]</span
-              >
-              <p id="secondary-warning" class="text-sm"></p>
-            </div>
+          <div class="flex text-sm">
+            <span class="w-3/5 text-gray-600">Rata-rata Spotting Time</span>
+            <span id="rata-spotting" class="w-2/5 font-semibold text-fad-dark"
+              >: 5.15 detik</span
+            >
           </div>
-          <div
-            class="flex items-center justify-between py-2 font-bold bg-gray-50 rounded-lg p-3"
-          >
-            <div class="flex items-center space-x-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                class="w-6 h-6 text-fad-green"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 6a.75.75 0 00-1.5 0v6l3.75 2.25a.75.75 0 10.75-1.23l-3-1.8V6z"
-                  clip-rule="evenodd"
-                />
-              </svg>
-              <span class="text-fad-dark">CYCLE TIME</span>
-            </div>
-            <div class="flex flex-col items-end space-y-1">
-              <span id="cycle-time" class="text-fad-dark digital-font"
-                >[Waktu]</span
-              >
-              <p id="cycle-warning" class="text-sm"></p>
-            </div>
+          <div class="flex text-sm p-2 bg-gray-50 rounded-md mt-2">
+            <span class="w-3/5 text-gray-600 font-bold"
+              >Rata-rata Cycle Time</span
+            >
+            <span
+              id="rata-cycletime-loader"
+              class="w-2/5 font-bold text-fad-dark"
+              >: 38.21 detik</span
+            >
           </div>
-          <div
-            class="flex items-center justify-between py-2 font-bold bg-gray-50 rounded-lg p-3"
-          >
-            <div class="flex items-center space-x-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                class="w-6 h-6 text-fad-green"
-              >
-                <path
-                  d="M12 2.25a.75.75 0 01.75.75v6.75a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75z"
-                />
-                <path
-                  fill-rule="evenodd"
-                  d="M12 3a9 9 0 100 18 9 9 0 000-18zM3.75 12a8.25 8.25 0 0113.344-6.391a4.5 4.5 0 01-7.752 5.093 4.5 4.5 0 01-5.592 5.666A8.25 8.25 0 013.75 12z"
-                  clip-rule="evenodd"
-                />
-              </svg>
-              <span class="text-fad-dark">LOADING TIME</span>
+          <div class="flex text-sm p-2 bg-gray-50 rounded-md">
+            <span class="w-3/5 text-gray-600 font-bold"
+              >Rata-rata Loading Time</span
+            >
+            <span id="rata-loadingtime" class="w-2/5 font-bold text-fad-dark"
+              >: 3.18 menit</span
+            >
+          </div>
+        </div>
+
+        <div class="mt-6 space-y-3">
+          <h3 class="font-bold text-fad-dark border-b pb-2 mb-2">
+            Analisis Armada & Produktivitas
+          </h3>
+          <div class="flex text-sm">
+            <span class="w-3/5 text-gray-600">Jarak Dumping</span>
+            <span id="jarak-dumping" class="w-2/5 font-semibold text-fad-dark"
+              >: 5000 meter</span
+            >
+          </div>
+          <div class="flex text-sm">
+            <span class="w-3/5 text-gray-600">Jumlah Hauler</span>
+            <span id="jumlah-hauler" class="w-2/5 font-semibold text-fad-dark"
+              >: 4 Unit</span
+            >
+          </div>
+          <div class="flex text-sm">
+            <span class="w-3/5 text-gray-600">Rata-rata Cycle Time Hauler</span>
+            <span
+              id="rata-cycletime-hauler"
+              class="w-2/5 font-semibold text-fad-dark"
+              >: 12.55 menit</span
+            >
+          </div>
+          <div class="flex text-sm">
+            <span class="w-3/5 text-gray-600">Rata-rata Kecepatan Hauler</span>
+            <span
+              id="rata-kecepatan-hauler"
+              class="w-2/5 font-semibold text-fad-dark"
+              >: 23.9 km/jam</span
+            >
+          </div>
+
+          <div class="pt-4 grid grid-cols-2 gap-4">
+            <div class="rounded-lg bg-fad-green/10 p-4 text-center">
+              <p class="text-sm font-semibold uppercase text-fad-green">
+                Matching Fleet
+              </p>
+              <p id="matching-fleet" class="text-3xl font-bold text-fad-green">
+                10
+              </p>
             </div>
-            <div class="flex flex-col items-end space-y-1">
-              <span id="loading-time" class="text-fad-dark digital-font"
-                >[Waktu]</span
+            <div class="rounded-lg bg-fad-yellow/20 p-4 text-center">
+              <p class="text-sm font-semibold uppercase text-fad-dark">
+                Proyeksi Produktivitas
+              </p>
+              <p
+                id="proyeksi-produktivitas"
+                class="text-3xl font-bold text-fad-dark"
               >
-              <p id="loading-warning" class="text-sm"></p>
+                120 <span class="text-base">Ritase</span>
+              </p>
             </div>
           </div>
         </div>
       </main>
 
-      <div class="w-full flex justify-between mt-8 space-x-4">
+      <footer class="w-full flex justify-between mt-8 space-x-4">
         <a
-          id="btn-beranda"
+          id="btn-ulangi"
+          href="index2.html"
+          class="flex-1 text-center bg-gray-200 text-gray-700 font-bold py-3 rounded-lg shadow-md transition-transform transform hover:scale-105"
+        >
+          ULANGI
+        </a>
+        <a
+          id="btn-selesai"
           href="index.html"
-          class="flex-1 text-center bg-gray-200 text-gray-700 font-bold py-3 rounded-lg transition duration-300 hover:bg-gray-300"
-          >BERANDA</a
+          class="flex-1 text-center bg-fad-dark hover:bg-gray-700 text-white font-bold py-3 rounded-lg shadow-md transition-transform transform hover:scale-105"
         >
-        <button
-          type="button"
-          id="btn-kirim-data"
-          class="flex-1 bg-green-700 hover:bg-green-800 text-white font-bold py-3 rounded-lg transition duration-300"
-        >
-          KIRIM DATA
-        </button>
-      </div>
+          SELESAI
+        </a>
+      </footer>
     </div>
 
-    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="js/result-logic.js"></script>
   </body>

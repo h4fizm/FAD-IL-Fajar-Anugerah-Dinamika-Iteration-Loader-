@@ -9,16 +9,22 @@ const form = document.getElementById("dataForm");
 form.addEventListener("submit", function (event) {
   event.preventDefault();
 
+  // Mengambil nilai dari semua form, termasuk yang baru
   const unitLoader = document.getElementById("unitLoader").value;
   const jenisMaterial = document.getElementById("jenisMaterial").value;
   const namaOperator = document.getElementById("namaOperator").value;
   const observer = document.getElementById("observer").value;
+  const jarakDumping = document.getElementById("jarakDumping").value; // DITAMBAHKAN
+  const jumlahHauler = document.getElementById("jumlahHauler").value; // DITAMBAHKAN
 
+  // Memperbarui validasi untuk form baru
   if (
     unitLoader === "UNIT LOADER" ||
     jenisMaterial === "JENIS MATERIAL" ||
     namaOperator === "NAMA OPERATOR" ||
-    observer === ""
+    observer === "" ||
+    jarakDumping === "" || // DITAMBAHKAN
+    jumlahHauler === "" // DITAMBAHKAN
   ) {
     Swal.fire({
       icon: "error",
@@ -28,11 +34,14 @@ form.addEventListener("submit", function (event) {
     return;
   }
 
+  // Menambahkan data baru ke dalam objek
   const data = {
     unit_loader: unitLoader,
     jenis_material: jenisMaterial,
     nama_operator: namaOperator,
     observer: observer,
+    jarak_dumping: jarakDumping, // DITAMBAHKAN
+    jumlah_hauler: jumlahHauler, // DITAMBAHKAN
     tanggal_pengajuan: new Date().toLocaleDateString("id-ID", {
       weekday: "long",
       year: "numeric",

@@ -6,19 +6,13 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
-    <title>FAD-IL - Proses</title>
+    <title>FAD Monitoring & Evaluation Productivity</title>
     <link rel="icon" type="image/jpeg" href="img/logo.jpg" />
     <link rel="stylesheet" href="css/style.css" />
     <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
-    />
-    <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
-    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/@heroicons/react@2.0.18/dist/heroicons.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -31,129 +25,183 @@
               "fad-dark": "#1A202C",
               "fad-light": "#F7FAFC",
             },
+            fontFamily: {
+              sans: ["Poppins", "sans-serif"],
+              mono: [
+                "ui-monospace",
+                "SFMono-Regular",
+                "Menlo",
+                "Monaco",
+                "Consolas",
+                "Liberation Mono",
+                "Courier New",
+                "monospace",
+              ],
+            },
           },
         },
       };
     </script>
   </head>
   <body
-    class="bg-gray-100 flex flex-col items-center justify-start min-h-screen relative"
+    class="bg-fad-light flex flex-col items-center justify-start min-h-screen font-sans"
   >
-    <div id="preloader"><div class="loader"></div></div>
-
     <div
-      class="relative z-10 w-full max-w-sm mx-auto flex flex-col items-center pt-8 pb-12 px-4"
+      class="relative z-10 w-full max-w-sm mx-auto flex flex-col items-center pt-6 pb-12 px-4"
     >
-      <header
-        class="w-full text-center mb-6 flex flex-col items-center space-y-4"
-      >
-        <div class="mb-4 w-64 h-32">
-          <img
-            src="img/picture.jpg"
-            alt="FAD-IL Logo"
-            class="w-full h-full object-contain"
-          />
-        </div>
-        <div class="w-full p-2">
-          <p class="text-sm font-bold text-fad-dark">OBSERVER</p>
-          <p id="observerName" class="text-md font-semibold text-gray-700">
+      <header class="w-full text-center mb-6">
+        <img
+          src="img/picture.jpg"
+          alt="FAD Logo"
+          class="w-48 h-auto object-contain mx-auto mb-4"
+        />
+        <div class="bg-white w-full p-3 rounded-lg">
+          <p class="text-xs font-bold text-gray-500 uppercase">Observer</p>
+          <p id="observerName" class="text-lg font-semibold text-fad-dark">
             [Nama Observer]
-          </p>
-        </div>
-        <div class="w-full flex justify-center mt-4">
-          <div
-            class="stopwatch-container w-40 h-40 bg-white rounded-full shadow-lg"
-          >
-            <div class="stopwatch-circle"></div>
-            <p
-              id="main-stopwatch"
-              class="stopwatch-time digital-font text-5xl text-fad-dark"
-            >
-              00:00:00
-            </p>
-          </div>
-        </div>
-        <div class="w-full p-2">
-          <p class="text-sm font-bold text-fad-dark">
-            Fajar Anugerah Dinamika Iteration Loader
           </p>
         </div>
       </header>
 
-      <main class="w-full grid grid-cols-2 gap-4" id="main-grid">
-        <button
-          id="btn-digging"
-          class="bg-white p-5 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
-        >
-          <span class="text-5xl mb-2">🚜</span>
-          <span class="font-bold text-sm text-fad-dark">DIGGING</span>
-          <span class="digital-font text-lg text-gray-500 mt-1">00:00:00</span>
-        </button>
+      <main class="w-full flex flex-col space-y-6">
+        <div class="bg-white p-5 rounded-xl shadow-lg">
+          <h2 class="text-center text-lg font-bold text-fad-dark mb-3">
+            CYCLE TIME LOADER
+          </h2>
+          <div
+            id="loader-timer-display"
+            class="bg-gray-100 border-2 border-gray-200 p-4 rounded-lg text-center mb-4"
+          >
+            <p class="text-4xl font-mono tracking-widest text-fad-dark">
+              00:00:00
+            </p>
+          </div>
+          <div id="loader-grid" class="grid grid-cols-3 gap-3">
+            <button
+              id="btn-digging"
+              class="flex flex-col items-center justify-center bg-gray-200 hover:bg-gray-300 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
+            >
+              <span class="text-3xl">🚜</span>
+              <span class="text-[11px] mt-1 uppercase font-bold">DIGGING</span>
+              <span class="font-mono text-gray-500 text-sm mt-1">00:00</span>
+            </button>
+            <button
+              id="btn-swing-load"
+              class="flex flex-col items-center justify-center bg-gray-200 hover:bg-gray-300 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
+            >
+              <span class="text-3xl">🏗️</span>
+              <span class="text-[11px] mt-1 uppercase font-bold"
+                >SWING LOAD</span
+              >
+              <span class="font-mono text-gray-500 text-sm mt-1">00:00</span>
+            </button>
+            <button
+              id="btn-bucket-dump"
+              class="flex flex-col items-center justify-center bg-gray-200 hover:bg-gray-300 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
+            >
+              <span class="text-3xl">🚚</span>
+              <span class="text-[11px] mt-1 uppercase font-bold"
+                >BUCKET DUMP</span
+              >
+              <span class="font-mono text-gray-500 text-sm mt-1">00:00</span>
+            </button>
+            <button
+              id="btn-swing-empty"
+              class="flex flex-col items-center justify-center bg-gray-200 hover:bg-gray-300 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
+            >
+              <span class="text-3xl">↩️</span>
+              <span class="text-[11px] mt-1 uppercase font-bold"
+                >SWING EMPTY</span
+              >
+              <span class="font-mono text-gray-500 text-sm mt-1">00:00</span>
+            </button>
+            <button
+              id="btn-spotting"
+              class="flex flex-col items-center justify-center bg-gray-200 hover:bg-gray-300 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
+            >
+              <span class="text-3xl">⚙️</span>
+              <span class="text-[11px] mt-1 uppercase font-bold">SPOTTING</span>
+              <span class="font-mono text-gray-500 text-sm mt-1">00:00</span>
+            </button>
+            <button
+              id="btn-reset"
+              class="flex flex-col items-center justify-center bg-fad-red hover:bg-red-600 text-white font-semibold py-3 rounded-lg shadow-md transition-transform transform hover:scale-105"
+            >
+              <span class="text-3xl">🔄</span>
+              <span class="text-xs mt-1 uppercase">RESET</span>
+            </button>
+            <button
+              id="btn-finish"
+              class="col-span-3 mt-2 flex items-center justify-center space-x-2 bg-fad-yellow hover:bg-amber-500 text-fad-dark font-bold py-3 rounded-lg shadow-md transition-transform transform hover:scale-105"
+            >
+              <span>✅</span>
+              <span>FINISH</span>
+            </button>
+          </div>
+        </div>
 
-        <button
-          id="btn-swing"
-          class="bg-white p-5 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
-        >
-          <span class="text-5xl mb-2">🏗️</span>
-          <span class="font-bold text-sm text-fad-dark">SWING</span>
-          <span class="digital-font text-lg text-gray-500 mt-1">00:00:00</span>
-        </button>
-
-        <button
-          id="btn-dump-bucket"
-          class="bg-white p-5 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
-        >
-          <span class="text-5xl mb-2">🚚</span>
-          <span class="font-bold text-sm text-fad-dark">DUMP BUCKET</span>
-          <span class="digital-font text-lg text-gray-500 mt-1">00:00:00</span>
-        </button>
-
-        <button
-          id="btn-swing-empty"
-          class="bg-white p-5 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
-        >
-          <span class="text-5xl mb-2">↩️</span>
-          <span class="font-bold text-sm text-fad-dark">SWING EMPTY</span>
-          <span class="digital-font text-lg text-gray-500 mt-1">00:00:00</span>
-        </button>
-
-        <button
-          id="btn-secondary"
-          class="bg-white p-5 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
-        >
-          <span class="text-5xl mb-2">⚙️</span>
-          <span class="font-bold text-sm text-fad-dark">SECONDARY</span>
-          <span class="digital-font text-lg text-gray-500 mt-1">00:00:00</span>
-        </button>
-
-        <a
-          id="btn-finish"
-          href="index3.html"
-          class="bg-white p-5 rounded-xl shadow-lg flex flex-col items-center justify-center aspect-square transition duration-300 transform hover:scale-105 active:shadow-md active:bg-gray-50"
-        >
-          <span class="text-5xl mb-2">✅</span>
-          <span class="font-bold text-sm text-fad-dark">FINISH</span>
-        </a>
+        <div class="bg-white p-5 rounded-xl shadow-lg">
+          <h2 class="text-center text-lg font-bold text-fad-dark mb-3">
+            CYCLE TIME HAULER
+          </h2>
+          <div
+            id="hauler-timer-display"
+            class="bg-gray-100 border-2 border-gray-200 p-4 rounded-lg text-center mb-4"
+          >
+            <p class="text-4xl font-mono tracking-widest text-fad-dark">
+              00:00:00
+            </p>
+          </div>
+          <div id="hauler-grid" class="grid grid-cols-2 gap-3">
+            <button
+              id="btn-out"
+              class="flex flex-col items-center justify-center bg-gray-200 hover:bg-gray-300 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
+            >
+              <span class="text-3xl">📤</span>
+              <span class="text-[11px] mt-1 uppercase font-bold">OUT</span>
+              <span class="font-mono text-gray-500 text-sm mt-1">00:00</span>
+            </button>
+            <button
+              id="btn-in"
+              class="flex flex-col items-center justify-center bg-gray-200 hover:bg-gray-300 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
+            >
+              <span class="text-3xl">📥</span>
+              <span class="text-[11px] mt-1 uppercase font-bold">IN</span>
+              <span class="font-mono text-gray-500 text-sm mt-1">00:00</span>
+            </button>
+            <button
+              id="btn-finish-hauler"
+              class="flex items-center justify-center space-x-2 bg-fad-yellow hover:bg-amber-500 text-fad-dark font-bold py-3 rounded-lg shadow-md transition-transform transform hover:scale-105"
+            >
+              <span>✅</span>
+              <span>FINISH</span>
+            </button>
+            <button
+              id="btn-reset-hauler"
+              class="flex flex-col items-center justify-center bg-fad-red hover:bg-red-600 text-white font-semibold py-3 rounded-lg shadow-md transition-transform transform hover:scale-105"
+            >
+              <span class="text-3xl">🔄</span>
+              <span class="text-xs mt-1 uppercase">RESET</span>
+            </button>
+            <div class="col-span-2 mt-2 flex items-center space-x-3">
+              <a
+                href="index.html"
+                class="flex-1 text-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-lg shadow-md transition-colors"
+              >
+                KEMBALI
+              </a>
+              <button
+                id="btn-submit-all"
+                class="flex-1 flex items-center justify-center space-x-2 bg-fad-green hover:bg-green-700 text-white font-bold py-3 rounded-lg shadow-md transition-transform transform hover:scale-105"
+              >
+                <span>SUBMIT ALL</span>
+              </button>
+            </div>
+          </div>
+        </div>
       </main>
-
-      <div class="w-full flex justify-between mt-8 space-x-4">
-        <a
-          href="index.html"
-          class="flex-1 text-center bg-gray-200 text-gray-700 font-bold py-3 rounded-lg transition duration-300 hover:bg-gray-300"
-          >KEMBALI</a
-        >
-        <button
-          id="reset-btn"
-          type="button"
-          class="flex-1 bg-fad-red hover:bg-red-700 text-white font-bold py-3 rounded-lg transition duration-300"
-        >
-          RESET
-        </button>
-      </div>
     </div>
 
-    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="js/process-logic.js"></script>
   </body>
