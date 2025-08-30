@@ -1,4 +1,4 @@
-// index.html - File js/script.js
+// index.html - File js/submit-form.js
 
 // INDEX FUNCTION
 AOS.init();
