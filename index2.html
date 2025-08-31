@@ -23,7 +23,7 @@
               "fad-red": "#E53E3E",
               "fad-green": "#38A169",
               "fad-dark": "#1A202C",
-              "fad-light": "#F7FAFC",
+              "fad-light": "#FFFFFF",
             },
             fontFamily: {
               sans: ["Poppins", "sans-serif"],
@@ -64,11 +64,11 @@
       </header>
 
       <main class="w-full flex flex-col space-y-6">
-        <!-- cycle time loader -->
         <div class="bg-white p-5 rounded-xl shadow-lg">
           <h2 class="text-center text-lg font-bold text-fad-dark mb-3">
             CYCLE TIME LOADER
           </h2>
+
           <div
             id="loader-timer-display"
             class="bg-gray-100 border-2 border-gray-200 p-4 rounded-lg text-center mb-4"
@@ -77,22 +77,27 @@
               00:00:00
             </p>
           </div>
+
           <div id="loader-grid" class="grid grid-cols-3 gap-3">
             <button
               id="btn-spotting"
-              class="flex flex-col items-center justify-center bg-gray-200 hover:bg-gray-300 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
+              class="flex flex-col items-center justify-center bg-white hover:bg-gray-100 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
             >
-              <span class="text-3xl">⚙️</span>
+              <img
+                src="img/spotting.jpg"
+                alt="Spotting Icon"
+                class="w-10 h-10 object-contain"
+              />
               <span class="text-[11px] mt-1 uppercase font-bold">SPOTTING</span>
               <span class="font-mono text-gray-500 text-sm mt-1">00:00</span>
             </button>
 
             <button
               id="btn-digging"
-              class="flex flex-col items-center justify-center bg-gray-200 hover:bg-gray-300 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
+              class="flex flex-col items-center justify-center bg-white hover:bg-gray-100 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
             >
               <img
-                src="img/shovel.png"
+                src="img/digging.jpg"
                 alt="Digging Icon"
                 class="w-10 h-10 object-contain"
               />
@@ -102,9 +107,13 @@
 
             <button
               id="btn-swing-load"
-              class="flex flex-col items-center justify-center bg-gray-200 hover:bg-gray-300 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
+              class="flex flex-col items-center justify-center bg-white hover:bg-gray-100 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
             >
-              <span class="text-3xl">↪️</span>
+              <img
+                src="img/swing load.jpg"
+                alt="Swing Load Icon"
+                class="w-10 h-10 object-contain"
+              />
               <span class="text-[11px] mt-1 uppercase font-bold"
                 >SWING LOAD</span
               >
@@ -121,10 +130,10 @@
 
             <button
               id="btn-bucket-dump"
-              class="flex flex-col items-center justify-center bg-gray-200 hover:bg-gray-300 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
+              class="flex flex-col items-center justify-center bg-white hover:bg-gray-100 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
             >
               <img
-                src="img/excavator.png"
+                src="img/bucket dump.jpeg"
                 alt="Bucket Dump Icon"
                 class="w-10 h-10 object-contain"
               />
@@ -136,9 +145,13 @@
 
             <button
               id="btn-swing-empty"
-              class="flex flex-col items-center justify-center bg-gray-200 hover:bg-gray-300 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
+              class="flex flex-col items-center justify-center bg-white hover:bg-gray-100 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
             >
-              <span class="text-3xl">↩️</span>
+              <img
+                src="img/swing empty.jpeg"
+                alt="Swing Empty Icon"
+                class="w-10 h-10 object-contain"
+              />
               <span class="text-[11px] mt-1 uppercase font-bold"
                 >SWING EMPTY</span
               >
@@ -155,7 +168,6 @@
           </div>
         </div>
 
-        <!-- cycle time hauler -->
         <div class="bg-white p-5 rounded-xl shadow-lg">
           <h2 class="text-center text-lg font-bold text-fad-dark mb-3">
             CYCLE TIME HAULER
@@ -171,7 +183,7 @@
           <div id="hauler-grid" class="grid grid-cols-2 gap-3">
             <button
               id="btn-out"
-              class="flex flex-col items-center justify-center bg-gray-200 hover:bg-gray-300 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
+              class="flex flex-col items-center justify-center bg-white hover:bg-gray-100 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
             >
               <span class="text-3xl">📤</span>
               <span class="text-[11px] mt-1 uppercase font-bold">OUT</span>
@@ -179,7 +191,7 @@
             </button>
             <button
               id="btn-in"
-              class="flex flex-col items-center justify-center bg-gray-200 hover:bg-gray-300 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
+              class="flex flex-col items-center justify-center bg-white hover:bg-gray-100 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
             >
               <span class="text-3xl">📥</span>
               <span class="text-[11px] mt-1 uppercase font-bold">IN</span>
