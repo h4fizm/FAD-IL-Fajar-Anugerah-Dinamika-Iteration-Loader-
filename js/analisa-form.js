@@ -1,30 +1,45 @@
+// File: js/analisa-form.js (Versi Sederhana untuk Redirect)
 document.addEventListener("DOMContentLoaded", function () {
-  // --- FUNGSI UNTUK DROPDOWN CHECKBOX ---
-  const dropdowns = document.querySelectorAll("[data-multiselect-dropdown]");
+  // --- 1. VALIDASI DATA AWAL ---
+  if (!localStorage.getItem("fullCycleReportData")) {
+    Swal.fire({
+      icon: "error",
+      title: "Akses Ditolak",
+      text: "Data resume monitoring tidak ditemukan. Silakan ulangi proses.",
+      confirmButtonText: "Kembali",
+      allowOutsideClick: false,
+    }).then(() => {
+      window.location.href = "index3.html";
+    });
+    return;
+  }
 
-  window.updateMultiselectButtonText = (dropdown) => {
+  // --- 2. FUNGSI UNTUK DROPDOWN CHECKBOX (Tidak ada perubahan) ---
+  const dropdowns = document.querySelectorAll("[data-multiselect-dropdown]");
+  const updateMultiselectButtonText = (dropdown) => {
     const button = dropdown.querySelector(".multiselect-button");
     const checkboxes = dropdown.querySelectorAll('input[type="checkbox"]');
     const buttonSpan = button.querySelector("span");
     const originalButtonText =
       buttonSpan.dataset.originalText || buttonSpan.textContent;
-
     if (!buttonSpan.dataset.originalText) {
       buttonSpan.dataset.originalText = originalButtonText;
     }
-
     const selectedCheckboxes = Array.from(checkboxes).filter(
-      (cb) => cb.checked
+      (cb) => cb.checked && !cb.dataset.kosong
     );
     const count = selectedCheckboxes.length;
-
-    if (count === 0) {
+    const isKosongSelected = dropdown.querySelector(
+      'input[data-kosong="true"]'
+    ).checked;
+    if (isKosongSelected) {
+      buttonSpan.textContent = `${originalButtonText} (Nihil)`;
+    } else if (count === 0) {
       buttonSpan.textContent = originalButtonText;
     } else {
       buttonSpan.textContent = `${originalButtonText} (${count} terpilih)`;
     }
   };
-
   dropdowns.forEach((dropdown) => {
     const button = dropdown.querySelector(".multiselect-button");
     const panel = dropdown.querySelector(".multiselect-panel");
@@ -34,79 +49,61 @@ document.addEventListener("DOMContentLoaded", function () {
     const normalCheckboxes = dropdown.querySelectorAll(
       'input:not([data-kosong="true"])'
     );
-
-    // Panggil update teks saat pertama kali load
-    window.updateMultiselectButtonText(dropdown);
-
-    // --- PERBAIKAN 1: MENCEGAH DROPDOWN TERTUTUP SAAT KLIK DI DALAM PANEL ---
-    panel.addEventListener("click", (e) => {
-      e.stopPropagation();
-    });
-
+    updateMultiselectButtonText(dropdown);
+    panel.addEventListener("click", (e) => e.stopPropagation());
     button.addEventListener("click", (e) => {
       e.stopPropagation();
-      dropdowns.forEach((otherDropdown) => {
-        if (otherDropdown !== dropdown) {
-          otherDropdown
-            .querySelector(".multiselect-panel")
-            .classList.add("hidden");
+      dropdowns.forEach((other) => {
+        if (other !== dropdown) {
+          other.querySelector(".multiselect-panel").classList.add("hidden");
         }
       });
       panel.classList.toggle("hidden");
     });
-
-    // --- PERBAIKAN 2: LOGIKA EKSKLUSIF UNTUK CHECKBOX "KOSONG / NIHIL" ---
     allCheckboxes.forEach((checkbox) => {
       checkbox.addEventListener("change", () => {
         if (checkbox.checked) {
           if (checkbox.dataset.kosong === "true") {
-            // Jika "Kosong" dicentang, hapus centang lainnya
             normalCheckboxes.forEach((cb) => (cb.checked = false));
           } else {
-            // Jika checkbox normal dicentang, hapus centang "Kosong"
             kosongCheckbox.checked = false;
           }
         }
-
-        // Sinkronkan SEMUA checkbox ke hidden select setelah logika di atas
         allCheckboxes.forEach((cb) => {
           const option = hiddenSelect.querySelector(
             `option[value="${cb.value}"]`
           );
-          if (option) {
-            option.selected = cb.checked;
-          }
+          if (option) option.selected = cb.checked;
         });
-
-        window.updateMultiselectButtonText(dropdown);
+        updateMultiselectButtonText(dropdown);
       });
     });
   });
-
   window.addEventListener("click", () => {
-    dropdowns.forEach((dropdown) => {
-      dropdown.querySelector(".multiselect-panel").classList.add("hidden");
-    });
+    dropdowns.forEach((d) =>
+      d.querySelector(".multiselect-panel").classList.add("hidden")
+    );
   });
 
+  // --- 3. LOGIKA FORM SUBMISSION ---
   const form = document.getElementById("dataForm");
-
   form.addEventListener("submit", function (event) {
     event.preventDefault();
-    const manProblemSelect = document.getElementById("manProblem");
-    const machineProblemSelect = document.getElementById("machineProblem");
-    const materialProblemSelect = document.getElementById("materialProblem");
-    const methodProblemSelect = document.getElementById("methodProblem");
-    const environmentProblemSelect =
-      document.getElementById("environmentProblem");
-    const remaksTambahan = document.getElementById("remaksTambahan").value;
-
+    const getSelectedValues = (id) =>
+      Array.from(document.getElementById(id).selectedOptions).map(
+        (opt) => opt.value
+      );
+    const manProblems = getSelectedValues("manProblem");
+    const machineProblems = getSelectedValues("machineProblem");
+    const materialProblems = getSelectedValues("materialProblem");
+    const methodProblems = getSelectedValues("methodProblem");
+    const environmentProblems = getSelectedValues("environmentProblem");
     if (
-      manProblemSelect.selectedOptions.length === 0 ||
-      machineProblemSelect.selectedOptions.length === 0 ||
-      materialProblemSelect.selectedOptions.length === 0 ||
-      methodProblemSelect.selectedOptions.length === 0 ||
-      environmentProblemSelect.selectedOptions.length === 0
+      manProblems.length === 0 ||
+      machineProblems.length === 0 ||
+      materialProblems.length === 0 ||
+      methodProblems.length === 0 ||
+      environmentProblems.length === 0
     ) {
       Swal.fire({
         icon: "error",
@@ -115,34 +112,43 @@ document.addEventListener("DOMContentLoaded", function () {
       });
       return;
     }
-
-    const getSelectedValues = (selectElement) =>
-      Array.from(selectElement.selectedOptions).map((option) => option.value);
-
-    const data = {
-      man: getSelectedValues(manProblemSelect),
-      machine: getSelectedValues(machineProblemSelect),
-      material: getSelectedValues(materialProblemSelect),
-      method: getSelectedValues(methodProblemSelect),
-      environment: getSelectedValues(environmentProblemSelect),
-      remaks: remaksTambahan,
+    const fullReportData = JSON.parse(
+      localStorage.getItem("fullCycleReportData")
+    );
+    fullReportData.analisaProblem = {
+      pengajuanAnalisa: {
+        hari: new Date().toLocaleDateString("id-ID", { weekday: "long" }),
+        tanggal: new Date().toLocaleDateString("id-ID", {
+          day: "2-digit",
+          month: "long",
+          year: "numeric",
+        }),
+        jam: new Date().toLocaleTimeString("id-ID", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      },
+      man: manProblems,
+      machine: machineProblems,
+      material: materialProblems,
+      method: methodProblems,
+      environment: environmentProblems,
+      remaks: document.getElementById("remaksTambahan").value.trim() || "-",
     };
 
-    console.log("Data yang akan dikirim:", data);
+    // Simpan data akhir...
+    localStorage.setItem("fullCycleReportData", JSON.stringify(fullReportData));
 
+    // ...lalu arahkan ke halaman laporan akhir.
     Swal.fire({
       icon: "success",
-      title: "Berhasil!",
-      text: "Data Anda telah berhasil disimpan.",
-      timer: 2000,
+      title: "Analisa Tersimpan!",
+      text: "Anda akan diarahkan ke halaman laporan akhir.",
+      timer: 1500,
       showConfirmButton: false,
-    });
-
-    form.reset();
-    dropdowns.forEach((dropdown) => {
-      const checkboxes = dropdown.querySelectorAll('input[type="checkbox"]');
-      checkboxes.forEach((cb) => (cb.checked = false));
-      window.updateMultiselectButtonText(dropdown);
+      allowOutsideClick: false,
+    }).then(() => {
+      window.location.href = "index5.html";
     });
   });
 });

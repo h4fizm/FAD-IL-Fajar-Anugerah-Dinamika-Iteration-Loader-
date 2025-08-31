@@ -1,170 +1,185 @@
-// // File: js/results-logic.js (SUDAH DIPERBAIKI)
+document.addEventListener("DOMContentLoaded", function () {
+  // --- 1. PENGAMBILAN & VALIDASI DATA ---
+  const dataString = localStorage.getItem("fullCycleReportData");
 
-// document.addEventListener("DOMContentLoaded", function () {
-//   AOS.init();
+  if (!dataString) {
+    Swal.fire({
+      icon: "error",
+      title: "Data Tidak Ditemukan",
+      text: "Silakan jalankan proses monitoring terlebih dahulu.",
+      showConfirmButton: false,
+      timer: 2500,
+    }).then(() => {
+      window.location.href = "index2.html"; // Redirect ke halaman awal
+    });
+    return;
+  }
 
-//   const APP_SCRIPT_URL =
-//     "https://script.google.com/macros/s/AKfycbzLd5bLxNvn4dJFev_G0BdM72csNksbIfMrLg3dtEAIp7wOfEsWuVC93YI2bLyRJ9nQGA/exec";
+  const data = JSON.parse(dataString);
 
-//   const preloader = document.getElementById("preloader");
-//   if (preloader) {
-//     preloader.style.opacity = "0";
-//     setTimeout(() => {
-//       preloader.style.display = "none";
-//     }, 500);
-//   }
+  // --- 2. EKSTRAKSI DATA UNTUK MEMUDAHKAN ---
+  const initialData = data.initialData;
+  const loaderSessions = data.cycleTime.loader || {};
+  const haulerSessions = data.cycleTime.hauler || {};
 
-//   const formData = localStorage.getItem("formData");
-//   const savedHistory = localStorage.getItem("processHistory");
-//   const loadingTime = localStorage.getItem("loadingTime");
+  const jumlahSesiLoader = Object.keys(loaderSessions).length;
+  const jumlahSesiHauler = Object.keys(haulerSessions).length;
 
-//   if (!formData || !savedHistory || !loadingTime) {
-//     Swal.fire({
-//       icon: "error",
-//       title: "Akses Ditolak",
-//       text: "Silakan jalankan proses terlebih dahulu.",
-//       showConfirmButton: false,
-//       timer: 2000,
-//     }).then(() => {
-//       window.location.href = "index2.html";
-//     });
-//     return;
-//   }
+  const allLoaderProcesses = Object.values(loaderSessions).flatMap(
+    (session) => session.processes
+  );
 
-//   const processHistory = JSON.parse(savedHistory);
-//   const dataForm = JSON.parse(formData);
-//   const totalLoadingTime = parseInt(loadingTime);
+  // --- 3. FUNGSI BANTUAN (HELPERS) ---
+  const calculateAverageProcessTime = (processName) => {
+    const relevantProcesses = allLoaderProcesses.filter(
+      (p) => p.name.toUpperCase() === processName.toUpperCase()
+    );
+    if (relevantProcesses.length === 0) return 0;
+    const totalTime = relevantProcesses.reduce((sum, p) => sum + p.time, 0);
+    return totalTime / relevantProcesses.length;
+  };
 
-//   const formatTime = (milliseconds) => {
-//     const totalSeconds = Math.floor(milliseconds / 1000);
-//     const totalMinutes = Math.floor(totalSeconds / 60);
-//     const m = String(totalMinutes).padStart(2, "0");
-//     const s = String(totalSeconds % 60).padStart(2, "0");
-//     const ms = String(Math.floor((milliseconds % 1000) / 10)).padStart(2, "0");
-//     return `${m}:${s}:${ms}`;
-//   };
+  // --- 4. PERHITUNGAN SEMUA 12 POIN ---
 
-//   const calculateAverage = (processName) => {
-//     const filteredProcess = processHistory.filter(
-//       (p) => p.name.toUpperCase() === processName.toUpperCase()
-//     );
-//     if (filteredProcess.length === 0) return 0;
-//     const totalTime = filteredProcess.reduce((sum, p) => sum + p.time, 0);
-//     return totalTime / filteredProcess.length;
-//   };
+  // ##### PERBAIKAN DIMULAI DI SINI #####
+  // POIN 1 & 2: Informasi Umum
+  // Mencoba beberapa kemungkinan nama key dari form awal
+  const perhitunganCount = jumlahSesiLoader;
+  const namaUnit = initialData.unit || initialData.unit_loader || "N/A";
+  const jenisMaterial =
+    initialData.material || initialData.jenis_material || "N/A";
+  const namaOperator =
+    initialData.operator || initialData.nama_operator || "N/A";
 
-//   const calculatePassing = () => {
-//     return processHistory.filter((p) => p.name.toUpperCase() === "DUMP BUCKET")
-//       .length;
-//   };
+  // POIN 3: Rata-rata Jumlah Passing
+  const totalDumps = allLoaderProcesses.filter(
+    (p) => p.name.toUpperCase() === "BUCKET DUMP"
+  ).length;
+  const rataRataPassing =
+    jumlahSesiLoader > 0 ? Math.round(totalDumps / jumlahSesiLoader) : 0;
 
-//   const avgDiggingTime = calculateAverage("DIGGING");
-//   const avgSwingTime = calculateAverage("SWING");
-//   const avgDumpBucketTime = calculateAverage("DUMP BUCKET");
-//   const avgSwingEmptyTime = calculateAverage("SWING EMPTY");
-//   const avgSecondaryTime = calculateAverage("SECONDARY");
-//   const totalPassing = calculatePassing();
-//   const cycleTimeMs =
-//     avgDiggingTime + avgSwingTime + avgDumpBucketTime + avgSwingEmptyTime;
+  // POIN 4: Rata-rata Waktu Proses Loader
+  const avgDiggingMs = calculateAverageProcessTime("DIGGING");
+  const avgSwingLoadMs = calculateAverageProcessTime("SWING LOAD");
+  const avgBucketDumpMs = calculateAverageProcessTime("BUCKET DUMP");
+  const avgSwingEmptyMs = calculateAverageProcessTime("SWING EMPTY");
+  const avgSpottingMs = calculateAverageProcessTime("SPOTTING");
 
-//   // Tampilkan data ke HTML
-//   document.getElementById("observer-name").textContent = dataForm.observer;
-//   document.getElementById("unit-name").textContent = dataForm.unit_loader;
-//   document.getElementById("material-type").textContent =
-//     dataForm.jenis_material;
-//   document.getElementById("operator-name").textContent = dataForm.nama_operator;
-//   document.getElementById("total-passing").textContent = totalPassing;
-//   document.getElementById("digging-time").textContent =
-//     formatTime(avgDiggingTime);
-//   document.getElementById("swing-time").textContent = formatTime(avgSwingTime);
-//   document.getElementById("dump-bucket-time").textContent =
-//     formatTime(avgDumpBucketTime);
-//   document.getElementById("swing-empty-time").textContent =
-//     formatTime(avgSwingEmptyTime);
-//   document.getElementById("secondary-time").textContent =
-//     formatTime(avgSecondaryTime);
-//   document.getElementById("cycle-time").textContent = formatTime(cycleTimeMs);
-//   document.getElementById("loading-time").textContent =
-//     formatTime(totalLoadingTime);
+  // POIN 5 & 6: Rata-rata Cycle Time & Loading Time Loader
+  const totalCycleTimeLoaderMs = Object.values(loaderSessions).reduce(
+    (sum, session) => sum + session.totalTime,
+    0
+  );
+  const avgCycleTimeLoaderMs =
+    jumlahSesiLoader > 0 ? totalCycleTimeLoaderMs / jumlahSesiLoader : 0;
+  const avgLoadingTimeMin = avgCycleTimeLoaderMs / 1000 / 60;
 
-//   // Event Listeners
-//   document.getElementById("btn-beranda").addEventListener("click", () => {
-//     localStorage.clear();
-//   });
+  // POIN 7: Informasi Hauler
+  // Mencoba beberapa kemungkinan nama key dari form awal
+  const jarakDumping = parseFloat(
+    initialData.jarak || initialData.jarak_dumping || 0
+  );
+  const jumlahHauler = parseFloat(
+    initialData.jumlahHauler || initialData.jumlah_hauler || 0
+  );
+  // ##### PERBAIKAN SELESAI DI SINI #####
 
-//   document
-//     .getElementById("btn-kirim-data")
-//     .addEventListener("click", function () {
-//       // Fungsi untuk mendapatkan tanggal berformat "Sabtu, 30 Agustus 2025"
-//       const getFormattedDate = () => {
-//         const now = new Date();
-//         const options = {
-//           weekday: "long",
-//           year: "numeric",
-//           month: "long",
-//           day: "numeric",
-//         };
-//         return now.toLocaleDateString("id-ID", options);
-//       };
+  // POIN 8: Rata-rata Cycle Time Hauler
+  const totalCycleTimeHaulerMs = Object.values(haulerSessions).reduce(
+    (sum, session) => sum + session.totalTime,
+    0
+  );
+  const avgCycleTimeHaulerMs =
+    jumlahSesiHauler > 0 ? totalCycleTimeHaulerMs / jumlahSesiHauler : 0;
+  const avgCycleTimeHaulerMin = avgCycleTimeHaulerMs / 1000 / 60;
 
-//       const postData = [
-//         {
-//           // DIUBAH: Tambahkan tanggal yang diformat
-//           tanggal_pengajuan: getFormattedDate(),
-//           observer: dataForm.observer,
-//           unit_loader: dataForm.unit_loader,
-//           jenis_material: dataForm.jenis_material,
-//           nama_operator: dataForm.nama_operator,
-//           totalPassing: totalPassing,
-//           // DIUBAH: Kirim dalam milidetik asli (tanpa / 1000)
-//           avgDiggingTime: avgDiggingTime,
-//           avgSwingTime: avgSwingTime,
-//           avgDumpBucketTime: avgDumpBucketTime,
-//           avgSwingEmptyTime: avgSwingEmptyTime,
-//           avgSecondaryTime: avgSecondaryTime,
-//           // DIUBAH: Nama key diperbaiki dan dikirim dalam milidetik
-//           cycleTimeMs: cycleTimeMs,
-//           totalLoadingTime: totalLoadingTime,
-//         },
-//       ];
+  // POIN 9: Rata-rata Kecepatan Hauler
+  const jarakKm = jarakDumping / 1000;
+  const avgCycleTimeHaulerJam = avgCycleTimeHaulerMin / 60;
+  const avgKecepatanHauler =
+    avgCycleTimeHaulerJam > 0 ? (2 * jarakKm) / avgCycleTimeHaulerJam : 0;
 
-//       Swal.fire({
-//         title: "Mengirim Data...",
-//         text: "Mohon tunggu sebentar.",
-//         allowOutsideClick: false,
-//         didOpen: () => {
-//           Swal.showLoading();
-//         },
-//       });
+  // POIN 10: Matching Fleet
+  const matchingFleet =
+    avgCycleTimeHaulerMin > 0
+      ? (jumlahHauler * avgLoadingTimeMin) / avgCycleTimeHaulerMin
+      : 0;
 
-//       fetch(APP_SCRIPT_URL, {
-//         method: "POST",
-//         body: JSON.stringify(postData),
-//         headers: { "Content-Type": "text/plain;charset=utf-8" },
-//       })
-//         .then((response) => response.json())
-//         .then((data) => {
-//           if (data.status === "success") {
-//             Swal.fire({
-//               icon: "success",
-//               title: "Berhasil!",
-//               text: "Data berhasil diexport.",
-//             });
-//           } else {
-//             Swal.fire({
-//               icon: "error",
-//               title: "Gagal!",
-//               text: data.message || "Terjadi kesalahan.",
-//             });
-//           }
-//         })
-//         .catch((error) => {
-//           console.error("Error:", error);
-//           Swal.fire({
-//             icon: "error",
-//             title: "Gagal!",
-//             text: "Terjadi kesalahan jaringan.",
-//           });
-//         });
-//     });
-// });
+  // POIN 11: Proyeksi Produktivitas
+  const proyeksiProdty =
+    avgLoadingTimeMin > 0 ? Math.round(60 / avgLoadingTimeMin) : 0;
+
+  // --- 5. TAMPILKAN HASIL KE HTML ---
+  document.getElementById(
+    "perhitungan-count"
+  ).textContent = `Perhitungan (${perhitunganCount} kali)`;
+  document.getElementById("nama-unit").textContent = `: ${namaUnit}`;
+  document.getElementById("jenis-material").textContent = `: ${jenisMaterial}`;
+  document.getElementById("nama-operator").textContent = `: ${namaOperator}`;
+
+  document.getElementById("rata-passing").textContent = `: ${rataRataPassing}`;
+  document.getElementById("rata-digging").textContent = `: ${(
+    avgDiggingMs / 1000
+  ).toFixed(2)} detik`;
+  document.getElementById("rata-swing-load").textContent = `: ${(
+    avgSwingLoadMs / 1000
+  ).toFixed(2)} detik`;
+  document.getElementById("rata-bucket-dump").textContent = `: ${(
+    avgBucketDumpMs / 1000
+  ).toFixed(2)} detik`;
+  document.getElementById("rata-swing-empty").textContent = `: ${(
+    avgSwingEmptyMs / 1000
+  ).toFixed(2)} detik`;
+  document.getElementById("rata-spotting").textContent = `: ${(
+    avgSpottingMs / 1000
+  ).toFixed(2)} detik`;
+  document.getElementById("rata-cycletime-loader").textContent = `: ${(
+    avgCycleTimeLoaderMs / 1000
+  ).toFixed(2)} detik`;
+  document.getElementById(
+    "rata-loadingtime"
+  ).textContent = `: ${avgLoadingTimeMin.toFixed(2)} menit`;
+
+  document.getElementById(
+    "jarak-dumping"
+  ).textContent = `: ${jarakDumping} meter`;
+  document.getElementById(
+    "jumlah-hauler"
+  ).textContent = `: ${jumlahHauler} Unit`;
+  document.getElementById("rata-cycletime-hauler").textContent = `: ${
+    avgCycleTimeHaulerMin > 0 ? avgCycleTimeHaulerMin.toFixed(2) : "0.00"
+  } menit`;
+  document.getElementById("rata-kecepatan-hauler").textContent = `: ${
+    avgKecepatanHauler > 0 ? avgKecepatanHauler.toFixed(2) : "0.00"
+  } km/jam`;
+
+  document.getElementById("matching-fleet").textContent =
+    matchingFleet > 0 ? matchingFleet.toFixed(2) : "0.00";
+  document.getElementById(
+    "proyeksi-produktivitas"
+  ).innerHTML = `${proyeksiProdty} <span class="text-base">Ritase</span>`;
+
+  // --- 6. EVENT LISTENERS ---
+  document.getElementById("btn-ulangi").addEventListener("click", (e) => {
+    e.preventDefault();
+    Swal.fire({
+      title: "Ulangi Proses?",
+      text: "Data monitoring saat ini akan dihapus dan Anda akan kembali ke halaman timer.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#38A169",
+      cancelButtonColor: "#E53E3E",
+      confirmButtonText: "Ya, Ulangi!",
+      cancelButtonText: "Batal",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.removeItem("fullCycleReportData");
+        window.location.href = e.target.href;
+      }
+    });
+  });
+
+  document.getElementById("btn-selesai").addEventListener("click", () => {
+    // localStorage.clear();
+  });
+});

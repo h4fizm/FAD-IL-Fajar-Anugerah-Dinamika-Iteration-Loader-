@@ -28,8 +28,6 @@ function initializeProcess() {
   // --- STATE MANAGEMENT ---
   let loaderTimer = 0,
     haulerTimer = 0;
-  let totalLoaderTimeAccumulated = 0, // Variabel untuk total waktu loader
-    totalHaulerTimeAccumulated = 0; // Variabel untuk total waktu hauler
   let loaderInterval, haulerInterval;
   let activeProcess = null;
   let processHistory = JSON.parse(localStorage.getItem("processHistory")) || [];
@@ -138,11 +136,20 @@ function initializeProcess() {
       delete processIntervals[processName];
       const button = document.getElementById(`btn-${processName}`);
       const processLabel = button.querySelector(".uppercase").textContent;
+
+      // --- PERUBAHAN 1: Menambahkan nomor sesi saat menyimpan riwayat ---
+      const sessionNumber =
+        activeCycle === "loader"
+          ? loaderSessionCount + 1
+          : haulerSessionCount + 1;
       processHistory.push({
         name: processLabel,
         time: processTimers[processName],
         cycle: activeCycle,
+        session: sessionNumber, // <-- Kunci baru ditambahkan di sini
       });
+      // -------------------------------------------------------------------
+
       saveHistory();
       processTimers[processName] = 0;
       updateProcessTimerDisplay(processName);
@@ -277,7 +284,6 @@ function initializeProcess() {
     activeProcess = null;
     loaderSessionCount++;
 
-    totalLoaderTimeAccumulated += loaderTimer; // Akumulasi total waktu
     loaderTimer = 0; // Reset timer sesi
     updateMainTimerDisplay("loader"); // Perbarui tampilan ke 00:00:00
 
@@ -313,7 +319,6 @@ function initializeProcess() {
     activeProcess = null;
     haulerSessionCount++;
 
-    totalHaulerTimeAccumulated += haulerTimer; // Akumulasi total waktu
     haulerTimer = 0; // Reset timer sesi
     updateMainTimerDisplay("hauler"); // Perbarui tampilan ke 00:00:00
 
@@ -330,12 +335,13 @@ function initializeProcess() {
     toggleButtons(haulerActionButtons, false);
   };
 
+  // --- PERUBAHAN 2: Fungsi submitAllData diganti total untuk struktur JSON baru ---
   const submitAllData = () => {
     if (processHistory.length === 0) {
       Swal.fire({
         icon: "warning",
         title: "Tidak Ada Data",
-        text: "Rekam setidaknya satu proses.",
+        text: "Rekam setidaknya satu siklus proses.",
       });
       return;
     }
@@ -344,40 +350,49 @@ function initializeProcess() {
     clearInterval(loaderInterval);
     clearInterval(haulerInterval);
 
-    const pengajuanData = {
-      hari: new Date().toLocaleDateString("id-ID", { weekday: "long" }),
-      tanggal: new Date().toLocaleDateString("id-ID", {
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-      }),
+    // Fungsi helper untuk mengelompokkan proses berdasarkan sesi
+    const groupProcessesBySession = (cycleType) => {
+      return processHistory
+        .filter((p) => p.cycle === cycleType)
+        .reduce((acc, process) => {
+          const sessionKey = process.session;
+          if (!acc[sessionKey]) {
+            acc[sessionKey] = {
+              totalTime: 0,
+              processes: [],
+            };
+          }
+          acc[sessionKey].processes.push({
+            name: process.name,
+            time: process.time,
+          });
+          acc[sessionKey].totalTime += process.time;
+          return acc;
+        }, {});
     };
 
-    const loaderHistory = processHistory.filter((p) => p.cycle === "loader");
-    const haulerHistory = processHistory.filter((p) => p.cycle === "hauler");
+    const loaderDataBySession = groupProcessesBySession("loader");
+    const haulerDataBySession = groupProcessesBySession("hauler");
 
-    const loaderFinalData = {
-      pengajuan: pengajuanData,
+    // Struktur data final yang akan disimpan
+    const allFinalData = {
+      pengajuan: {
+        hari: new Date().toLocaleDateString("id-ID", { weekday: "long" }),
+        tanggal: new Date().toLocaleDateString("id-ID", {
+          day: "2-digit",
+          month: "long",
+          year: "numeric",
+        }),
+      },
       initialData: JSON.parse(formData),
-      totalLoaderTime: totalLoaderTimeAccumulated, // Gunakan total waktu yang terakumulasi
-      processHistory: loaderHistory,
+      cycleTime: {
+        loader: loaderDataBySession,
+        hauler: haulerDataBySession,
+      },
     };
 
-    const haulerFinalData = {
-      pengajuan: pengajuanData,
-      initialData: JSON.parse(formData),
-      totalHaulerTime: totalHaulerTimeAccumulated, // Gunakan total waktu yang terakumulasi
-      processHistory: haulerHistory,
-    };
-
-    localStorage.setItem(
-      "cycleTimeLoaderData",
-      JSON.stringify(loaderFinalData)
-    );
-    localStorage.setItem(
-      "cycleTimeHaulerData",
-      JSON.stringify(haulerFinalData)
-    );
+    // Menyimpan semua data dalam satu item localStorage
+    localStorage.setItem("fullCycleReportData", JSON.stringify(allFinalData));
 
     Swal.fire({
       icon: "success",
@@ -387,9 +402,11 @@ function initializeProcess() {
       timer: 2000,
     }).then(() => {
       localStorage.removeItem("processHistory");
+      localStorage.removeItem("formData");
       window.location.href = "index3.html";
     });
   };
+  // --------------------------------------------------------------------------------
 
   // --- EVENT LISTENERS ---
   mainContainer.addEventListener("click", (e) => {

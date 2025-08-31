@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>FAD - Laporan Akhir</title>
+    <link rel="icon" type="image/jpeg" href="img/logo.jpg" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "fad-yellow": "#F9A825",
+              "fad-red": "#E53E3E",
+              "fad-green": "#38A169",
+              "fad-dark": "#1A202C",
+              "fad-light": "#F7FAFC",
+            },
+            fontFamily: { sans: ["Poppins", "sans-serif"] },
+          },
+        },
+      };
+    </script>
+    <style>
+      /* PERBAIKAN: Memastikan preloader selalu di lapisan paling atas */
+      #preloader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: white;
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: opacity 0.5s ease;
+      }
+
+      /* Gaya Tabel untuk Desktop */
+      .report-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1.25rem;
+      }
+      .report-table th,
+      .report-table td {
+        border: 1px solid #e2e8f0;
+        padding: 0.75rem;
+        text-align: left;
+        font-size: 0.875rem;
+      }
+      .report-table th {
+        background-color: #f7fafc;
+        font-weight: 600;
+      }
+      .report-table td:first-child {
+        font-weight: 500;
+      }
+
+      /* --- PERBAIKAN TOTAL UNTUK TAMPILAN RESPONSIVE --- */
+      @media (max-width: 640px) {
+        .report-table thead {
+          display: none;
+        }
+        .report-table,
+        .report-table tbody,
+        .report-table tr,
+        .report-table td {
+          display: block;
+          width: 100%;
+        }
+        .report-table tr {
+          margin-bottom: 0.75rem; /* Mengurangi gap antar baris */
+          border: 1px solid #e2e8f0;
+          border-radius: 0.5rem;
+          padding: 0.75rem;
+        }
+        .report-table td {
+          border: none;
+          padding: 2px 0; /* Memberi sedikit jarak antara label dan value */
+        }
+        /* Label (kolom pertama) */
+        .report-table td:first-child {
+          font-size: 0.75rem; /* 12px */
+          font-weight: 500;
+          color: #718096; /* gray-500 */
+        }
+        /* Value (kolom kedua) */
+        .report-table td:last-child {
+          font-size: 1rem; /* 16px */
+          font-weight: 600;
+          color: #1a202c; /* fad-dark */
+          word-break: break-word; /* Memastikan teks panjang tidak keluar batas */
+        }
+      }
+    </style>
+  </head>
+  <body
+    class="bg-fad-light flex flex-col items-center justify-start min-h-screen font-sans p-4"
+  >
+    <div id="preloader">
+      <div class="loader"></div>
+    </div>
+
+    <div
+      class="relative z-10 w-full max-w-2xl mx-auto flex flex-col items-center"
+    >
+      <header class="w-full text-center my-6">
+        <img
+          src="img/picture.jpg"
+          alt="FAD Logo"
+          class="w-48 h-auto object-contain mx-auto mb-4"
+        />
+        <h1 class="text-3xl font-bold text-fad-dark mb-1">
+          Hasil Laporan Akhir
+        </h1>
+        <p id="report-date" class="text-sm font-medium text-gray-600"></p>
+      </header>
+
+      <main class="w-full bg-white p-6 rounded-xl shadow-lg">
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th colspan="2" class="text-lg">Informasi Umum</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Nama Unit</td>
+              <td id="data-nama-unit"></td>
+            </tr>
+            <tr>
+              <td>Jenis Material</td>
+              <td id="data-jenis-material"></td>
+            </tr>
+            <tr>
+              <td>Nama Operator</td>
+              <td id="data-nama-operator"></td>
+            </tr>
+            <tr>
+              <td>Observer</td>
+              <td id="data-observer"></td>
+            </tr>
+            <tr>
+              <td>Jumlah Sesi Loader</td>
+              <td id="data-sesi-loader"></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th colspan="2" class="text-lg">Analisis Loader</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Rata-rata Jumlah Passing</td>
+              <td id="data-rata-passing"></td>
+            </tr>
+            <tr>
+              <td>Rata-rata Digging Time</td>
+              <td id="data-rata-digging"></td>
+            </tr>
+            <tr>
+              <td>Rata-rata Swing Load</td>
+              <td id="data-rata-swing-load"></td>
+            </tr>
+            <tr>
+              <td>Rata-rata Bucket Dump</td>
+              <td id="data-rata-bucket-dump"></td>
+            </tr>
+            <tr>
+              <td>Rata-rata Swing Empty</td>
+              <td id="data-rata-swing-empty"></td>
+            </tr>
+            <tr>
+              <td>Rata-rata Spotting Time</td>
+              <td id="data-rata-spotting"></td>
+            </tr>
+            <tr>
+              <td class="font-bold">Rata-rata Cycle Time Loader</td>
+              <td id="data-rata-cycletime-loader" class="font-bold"></td>
+            </tr>
+            <tr>
+              <td class="font-bold">Rata-rata Loading Time</td>
+              <td id="data-rata-loadingtime" class="font-bold"></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th colspan="2" class="text-lg">
+                Analisis Hauler & Produktivitas
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Jarak Dumping</td>
+              <td id="data-jarak-dumping"></td>
+            </tr>
+            <tr>
+              <td>Jumlah Hauler</td>
+              <td id="data-jumlah-hauler"></td>
+            </tr>
+            <tr>
+              <td>Rata-rata Cycle Time Hauler</td>
+              <td id="data-rata-cycletime-hauler"></td>
+            </tr>
+            <tr>
+              <td>Rata-rata Kecepatan Hauler</td>
+              <td id="data-rata-kecepatan-hauler"></td>
+            </tr>
+            <tr>
+              <td class="font-bold">Matching Fleet</td>
+              <td id="data-matching-fleet" class="font-bold"></td>
+            </tr>
+            <tr>
+              <td class="font-bold">Proyeksi Produktivitas</td>
+              <td id="data-proyeksi-produktivitas" class="font-bold"></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th colspan="2" class="text-lg">Analisa Problem Produktivitas</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Man</td>
+              <td id="data-man"></td>
+            </tr>
+            <tr>
+              <td>Machine</td>
+              <td id="data-machine"></td>
+            </tr>
+            <tr>
+              <td>Material</td>
+              <td id="data-material"></td>
+            </tr>
+            <tr>
+              <td>Method</td>
+              <td id="data-method"></td>
+            </tr>
+            <tr>
+              <td>Environment</td>
+              <td id="data-environment"></td>
+            </tr>
+            <tr>
+              <td>Remaks Tambahan</td>
+              <td id="data-remaks" style="white-space: pre-wrap"></td>
+            </tr>
+          </tbody>
+        </table>
+      </main>
+
+      <footer class="w-full flex justify-center mt-8">
+        <a
+          id="btn-start-new"
+          href="index.html"
+          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition transform hover:scale-105 text-center"
+        >
+          Selesai & Mulai Baru
+        </a>
+      </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/report-logic.js"></script>
+    <script>
+      const preloader = document.getElementById("preloader");
+      if (preloader) {
+        window.addEventListener("load", function () {
+          setTimeout(function () {
+            preloader.style.opacity = "0";
+            setTimeout(() => (preloader.style.display = "none"), 500);
+          }, 500);
+        });
+      }
+    </script>
+  </body>
+</html>

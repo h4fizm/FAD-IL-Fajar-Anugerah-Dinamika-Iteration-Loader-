@@ -6,25 +6,20 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
-    <title>FAD Monitoring & Evaluation Productivity</title>
+    <title>FAD - Analisa Produktivitas</title>
     <link rel="icon" type="image/jpeg" href="img/logo.jpg" />
     <link rel="stylesheet" href="css/style.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
-    />
-    <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet"
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
-    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
+      integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
     <script>
       tailwind.config = {
         theme: {
@@ -62,7 +57,6 @@
             class="w-full h-full object-contain"
           />
         </div>
-
         <h1 class="text-4xl font-bold text-fad-dark mb-1">FAD-MEP</h1>
         <p class="text-sm font-medium text-gray-600">Fajar Anugerah Dinamika</p>
         <p class="text-sm font-medium text-gray-600">
@@ -74,124 +68,107 @@
         <h2 class="text-md font-semibold text-center text-fad-dark mb-6">
           ANALISA PROBLEM PRODUCTIVITY
         </h2>
-
         <form id="dataForm" class="space-y-4">
           <div class="relative" data-multiselect-dropdown>
             <button
               type="button"
-              class="multiselect-button w-full flex justify-between items-center p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-500 hover:text-gray-700"
+              class="multiselect-button w-full flex justify-between items-center p-3 border border-gray-300 rounded-lg shadow-sm"
             >
-              <span>MAN</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
+              <span>MAN</span
+              ><svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path
                   fill-rule="evenodd"
                   d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
                   clip-rule="evenodd"
-                />
+                ></path>
               </svg>
             </button>
             <div
-              class="multiselect-panel hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto"
+              class="multiselect-panel hidden absolute z-20 w-full mt-1 bg-white border rounded-lg shadow-lg max-h-60 overflow-y-auto"
             >
               <div class="p-2 space-y-1">
                 <label
                   class="flex items-center space-x-2 p-2 rounded hover:bg-gray-100 cursor-pointer"
-                >
-                  <input
+                  ><input
                     type="checkbox"
                     value="MAN-KOSONG"
                     data-kosong="true"
-                    class="rounded text-fad-green focus:ring-fad-green"
-                  />
-                  <span class="italic text-gray-500">-- Kosong / Nihil --</span>
-                </label>
+                    class="rounded text-fad-green"
+                  /><span class="italic text-gray-500"
+                    >-- Kosong / Nihil --</span
+                  ></label
+                >
                 <hr />
                 <label
                   class="flex items-center space-x-2 p-2 rounded hover:bg-gray-100 cursor-pointer"
-                >
-                  <input
+                  ><input
                     type="checkbox"
                     value="O1 : Opt Exca OJT"
-                    class="rounded text-fad-green focus:ring-fad-green"
-                  />
-                  <span>O1 : Opt Exca OJT</span>
-                </label>
+                    class="rounded text-fad-green"
+                  /><span>O1 : Opt Exca OJT</span></label
+                >
                 <label
                   class="flex items-center space-x-2 p-2 rounded hover:bg-gray-100 cursor-pointer"
-                >
-                  <input
+                  ><input
                     type="checkbox"
                     value="O2 : Opt DT OJT"
-                    class="rounded text-fad-green focus:ring-fad-green"
-                  />
-                  <span>O2 : Opt DT OJT</span>
-                </label>
+                    class="rounded text-fad-green"
+                  /><span>O2 : Opt DT OJT</span></label
+                >
                 <label
                   class="flex items-center space-x-2 p-2 rounded hover:bg-gray-100 cursor-pointer"
-                >
-                  <input
+                  ><input
                     type="checkbox"
                     value="O3 : Skill Opt"
-                    class="rounded text-fad-green focus:ring-fad-green"
-                  />
-                  <span>O3 : Skill Opt</span>
-                </label>
+                    class="rounded text-fad-green"
+                  /><span>O3 : Skill Opt</span></label
+                >
               </div>
             </div>
-            <select id="manProblem" name="manProblem" multiple class="hidden">
-              <option value="MAN-KOSONG">MAN-KOSONG</option>
-              <option value="O1 : Opt Exca OJT">O1 : Opt Exca OJT</option>
-              <option value="O2 : Opt DT OJT">O2 : Opt DT OJT</option>
-              <option value="O3 : Skill Opt">O3 : Skill Opt</option>
+            <select id="manProblem" multiple class="hidden">
+              <option value="MAN-KOSONG"></option>
+              <option value="O1 : Opt Exca OJT"></option>
+              <option value="O2 : Opt DT OJT"></option>
+              <option value="O3 : Skill Opt"></option>
             </select>
           </div>
 
           <div class="relative" data-multiselect-dropdown>
             <button
               type="button"
-              class="multiselect-button w-full flex justify-between items-center p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-500 hover:text-gray-700"
+              class="multiselect-button w-full flex justify-between items-center p-3 border border-gray-300 rounded-lg shadow-sm"
             >
-              <span>MACHINE</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
+              <span>MACHINE</span
+              ><svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path
                   fill-rule="evenodd"
                   d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
                   clip-rule="evenodd"
-                />
+                ></path>
               </svg>
             </button>
             <div
-              class="multiselect-panel hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto"
+              class="multiselect-panel hidden absolute z-20 w-full mt-1 bg-white border rounded-lg shadow-lg max-h-60 overflow-y-auto"
             >
               <div class="p-2 space-y-1">
                 <label
                   class="flex items-center space-x-2 p-2 rounded hover:bg-gray-100 cursor-pointer"
-                >
-                  <input
+                  ><input
                     type="checkbox"
                     value="MACHINE-KOSONG"
                     data-kosong="true"
-                    class="rounded text-fad-green focus:ring-fad-green"
-                  />
-                  <span class="italic text-gray-500">-- Kosong / Nihil --</span>
-                </label>
+                    class="rounded text-fad-green"
+                  /><span class="italic text-gray-500"
+                    >-- Kosong / Nihil --</span
+                  ></label
+                >
                 <hr />
                 <label
                   class="flex items-center space-x-2 p-2 rounded hover:bg-gray-100 cursor-pointer"
                   ><input
                     type="checkbox"
                     value="U1 : Boom Loader Low Power"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>U1 : Boom Loader Low Power</span></label
                 >
                 <label
@@ -199,7 +176,7 @@
                   ><input
                     type="checkbox"
                     value="U2 : Engine Loader Low Power"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>U2 : Engine Loader Low Power</span></label
                 >
                 <label
@@ -207,7 +184,7 @@
                   ><input
                     type="checkbox"
                     value="U3 : Tooth Bucket Problem"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>U3 : Tooth Bucket Problem</span></label
                 >
                 <label
@@ -215,7 +192,7 @@
                   ><input
                     type="checkbox"
                     value="U4 : Loader Bersihkan Vessel Hauler"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>U4 : Loader Bersihkan Vessel Hauler</span></label
                 >
                 <label
@@ -223,7 +200,7 @@
                   ><input
                     type="checkbox"
                     value="U5 : Track Problem"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>U5 : Track Problem</span></label
                 >
                 <label
@@ -231,7 +208,7 @@
                   ><input
                     type="checkbox"
                     value="H1 : DT Amblas-amblasan di Disposal"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>H1 : DT Amblas-amblasan di Disposal</span></label
                 >
                 <label
@@ -239,7 +216,7 @@
                   ><input
                     type="checkbox"
                     value="H2 : DT Refueling"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>H2 : DT Refueling</span></label
                 >
                 <label
@@ -247,7 +224,7 @@
                   ><input
                     type="checkbox"
                     value="H3 : DT Kurang (Breakdown)"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>H3 : DT Kurang (Breakdown)</span></label
                 >
                 <label
@@ -255,7 +232,7 @@
                   ><input
                     type="checkbox"
                     value="H4 : DT Kurang (Jarak Buang Jauh)"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>H4 : DT Kurang (Jarak Buang Jauh)</span></label
                 >
                 <label
@@ -263,7 +240,7 @@
                   ><input
                     type="checkbox"
                     value="H5 : DT Kurang (No Oprator)"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>H5 : DT Kurang (No Oprator)</span></label
                 >
                 <label
@@ -271,7 +248,7 @@
                   ><input
                     type="checkbox"
                     value="H6 : Opt DT Menghadap"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>H6 : Opt DT Menghadap</span></label
                 >
                 <label
@@ -279,7 +256,7 @@
                   ><input
                     type="checkbox"
                     value="H7 : Opt DT Cek Fatigue"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>H7 : Opt DT Cek Fatigue</span></label
                 >
                 <label
@@ -287,7 +264,7 @@
                   ><input
                     type="checkbox"
                     value="H8 : Opt DT Ambil MK"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>H8 : Opt DT Ambil MK</span></label
                 >
                 <label
@@ -295,7 +272,7 @@
                   ><input
                     type="checkbox"
                     value="H9 : Opt DT ke Toilet"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>H9 : Opt DT ke Toilet</span></label
                 >
                 <label
@@ -303,7 +280,7 @@
                   ><input
                     type="checkbox"
                     value="H10 : DT Kerok Vessel"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>H10 : DT Kerok Vessel</span></label
                 >
                 <label
@@ -311,104 +288,68 @@
                   ><input
                     type="checkbox"
                     value="H11 : DT Masuk PIT Stop"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>H11 : DT Masuk PIT Stop</span></label
                 >
               </div>
             </div>
-            <select
-              id="machineProblem"
-              name="machineProblem"
-              multiple
-              class="hidden"
-            >
-              <option value="MACHINE-KOSONG">MACHINE-KOSONG</option>
-              <option value="U1 : Boom Loader Low Power">
-                U1 : Boom Loader Low Power
-              </option>
-              <option value="U2 : Engine Loader Low Power">
-                U2 : Engine Loader Low Power
-              </option>
-              <option value="U3 : Tooth Bucket Problem">
-                U3 : Tooth Bucket Problem
-              </option>
-              <option value="U4 : Loader Bersihkan Vessel Hauler">
-                U4 : Loader Bersihkan Vessel Hauler
-              </option>
-              <option value="U5 : Track Problem">U5 : Track Problem</option>
-              <option value="H1 : DT Amblas-amblasan di Disposal">
-                H1 : DT Amblas-amblasan di Disposal
-              </option>
-              <option value="H2 : DT Refueling">H2 : DT Refueling</option>
-              <option value="H3 : DT Kurang (Breakdown)">
-                H3 : DT Kurang (Breakdown)
-              </option>
-              <option value="H4 : DT Kurang (Jarak Buang Jauh)">
-                H4 : DT Kurang (Jarak Buang Jauh)
-              </option>
-              <option value="H5 : DT Kurang (No Oprator)">
-                H5 : DT Kurang (No Oprator)
-              </option>
-              <option value="H6 : Opt DT Menghadap">
-                H6 : Opt DT Menghadap
-              </option>
-              <option value="H7 : Opt DT Cek Fatigue">
-                H7 : Opt DT Cek Fatigue
-              </option>
-              <option value="H8 : Opt DT Ambil MK">H8 : Opt DT Ambil MK</option>
-              <option value="H9 : Opt DT ke Toilet">
-                H9 : Opt DT ke Toilet
-              </option>
-              <option value="H10 : DT Kerok Vessel">
-                H10 : DT Kerok Vessel
-              </option>
-              <option value="H11 : DT Masuk PIT Stop">
-                H11 : DT Masuk PIT Stop
-              </option>
+            <select id="machineProblem" multiple class="hidden">
+              <option value="MACHINE-KOSONG"></option>
+              <option value="U1 : Boom Loader Low Power"></option>
+              <option value="U2 : Engine Loader Low Power"></option>
+              <option value="U3 : Tooth Bucket Problem"></option>
+              <option value="U4 : Loader Bersihkan Vessel Hauler"></option>
+              <option value="U5 : Track Problem"></option>
+              <option value="H1 : DT Amblas-amblasan di Disposal"></option>
+              <option value="H2 : DT Refueling"></option>
+              <option value="H3 : DT Kurang (Breakdown)"></option>
+              <option value="H4 : DT Kurang (Jarak Buang Jauh)"></option>
+              <option value="H5 : DT Kurang (No Oprator)"></option>
+              <option value="H6 : Opt DT Menghadap"></option>
+              <option value="H7 : Opt DT Cek Fatigue"></option>
+              <option value="H8 : Opt DT Ambil MK"></option>
+              <option value="H9 : Opt DT ke Toilet"></option>
+              <option value="H10 : DT Kerok Vessel"></option>
+              <option value="H11 : DT Masuk PIT Stop"></option>
             </select>
           </div>
 
           <div class="relative" data-multiselect-dropdown>
             <button
               type="button"
-              class="multiselect-button w-full flex justify-between items-center p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-500 hover:text-gray-700"
+              class="multiselect-button w-full flex justify-between items-center p-3 border border-gray-300 rounded-lg shadow-sm"
             >
-              <span>MATERIAL</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
+              <span>MATERIAL</span
+              ><svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path
                   fill-rule="evenodd"
                   d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
                   clip-rule="evenodd"
-                />
+                ></path>
               </svg>
             </button>
             <div
-              class="multiselect-panel hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto"
+              class="multiselect-panel hidden absolute z-20 w-full mt-1 bg-white border rounded-lg shadow-lg max-h-60 overflow-y-auto"
             >
               <div class="p-2 space-y-1">
                 <label
                   class="flex items-center space-x-2 p-2 rounded hover:bg-gray-100 cursor-pointer"
-                >
-                  <input
+                  ><input
                     type="checkbox"
                     value="MATERIAL-KOSONG"
                     data-kosong="true"
-                    class="rounded text-fad-green focus:ring-fad-green"
-                  />
-                  <span class="italic text-gray-500">-- Kosong / Nihil --</span>
-                </label>
+                    class="rounded text-fad-green"
+                  /><span class="italic text-gray-500"
+                    >-- Kosong / Nihil --</span
+                  ></label
+                >
                 <hr />
                 <label
                   class="flex items-center space-x-2 p-2 rounded hover:bg-gray-100 cursor-pointer"
                   ><input
                     type="checkbox"
                     value="M1 : Non Volume"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>M1 : Non Volume</span></label
                 >
                 <label
@@ -416,7 +357,7 @@
                   ><input
                     type="checkbox"
                     value="M2 : Material Boulder - Blasting"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>M2 : Material Boulder - Blasting</span></label
                 >
                 <label
@@ -424,7 +365,7 @@
                   ><input
                     type="checkbox"
                     value="M3 : Material Keras - Blasting"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>M3 : Material Keras - Blasting</span></label
                 >
                 <label
@@ -432,7 +373,7 @@
                   ><input
                     type="checkbox"
                     value="M4 : Material Keras - Blasting - Ripping"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>M4 : Material Keras - Blasting - Ripping</span></label
                 >
                 <label
@@ -440,7 +381,7 @@
                   ><input
                     type="checkbox"
                     value="M5 : Material Keras - Non Blasting - Non Ripping"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span
                     >M5 : Material Keras - Non Blasting - Non Ripping</span
                   ></label
@@ -450,7 +391,7 @@
                   ><input
                     type="checkbox"
                     value="M6 : Material Keras - Non Blasting - Ripping"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span
                     >M6 : Material Keras - Non Blasting - Ripping</span
                   ></label
@@ -460,7 +401,7 @@
                   ><input
                     type="checkbox"
                     value="M7 : Material Lumpur"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>M7 : Material Lumpur</span></label
                 >
                 <label
@@ -468,7 +409,7 @@
                   ><input
                     type="checkbox"
                     value="M8 : Material Tipis"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>M8 : Material Tipis</span></label
                 >
                 <label
@@ -476,7 +417,7 @@
                   ><input
                     type="checkbox"
                     value="M9 : Material Clearing"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>M9 : Material Clearing</span></label
                 >
                 <label
@@ -484,86 +425,66 @@
                   ><input
                     type="checkbox"
                     value="M10 : Material Longsoran"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>M10 : Material Longsoran</span></label
                 >
               </div>
             </div>
-            <select
-              id="materialProblem"
-              name="materialProblem"
-              multiple
-              class="hidden"
-            >
-              <option value="MATERIAL-KOSONG">MATERIAL-KOSONG</option>
-              <option value="M1 : Non Volume">M1 : Non Volume</option>
-              <option value="M2 : Material Boulder - Blasting">
-                M2 : Material Boulder - Blasting
-              </option>
-              <option value="M3 : Material Keras - Blasting">
-                M3 : Material Keras - Blasting
-              </option>
-              <option value="M4 : Material Keras - Blasting - Ripping">
-                M4 : Material Keras - Blasting - Ripping
-              </option>
-              <option value="M5 : Material Keras - Non Blasting - Non Ripping">
-                M5 : Material Keras - Non Blasting - Non Ripping
-              </option>
-              <option value="M6 : Material Keras - Non Blasting - Ripping">
-                M6 : Material Keras - Non Blasting - Ripping
-              </option>
-              <option value="M7 : Material Lumpur">M7 : Material Lumpur</option>
-              <option value="M8 : Material Tipis">M8 : Material Tipis</option>
-              <option value="M9 : Material Clearing">
-                M9 : Material Clearing
-              </option>
-              <option value="M10 : Material Longsoran">
-                M10 : Material Longsoran
-              </option>
+            <select id="materialProblem" multiple class="hidden">
+              <option value="MATERIAL-KOSONG"></option>
+              <option value="M1 : Non Volume"></option>
+              <option value="M2 : Material Boulder - Blasting"></option>
+              <option value="M3 : Material Keras - Blasting"></option>
+              <option value="M4 : Material Keras - Blasting - Ripping"></option>
+              <option
+                value="M5 : Material Keras - Non Blasting - Non Ripping"
+              ></option>
+              <option
+                value="M6 : Material Keras - Non Blasting - Ripping"
+              ></option>
+              <option value="M7 : Material Lumpur"></option>
+              <option value="M8 : Material Tipis"></option>
+              <option value="M9 : Material Clearing"></option>
+              <option value="M10 : Material Longsoran"></option>
             </select>
           </div>
 
           <div class="relative" data-multiselect-dropdown>
             <button
               type="button"
-              class="multiselect-button w-full flex justify-between items-center p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-500 hover:text-gray-700"
+              class="multiselect-button w-full flex justify-between items-center p-3 border border-gray-300 rounded-lg shadow-sm"
             >
-              <span>METHOD</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
+              <span>METHOD</span
+              ><svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path
                   fill-rule="evenodd"
                   d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
                   clip-rule="evenodd"
-                />
+                ></path>
               </svg>
             </button>
             <div
-              class="multiselect-panel hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto"
+              class="multiselect-panel hidden absolute z-20 w-full mt-1 bg-white border rounded-lg shadow-lg max-h-60 overflow-y-auto"
             >
               <div class="p-2 space-y-1">
                 <label
                   class="flex items-center space-x-2 p-2 rounded hover:bg-gray-100 cursor-pointer"
-                >
-                  <input
+                  ><input
                     type="checkbox"
                     value="METHOD-KOSONG"
                     data-kosong="true"
-                    class="rounded text-fad-green focus:ring-fad-green"
-                  />
-                  <span class="italic text-gray-500">-- Kosong / Nihil --</span>
-                </label>
+                    class="rounded text-fad-green"
+                  /><span class="italic text-gray-500"
+                    >-- Kosong / Nihil --</span
+                  ></label
+                >
                 <hr />
                 <label
                   class="flex items-center space-x-2 p-2 rounded hover:bg-gray-100 cursor-pointer"
                   ><input
                     type="checkbox"
                     value="L1 : Double Bench"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>L1 : Double Bench</span></label
                 >
                 <label
@@ -571,7 +492,7 @@
                   ><input
                     type="checkbox"
                     value="L2 : Drop Cut"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>L2 : Drop Cut</span></label
                 >
                 <label
@@ -579,7 +500,7 @@
                   ><input
                     type="checkbox"
                     value="L3 : Top Loading"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>L3 : Top Loading</span></label
                 >
                 <label
@@ -587,7 +508,7 @@
                   ><input
                     type="checkbox"
                     value="L4 : Back Loading"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>L4 : Back Loading</span></label
                 >
                 <label
@@ -595,7 +516,7 @@
                   ><input
                     type="checkbox"
                     value="L5 : Drop Cut (Mencangkul)"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>L5 : Drop Cut (Mencangkul)</span></label
                 >
                 <label
@@ -603,72 +524,58 @@
                   ><input
                     type="checkbox"
                     value="L6 : Selective Loading"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>L6 : Selective Loading</span></label
                 >
               </div>
             </div>
-            <select
-              id="methodProblem"
-              name="methodProblem"
-              multiple
-              class="hidden"
-            >
-              <option value="METHOD-KOSONG">METHOD-KOSONG</option>
-              <option value="L1 : Double Bench">L1 : Double Bench</option>
-              <option value="L2 : Drop Cut">L2 : Drop Cut</option>
-              <option value="L3 : Top Loading">L3 : Top Loading</option>
-              <option value="L4 : Back Loading">L4 : Back Loading</option>
-              <option value="L5 : Drop Cut (Mencangkul)">
-                L5 : Drop Cut (Mencangkul)
-              </option>
-              <option value="L6 : Selective Loading">
-                L6 : Selective Loading
-              </option>
+            <select id="methodProblem" multiple class="hidden">
+              <option value="METHOD-KOSONG"></option>
+              <option value="L1 : Double Bench"></option>
+              <option value="L2 : Drop Cut"></option>
+              <option value="L3 : Top Loading"></option>
+              <option value="L4 : Back Loading"></option>
+              <option value="L5 : Drop Cut (Mencangkul)"></option>
+              <option value="L6 : Selective Loading"></option>
             </select>
           </div>
 
           <div class="relative" data-multiselect-dropdown>
             <button
               type="button"
-              class="multiselect-button w-full flex justify-between items-center p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-500 hover:text-gray-700"
+              class="multiselect-button w-full flex justify-between items-center p-3 border border-gray-300 rounded-lg shadow-sm"
             >
-              <span>ENVIRONMENT</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
+              <span>ENVIRONMENT</span
+              ><svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path
                   fill-rule="evenodd"
                   d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
                   clip-rule="evenodd"
-                />
+                ></path>
               </svg>
             </button>
             <div
-              class="multiselect-panel hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto"
+              class="multiselect-panel hidden absolute z-20 w-full mt-1 bg-white border rounded-lg shadow-lg max-h-60 overflow-y-auto"
             >
               <div class="p-2 space-y-1">
                 <label
                   class="flex items-center space-x-2 p-2 rounded hover:bg-gray-100 cursor-pointer"
-                >
-                  <input
+                  ><input
                     type="checkbox"
                     value="ENVIRONMENT-KOSONG"
                     data-kosong="true"
-                    class="rounded text-fad-green focus:ring-fad-green"
-                  />
-                  <span class="italic text-gray-500">-- Kosong / Nihil --</span>
-                </label>
+                    class="rounded text-fad-green"
+                  /><span class="italic text-gray-500"
+                    >-- Kosong / Nihil --</span
+                  ></label
+                >
                 <hr />
                 <label
                   class="flex items-center space-x-2 p-2 rounded hover:bg-gray-100 cursor-pointer"
                   ><input
                     type="checkbox"
                     value="D1 : Disp. Crowded"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>D1 : Disp. Crowded</span></label
                 >
                 <label
@@ -676,7 +583,7 @@
                   ><input
                     type="checkbox"
                     value="D2 : Disposal Lembek/Berair/Licin/Amblas"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>D2 : Disposal Lembek/Berair/Licin/Amblas</span></label
                 >
                 <label
@@ -684,7 +591,7 @@
                   ><input
                     type="checkbox"
                     value="D3 : Disposal Undulating"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>D3 : Disposal Undulating</span></label
                 >
                 <label
@@ -692,7 +599,7 @@
                   ><input
                     type="checkbox"
                     value="F1 : Front Undulating"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>F1 : Front Undulating</span></label
                 >
                 <label
@@ -700,7 +607,7 @@
                   ><input
                     type="checkbox"
                     value="F2 : Front Menanjak"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>F2 : Front Menanjak</span></label
                 >
                 <label
@@ -708,7 +615,7 @@
                   ><input
                     type="checkbox"
                     value="F3 : Front Melorong"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>F3 : Front Melorong</span></label
                 >
                 <label
@@ -716,7 +623,7 @@
                   ><input
                     type="checkbox"
                     value="F4 : Front Berdebu"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>F4 : Front Berdebu</span></label
                 >
                 <label
@@ -724,7 +631,7 @@
                   ><input
                     type="checkbox"
                     value="F5 : Front Crowded"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>F5 : Front Crowded</span></label
                 >
                 <label
@@ -732,7 +639,7 @@
                   ><input
                     type="checkbox"
                     value="F6 : Front Lembek/Licin/Berair /Amblas"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>F6 : Front Lembek/Licin/Berair /Amblas</span></label
                 >
                 <label
@@ -740,7 +647,7 @@
                   ><input
                     type="checkbox"
                     value="F7 : Front Sempit"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>F7 : Front Sempit</span></label
                 >
                 <label
@@ -748,7 +655,7 @@
                   ><input
                     type="checkbox"
                     value="F8 : Dudukan PC Lembek"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>F8 : Dudukan PC Lembek</span></label
                 >
                 <label
@@ -756,7 +663,7 @@
                   ><input
                     type="checkbox"
                     value="R1 : Road Berdebu"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>R1 : Road Berdebu</span></label
                 >
                 <label
@@ -764,7 +671,7 @@
                   ><input
                     type="checkbox"
                     value="R2 : Road Undulating"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>R2 : Road Undulating</span></label
                 >
                 <label
@@ -772,7 +679,7 @@
                   ><input
                     type="checkbox"
                     value="R3 : Road Berkabut"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>R3 : Road Berkabut</span></label
                 >
                 <label
@@ -780,7 +687,7 @@
                   ><input
                     type="checkbox"
                     value="R4 : Road Crowded"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>R4 : Road Crowded</span></label
                 >
                 <label
@@ -788,7 +695,7 @@
                   ><input
                     type="checkbox"
                     value="R5 : Road Licin"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>R5 : Road Licin</span></label
                 >
                 <label
@@ -796,7 +703,7 @@
                   ><input
                     type="checkbox"
                     value="R6 : Road Rusak"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>R6 : Road Rusak</span></label
                 >
                 <label
@@ -804,7 +711,7 @@
                   ><input
                     type="checkbox"
                     value="R7 : Road Sempit"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>R7 : Road Sempit</span></label
                 >
                 <label
@@ -812,49 +719,32 @@
                   ><input
                     type="checkbox"
                     value="R8 : Road Maintenance"
-                    class="rounded text-fad-green focus:ring-fad-green"
+                    class="rounded text-fad-green"
                   /><span>R8 : Road Maintenance</span></label
                 >
               </div>
             </div>
-            <select
-              id="environmentProblem"
-              name="environmentProblem"
-              multiple
-              class="hidden"
-            >
-              <option value="ENVIRONMENT-KOSONG">ENVIRONMENT-KOSONG</option>
-              <option value="D1 : Disp. Crowded">D1 : Disp. Crowded</option>
-              <option value="D2 : Disposal Lembek/Berair/Licin/Amblas">
-                D2 : Disposal Lembek/Berair/Licin/Amblas
-              </option>
-              <option value="D3 : Disposal Undulating">
-                D3 : Disposal Undulating
-              </option>
-              <option value="F1 : Front Undulating">
-                F1 : Front Undulating
-              </option>
-              <option value="F2 : Front Menanjak">F2 : Front Menanjak</option>
-              <option value="F3 : Front Melorong">F3 : Front Melorong</option>
-              <option value="F4 : Front Berdebu">F4 : Front Berdebu</option>
-              <option value="F5 : Front Crowded">F5 : Front Crowded</option>
-              <option value="F6 : Front Lembek/Licin/Berair /Amblas">
-                F6 : Front Lembek/Licin/Berair /Amblas
-              </option>
-              <option value="F7 : Front Sempit">F7 : Front Sempit</option>
-              <option value="F8 : Dudukan PC Lembek">
-                F8 : Dudukan PC Lembek
-              </option>
-              <option value="R1 : Road Berdebu">R1 : Road Berdebu</option>
-              <option value="R2 : Road Undulating">R2 : Road Undulating</option>
-              <option value="R3 : Road Berkabut">R3 : Road Berkabut</option>
-              <option value="R4 : Road Crowded">R4 : Road Crowded</option>
-              <option value="R5 : Road Licin">R5 : Road Licin</option>
-              <option value="R6 : Road Rusak">R6 : Road Rusak</option>
-              <option value="R7 : Road Sempit">R7 : Road Sempit</option>
-              <option value="R8 : Road Maintenance">
-                R8 : Road Maintenance
-              </option>
+            <select id="environmentProblem" multiple class="hidden">
+              <option value="ENVIRONMENT-KOSONG"></option>
+              <option value="D1 : Disp. Crowded"></option>
+              <option value="D2 : Disposal Lembek/Berair/Licin/Amblas"></option>
+              <option value="D3 : Disposal Undulating"></option>
+              <option value="F1 : Front Undulating"></option>
+              <option value="F2 : Front Menanjak"></option>
+              <option value="F3 : Front Melorong"></option>
+              <option value="F4 : Front Berdebu"></option>
+              <option value="F5 : Front Crowded"></option>
+              <option value="F6 : Front Lembek/Licin/Berair /Amblas"></option>
+              <option value="F7 : Front Sempit"></option>
+              <option value="F8 : Dudukan PC Lembek"></option>
+              <option value="R1 : Road Berdebu"></option>
+              <option value="R2 : Road Undulating"></option>
+              <option value="R3 : Road Berkabut"></option>
+              <option value="R4 : Road Crowded"></option>
+              <option value="R5 : Road Licin"></option>
+              <option value="R6 : Road Rusak"></option>
+              <option value="R7 : Road Sempit"></option>
+              <option value="R8 : Road Maintenance"></option>
             </select>
           </div>
 
@@ -863,20 +753,20 @@
               id="remaksTambahan"
               placeholder="REMAKS TAMBAHAN (opsional)"
               rows="3"
-              class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-700"
+              class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green"
             ></textarea>
           </div>
 
           <div class="pt-4 flex items-center space-x-4">
             <a
               href="index.html"
-              class="w-1/2 bg-fad-yellow hover:bg-yellow-500 text-white font-bold py-3 rounded-lg shadow-lg transition duration-300 transform hover:scale-105 text-center"
+              class="w-1/2 bg-fad-yellow hover:bg-yellow-500 text-white font-bold py-3 rounded-lg shadow-lg transition transform hover:scale-105 text-center"
             >
               MULAI ULANG
             </a>
             <button
               type="submit"
-              class="w-1/2 bg-fad-green hover:bg-green-700 text-white font-bold py-3 rounded-lg shadow-lg transition duration-300 transform hover:scale-105 text-center"
+              class="w-1/2 bg-fad-green hover:bg-green-700 text-white font-bold py-3 rounded-lg shadow-lg transition transform hover:scale-105 text-center"
             >
               SUBMIT ALL
             </button>
@@ -885,19 +775,19 @@
       </main>
     </div>
 
-    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="js/analisa-form.js"></script>
-    <script>
-      const preloader = document.getElementById("preloader");
 
-      window.addEventListener("load", function () {
-        // Tambahkan delay sedikit agar transisi lebih mulus
-        setTimeout(function () {
-          preloader.style.display = "none";
-        }, 500); // 0.5 detik
-      });
+    <script>
+      // Script untuk preloader
+      const preloader = document.getElementById("preloader");
+      if (preloader) {
+        window.addEventListener("load", function () {
+          setTimeout(function () {
+            preloader.style.display = "none";
+          }, 500);
+        });
+      }
     </script>
   </body>
 </html>
