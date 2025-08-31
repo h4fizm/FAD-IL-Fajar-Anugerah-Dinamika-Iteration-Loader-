@@ -28,6 +28,8 @@ function initializeProcess() {
   // --- STATE MANAGEMENT ---
   let loaderTimer = 0,
     haulerTimer = 0;
+  let totalLoaderTimeAccumulated = 0, // Variabel untuk total waktu loader
+    totalHaulerTimeAccumulated = 0; // Variabel untuk total waktu hauler
   let loaderInterval, haulerInterval;
   let activeProcess = null;
   let processHistory = JSON.parse(localStorage.getItem("processHistory")) || [];
@@ -179,14 +181,12 @@ function initializeProcess() {
       return;
     }
 
-    // --- PERBAIKAN BUG 1: TOMBOL 'IN' TIDAK MENYALA JIKA GAGAL VALIDASI ---
     if (processName === "in" && activeProcess !== "out") {
       Swal.fire(
         "Urutan Salah",
         "Proses Hauler harus diawali dengan 'OUT'.",
         "error"
       );
-      // Secara eksplisit pastikan tombol 'in' tidak memiliki class 'active'
       document.getElementById("btn-in").classList.remove("active");
       return;
     }
@@ -207,12 +207,10 @@ function initializeProcess() {
     }, 10);
   };
 
-  // --- PERBAIKAN BUG 2: FUNGSI RESET SPESIFIK PER SIKLUS ---
   const resetSpecificCycle = (cycleType) => {
     const processesToReset =
       cycleType === "loader" ? loaderProcesses : haulerProcesses;
 
-    // Hentikan timer utama & proses aktif jika sesuai dengan siklus yang direset
     if (cycleType === "loader") {
       clearInterval(loaderInterval);
       loaderInterval = null;
@@ -220,7 +218,6 @@ function initializeProcess() {
       loaderSessionCount = 0;
       updateMainTimerDisplay("loader");
     } else {
-      // hauler
       clearInterval(haulerInterval);
       haulerInterval = null;
       haulerTimer = 0;
@@ -228,13 +225,11 @@ function initializeProcess() {
       updateMainTimerDisplay("hauler");
     }
 
-    // Hentikan proses yang mungkin masih aktif
     if (activeCycle === cycleType && activeProcess) {
       stopProcess(activeProcess);
       activeProcess = null;
     }
 
-    // Reset semua timer proses individual untuk siklus ini
     processesToReset.forEach((pName) => {
       if (processIntervals[pName]) clearInterval(processIntervals[pName]);
       processTimers[pName] = 0;
@@ -242,11 +237,9 @@ function initializeProcess() {
       document.getElementById(`btn-${pName}`).classList.remove("active");
     });
 
-    // Hapus histori yang relevan
     processHistory = processHistory.filter((p) => p.cycle !== cycleType);
     saveHistory();
 
-    // Jika siklus yang direset sedang aktif, kembalikan ke state netral
     if (activeCycle === cycleType) {
       activeCycle = null;
       toggleButtons(loaderActionButtons, false);
@@ -284,6 +277,10 @@ function initializeProcess() {
     activeProcess = null;
     loaderSessionCount++;
 
+    totalLoaderTimeAccumulated += loaderTimer; // Akumulasi total waktu
+    loaderTimer = 0; // Reset timer sesi
+    updateMainTimerDisplay("loader"); // Perbarui tampilan ke 00:00:00
+
     Swal.fire({
       icon: "success",
       title: `Siklus Loader Sesi ${loaderSessionCount} Selesai!`,
@@ -315,6 +312,10 @@ function initializeProcess() {
     haulerInterval = null;
     activeProcess = null;
     haulerSessionCount++;
+
+    totalHaulerTimeAccumulated += haulerTimer; // Akumulasi total waktu
+    haulerTimer = 0; // Reset timer sesi
+    updateMainTimerDisplay("hauler"); // Perbarui tampilan ke 00:00:00
 
     Swal.fire({
       icon: "success",
@@ -358,14 +359,14 @@ function initializeProcess() {
     const loaderFinalData = {
       pengajuan: pengajuanData,
       initialData: JSON.parse(formData),
-      totalLoaderTime: loaderTimer,
+      totalLoaderTime: totalLoaderTimeAccumulated, // Gunakan total waktu yang terakumulasi
       processHistory: loaderHistory,
     };
 
     const haulerFinalData = {
       pengajuan: pengajuanData,
       initialData: JSON.parse(formData),
-      totalHaulerTime: haulerTimer,
+      totalHaulerTime: totalHaulerTimeAccumulated, // Gunakan total waktu yang terakumulasi
       processHistory: haulerHistory,
     };
 
@@ -390,7 +391,7 @@ function initializeProcess() {
     });
   };
 
-  // --- EVENT LISTENERS (diperbarui untuk reset spesifik) ---
+  // --- EVENT LISTENERS ---
   mainContainer.addEventListener("click", (e) => {
     const button = e.target.closest("button");
     if (!button) return;
@@ -403,9 +404,9 @@ function initializeProcess() {
       button.classList.add("process-button");
       startProcess(processName);
     } else if (id === "btn-reset") {
-      resetSpecificCycle("loader"); // Memanggil reset untuk loader
+      resetSpecificCycle("loader");
     } else if (id === "btn-reset-hauler") {
-      resetSpecificCycle("hauler"); // Memanggil reset untuk hauler
+      resetSpecificCycle("hauler");
     } else if (id === "btn-finish") {
       finishLoaderCycle();
     } else if (id === "btn-finish-hauler") {
