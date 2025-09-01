@@ -46,6 +46,10 @@
   <body
     class="bg-fad-light flex flex-col items-center justify-start min-h-screen font-sans p-4"
   >
+    <div id="preloader">
+      <div class="loader"></div>
+    </div>
+
     <div
       class="relative z-10 w-full max-w-sm mx-auto flex flex-col items-center"
     >
@@ -241,5 +245,16 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="js/result-logic.js"></script>
+    <script>
+      // Script untuk preloader
+      const preloader = document.getElementById("preloader");
+      if (preloader) {
+        window.addEventListener("load", function () {
+          setTimeout(function () {
+            preloader.style.display = "none";
+          }, 500);
+        });
+      }
+    </script>
   </body>
 </html>
