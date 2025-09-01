@@ -300,22 +300,30 @@
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-
     <script>
       document
         .getElementById("btn-preview-pdf")
         .addEventListener("click", function () {
           const { jsPDF } = window.jspdf;
 
-          const reportData = JSON.parse(
-            localStorage.getItem("fullCycleReportData")
-          );
-          if (!reportData) {
-            Swal.fire({
-              icon: "error",
-              title: "Data Tidak Ditemukan",
-              text: "Silakan isi form terlebih dahulu.",
-            });
+          const reportDataString = localStorage.getItem("fullCycleReportData");
+          if (!reportDataString) {
+            Swal.fire(
+              "Data Tidak Ditemukan",
+              "Silakan isi form terlebih dahulu.",
+              "error"
+            );
+            return;
+          }
+
+          const reportData = JSON.parse(reportDataString);
+          // Validasi jika data hasil kalkulasi belum tersimpan
+          if (!reportData.calculatedResults) {
+            Swal.fire(
+              "Data Tidak Lengkap",
+              "Hasil kalkulasi tidak ditemukan. Harap kembali ke halaman resume.",
+              "error"
+            );
             return;
           }
 
@@ -326,60 +334,10 @@
             didOpen: () => Swal.showLoading(),
           });
 
+          // --- AMBIL DATA YANG SUDAH JADI (TANPA PERHITUNGAN ULANG) ---
           const initialData = reportData.initialData;
-          const loaderSessions = reportData.cycleTime.loader || {};
-          const haulerSessions = reportData.cycleTime.hauler || {};
-          const jumlahSesiLoader = Object.keys(loaderSessions).length;
-          const jumlahSesiHauler = Object.keys(haulerSessions).length;
-          const allLoaderProcesses = Object.values(loaderSessions).flatMap(
-            (s) => s.processes
-          );
-          const calculateAvg = (name) => {
-            const p = allLoaderProcesses.filter(
-              (proc) => proc.name.toUpperCase() === name.toUpperCase()
-            );
-            return p.length === 0
-              ? 0
-              : p.reduce((sum, proc) => sum + proc.time, 0) / p.length;
-          };
-          const totalDumps = allLoaderProcesses.filter(
-            (p) => p.name.toUpperCase() === "BUCKET DUMP"
-          ).length;
-          const rataRataPassing =
-            jumlahSesiLoader > 0
-              ? Math.round(totalDumps / jumlahSesiLoader)
-              : 0;
-          const totalCycleTimeLoaderMs = Object.values(loaderSessions).reduce(
-            (s, c) => s + c.totalTime,
-            0
-          );
-          const avgCycleTimeLoaderMs =
-            jumlahSesiLoader > 0
-              ? totalCycleTimeLoaderMs / jumlahSesiLoader
-              : 0;
-          const avgLoadingTimeMin = avgCycleTimeLoaderMs / 1000 / 60;
-          const totalCycleTimeHaulerMs = Object.values(haulerSessions).reduce(
-            (s, c) => s + c.totalTime,
-            0
-          );
-          const avgCycleTimeHaulerMin =
-            (jumlahSesiHauler > 0
-              ? totalCycleTimeHaulerMs / jumlahSesiHauler
-              : 0) /
-            1000 /
-            60;
-          const jarakDumping = parseFloat(initialData.jarak_dumping || 0);
-          const jumlahHauler = parseFloat(initialData.jumlah_hauler || 0);
-          const avgKecepatanHauler =
-            avgCycleTimeHaulerMin > 0
-              ? (2 * (jarakDumping / 1000)) / (avgCycleTimeHaulerMin / 60)
-              : 0;
-          const matchingFleet =
-            avgCycleTimeHaulerMin > 0
-              ? (jumlahHauler * avgLoadingTimeMin) / avgCycleTimeHaulerMin
-              : 0;
-          const proyeksiProdty =
-            avgLoadingTimeMin > 0 ? Math.round(60 / avgLoadingTimeMin) : 0;
+          const results = reportData.calculatedResults;
+          const analisa = reportData.analisaProblem;
 
           const doc = new jsPDF();
           doc.setFontSize(10);
@@ -398,9 +356,7 @@
           );
           doc.setFontSize(12).setFont("helvetica", "normal");
           doc.text(
-            `${reportData.pengajuan?.hari || ""}, ${
-              reportData.pengajuan?.tanggal || ""
-            }`,
+            `${reportData.pengajuan.hari}, ${reportData.pengajuan.tanggal}`,
             doc.internal.pageSize.getWidth() / 2,
             32,
             { align: "center" }
@@ -411,73 +367,76 @@
             ["Jenis Material", initialData.jenis_material || "-"],
             ["Nama Operator", initialData.nama_operator || "-"],
             ["Observer", initialData.observer || "-"],
-            ["Jumlah Sesi Loader", `${jumlahSesiLoader} Kali`],
+            ["Jumlah Sesi Loader", `${results.perhitunganCount} Kali`],
           ];
+
           const loaderAnalysis = [
-            ["Rata-rata Jumlah Passing", `${rataRataPassing} passing`],
+            [
+              "Rata-rata Jumlah Passing",
+              `${results.rataRataPassing.toFixed(1)} passing`,
+            ],
             [
               "Rata-rata Digging Time",
-              (calculateAvg("DIGGING") / 1000).toFixed(2) + " detik",
+              `${(results.avgDiggingMs / 1000).toFixed(2)} detik`,
             ],
             [
               "Rata-rata Swing Load",
-              (calculateAvg("SWING LOAD") / 1000).toFixed(2) + " detik",
+              `${(results.avgSwingLoadMs / 1000).toFixed(2)} detik`,
             ],
             [
               "Rata-rata Bucket Dump",
-              (calculateAvg("BUCKET DUMP") / 1000).toFixed(2) + " detik",
+              `${(results.avgBucketDumpMs / 1000).toFixed(2)} detik`,
             ],
             [
               "Rata-rata Swing Empty",
-              (calculateAvg("SWING EMPTY") / 1000).toFixed(2) + " detik",
+              `${(results.avgSwingEmptyMs / 1000).toFixed(2)} detik`,
             ],
             [
               "Rata-rata Spotting Time",
-              (calculateAvg("SPOTTING") / 1000).toFixed(2) + " detik",
+              `${(results.avgSpottingMs / 1000).toFixed(2)} detik`,
             ],
             [
               "Rata-rata Cycle Time Loader",
-              (avgCycleTimeLoaderMs / 1000).toFixed(2) + " detik",
+              `${(results.avgCycleTimeLoaderMs / 1000).toFixed(2)} detik`,
             ],
-            ["Rata-rata Loading Time", avgLoadingTimeMin.toFixed(2) + " menit"],
+            [
+              "Rata-rata Loading Time",
+              `${results.avgLoadingTimeMin.toFixed(2)} menit`,
+            ],
           ];
+
           const haulerAnalysis = [
-            ["Jarak Dumping", jarakDumping + " meter"],
-            ["Jumlah Hauler", jumlahHauler + " Unit"],
+            ["Jarak Dumping", `${initialData.jarak_dumping} meter`],
+            ["Jumlah Hauler", `${initialData.jumlah_hauler} Unit`],
             [
               "Rata-rata Cycle Time Hauler",
-              avgCycleTimeHaulerMin.toFixed(2) + " menit",
+              `${results.avgCycleTimeHaulerMin.toFixed(2)} menit`,
             ],
             [
               "Rata-rata Kecepatan Hauler",
-              avgKecepatanHauler.toFixed(2) + " km/jam",
+              `${results.avgKecepatanHauler.toFixed(2)} km/jam`,
             ],
-            ["Matching Fleet", matchingFleet.toFixed(2)],
-            ["Proyeksi Produktivitas", proyeksiProdty + " Ritase"],
+            ["Matching Fleet", results.matchingFleet.toFixed(2)],
+            [
+              "Proyeksi Produktivitas",
+              `${Math.round(results.proyeksiProdty)} Ritase`,
+            ],
           ];
+
+          const formatAnalysisForPDF = (arr) => {
+            if (!arr || arr.length === 0) return "Nihil";
+            return arr.length === 1 &&
+              (arr[0] === "-KOSONG-" || arr[0].includes("Nihil"))
+              ? "Nihil"
+              : arr.join("; ");
+          };
           const problemAnalysis = [
-            [
-              "Man",
-              (reportData.analisaProblem?.man || []).join(", ") || "Nihil",
-            ],
-            [
-              "Machine",
-              (reportData.analisaProblem?.machine || []).join(", ") || "Nihil",
-            ],
-            [
-              "Material",
-              (reportData.analisaProblem?.material || []).join(", ") || "Nihil",
-            ],
-            [
-              "Method",
-              (reportData.analisaProblem?.method || []).join(", ") || "Nihil",
-            ],
-            [
-              "Environment",
-              (reportData.analisaProblem?.environment || []).join(", ") ||
-                "Nihil",
-            ],
-            ["Remaks Tambahan", reportData.analisaProblem?.remaks || "-"],
+            ["Man", formatAnalysisForPDF(analisa.man)],
+            ["Machine", formatAnalysisForPDF(analisa.machine)],
+            ["Material", formatAnalysisForPDF(analisa.material)],
+            ["Method", formatAnalysisForPDF(analisa.method)],
+            ["Environment", formatAnalysisForPDF(analisa.environment)],
+            ["Remaks Tambahan", analisa.remaks || "-"],
           ];
 
           const tableOptions = {
@@ -536,28 +495,45 @@
             ...tableOptions,
           });
 
-          doc.addPage();
-
-          doc.autoTable({
-            head: [
-              [
-                {
-                  content: "Analisa Problem Produktivitas",
-                  colSpan: 2,
-                  styles: { halign: "left" },
-                },
+          // Cek jika halaman baru dibutuhkan atau tidak
+          if (doc.autoTable.previous.finalY > 200) {
+            doc.addPage();
+            doc.autoTable({
+              head: [
+                [
+                  {
+                    content: "Analisa Problem Produktivitas",
+                    colSpan: 2,
+                    styles: { halign: "left" },
+                  },
+                ],
               ],
-            ],
-            body: problemAnalysis,
-            ...tableOptions,
-          });
+              body: problemAnalysis,
+              ...tableOptions,
+            });
+          } else {
+            doc.autoTable({
+              head: [
+                [
+                  {
+                    content: "Analisa Problem Produktivitas",
+                    colSpan: 2,
+                    styles: { halign: "left" },
+                  },
+                ],
+              ],
+              body: problemAnalysis,
+              ...tableOptions,
+            });
+          }
 
           setTimeout(() => {
-            doc.save(
-              `Laporan_Akhir_FAD_${new Date().toISOString().slice(0, 10)}.pdf`
-            );
+            const fileName = `Laporan_FAD_${
+              initialData.unit_loader || "UNIT"
+            }_${reportData.pengajuan.tanggal}.pdf`;
+            doc.save(fileName);
             Swal.close();
-          }, 2000);
+          }, 1000);
         });
     </script>
   </body>

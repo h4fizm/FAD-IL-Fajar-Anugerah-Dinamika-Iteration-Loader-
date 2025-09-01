@@ -1,4 +1,4 @@
-// File: js/report-logic.js (Dengan Perbaikan Data Final)
+// File: js/report-logic.js (Final - Hanya Menampilkan Data)
 document.addEventListener("DOMContentLoaded", function () {
   const dataString = localStorage.getItem("fullCycleReportData");
   if (!dataString) {
@@ -16,138 +16,111 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const data = JSON.parse(dataString);
 
+  // Validasi jika data hasil kalkulasi belum tersimpan
+  if (!data.calculatedResults) {
+    Swal.fire({
+      icon: "error",
+      title: "Data Tidak Lengkap",
+      text: "Hasil kalkulasi tidak ditemukan. Harap ulangi dari halaman resume.",
+      confirmButtonText: "Kembali",
+    }).then(() => {
+      window.location.href = "index3.html";
+    });
+    return;
+  }
+
+  // --- AMBIL DATA YANG SUDAH JADI DARI LOCALSTORAGE ---
   const initialData = data.initialData;
-  const loaderSessions = data.cycleTime.loader || {};
-  const haulerSessions = data.cycleTime.hauler || {};
+  const results = data.calculatedResults; // Ambil semua hasil perhitungan yang sudah matang
+  const analisa = data.analisaProblem;
 
-  // PERBAIKAN: Menggunakan nama key yang benar dari JSON Anda
-  const namaUnit = initialData.unit_loader || "N/A";
-  const jenisMaterial = initialData.jenis_material || "N/A";
-  const namaOperator = initialData.nama_operator || "N/A";
-  const observer = initialData.observer || "N/A";
-  const jarakDumping = parseFloat(initialData.jarak_dumping || 0);
-  const jumlahHauler = parseFloat(initialData.jumlah_hauler || 0);
+  // --- HAPUS BLOK PERHITUNGAN ULANG ---
+  // Semua kode dari 'const namaUnit = ...' sampai 'const proyeksiProdty = ...'
+  // telah dihapus karena tidak diperlukan lagi.
 
-  const jumlahSesiLoader = Object.keys(loaderSessions).length;
-  const jumlahSesiHauler = Object.keys(haulerSessions).length;
-  const allLoaderProcesses = Object.values(loaderSessions).flatMap(
-    (s) => s.processes
-  );
-
-  const calculateAvg = (name) => {
-    const p = allLoaderProcesses.filter(
-      (proc) => proc.name.toUpperCase() === name.toUpperCase()
-    );
-    return p.length === 0
-      ? 0
-      : p.reduce((sum, proc) => sum + proc.time, 0) / p.length;
-  };
-
-  const totalDumps = allLoaderProcesses.filter(
-    (p) => p.name.toUpperCase() === "BUCKET DUMP"
-  ).length;
-  const rataRataPassing =
-    jumlahSesiLoader > 0 ? Math.round(totalDumps / jumlahSesiLoader) : 0;
-  const totalCycleTimeLoaderMs = Object.values(loaderSessions).reduce(
-    (s, c) => s + c.totalTime,
-    0
-  );
-  const avgCycleTimeLoaderMs =
-    jumlahSesiLoader > 0 ? totalCycleTimeLoaderMs / jumlahSesiLoader : 0;
-  const avgLoadingTimeMin = avgCycleTimeLoaderMs / 1000 / 60;
-  const totalCycleTimeHaulerMs = Object.values(haulerSessions).reduce(
-    (s, c) => s + c.totalTime,
-    0
-  );
-  const avgCycleTimeHaulerMin =
-    (jumlahSesiHauler > 0 ? totalCycleTimeHaulerMs / jumlahSesiHauler : 0) /
-    1000 /
-    60;
-  const avgKecepatanHauler =
-    avgCycleTimeHaulerMin > 0
-      ? (2 * (jarakDumping / 1000)) / (avgCycleTimeHaulerMin / 60)
-      : 0;
-  const matchingFleet =
-    avgCycleTimeHaulerMin > 0
-      ? (jumlahHauler * avgLoadingTimeMin) / avgCycleTimeHaulerMin
-      : 0;
-  const proyeksiProdty =
-    avgLoadingTimeMin > 0 ? Math.round(60 / avgLoadingTimeMin) : 0;
-
+  // --- TAMPILKAN DATA KE HTML (MENGGUNAKAN VARIABEL BARU) ---
   document.getElementById(
     "report-date"
   ).textContent = `${data.pengajuan.hari}, ${data.pengajuan.tanggal}`;
-  document.getElementById("data-nama-unit").textContent = namaUnit;
-  document.getElementById("data-jenis-material").textContent = jenisMaterial;
-  document.getElementById("data-nama-operator").textContent = namaOperator;
-  document.getElementById("data-observer").textContent = observer;
+  document.getElementById("data-nama-unit").textContent =
+    initialData.unit_loader || "N/A";
+  document.getElementById("data-jenis-material").textContent =
+    initialData.jenis_material || "N/A";
+  document.getElementById("data-nama-operator").textContent =
+    initialData.nama_operator || "N/A";
+  document.getElementById("data-observer").textContent =
+    initialData.observer || "N/A";
   document.getElementById(
     "data-sesi-loader"
-  ).textContent = `${jumlahSesiLoader} kali`;
+  ).textContent = `${results.perhitunganCount} kali`;
 
   document.getElementById(
     "data-rata-passing"
-  ).textContent = `${rataRataPassing} passing`;
+  ).textContent = `${results.rataRataPassing.toFixed(1)} passing`;
   document.getElementById("data-rata-digging").textContent = `${(
-    calculateAvg("DIGGING") / 1000
+    results.avgDiggingMs / 1000
   ).toFixed(2)} detik`;
   document.getElementById("data-rata-swing-load").textContent = `${(
-    calculateAvg("SWING LOAD") / 1000
+    results.avgSwingLoadMs / 1000
   ).toFixed(2)} detik`;
   document.getElementById("data-rata-bucket-dump").textContent = `${(
-    calculateAvg("BUCKET DUMP") / 1000
+    results.avgBucketDumpMs / 1000
   ).toFixed(2)} detik`;
   document.getElementById("data-rata-swing-empty").textContent = `${(
-    calculateAvg("SWING EMPTY") / 1000
+    results.avgSwingEmptyMs / 1000
   ).toFixed(2)} detik`;
   document.getElementById("data-rata-spotting").textContent = `${(
-    calculateAvg("SPOTTING") / 1000
+    results.avgSpottingMs / 1000
   ).toFixed(2)} detik`;
   document.getElementById("data-rata-cycletime-loader").textContent = `${(
-    avgCycleTimeLoaderMs / 1000
+    results.avgCycleTimeLoaderMs / 1000
   ).toFixed(2)} detik`;
   document.getElementById(
     "data-rata-loadingtime"
-  ).textContent = `${avgLoadingTimeMin.toFixed(2)} menit`;
+  ).textContent = `${results.avgLoadingTimeMin.toFixed(2)} menit`;
 
   document.getElementById(
     "data-jarak-dumping"
-  ).textContent = `${jarakDumping} meter`;
+  ).textContent = `${initialData.jarak_dumping} meter`;
   document.getElementById(
     "data-jumlah-hauler"
-  ).textContent = `${jumlahHauler} Unit`;
+  ).textContent = `${initialData.jumlah_hauler} Unit`;
   document.getElementById(
     "data-rata-cycletime-hauler"
-  ).textContent = `${avgCycleTimeHaulerMin.toFixed(2)} menit`;
+  ).textContent = `${results.avgCycleTimeHaulerMin.toFixed(2)} menit`;
   document.getElementById(
     "data-rata-kecepatan-hauler"
-  ).textContent = `${avgKecepatanHauler.toFixed(2)} km/jam`;
+  ).textContent = `${results.avgKecepatanHauler.toFixed(2)} km/jam`;
   document.getElementById("data-matching-fleet").textContent =
-    matchingFleet.toFixed(2);
+    results.matchingFleet.toFixed(2);
   document.getElementById(
     "data-proyeksi-produktivitas"
-  ).textContent = `${proyeksiProdty} Ritase`;
+  ).textContent = `${Math.round(results.proyeksiProdty)} Ritase`;
 
-  const formatAnalysis = (arr) =>
-    arr.length === 1 && arr[0].includes("-KOSONG") ? "Nihil" : arr.join("; ");
-  document.getElementById("data-man").textContent = formatAnalysis(
-    data.analisaProblem.man
-  );
+  // Menampilkan data analisa masalah
+  const formatAnalysis = (arr) => {
+    if (!arr || arr.length === 0) return "Nihil";
+    return arr.length === 1 &&
+      (arr[0] === "-KOSONG-" || arr[0].includes("Nihil"))
+      ? "Nihil"
+      : arr.join("; ");
+  };
+  document.getElementById("data-man").textContent = formatAnalysis(analisa.man);
   document.getElementById("data-machine").textContent = formatAnalysis(
-    data.analisaProblem.machine
+    analisa.machine
   );
   document.getElementById("data-material").textContent = formatAnalysis(
-    data.analisaProblem.material
+    analisa.material
   );
   document.getElementById("data-method").textContent = formatAnalysis(
-    data.analisaProblem.method
+    analisa.method
   );
   document.getElementById("data-environment").textContent = formatAnalysis(
-    data.analisaProblem.environment
+    analisa.environment
   );
-  document.getElementById("data-remaks").textContent =
-    data.analisaProblem.remaks;
+  document.getElementById("data-remaks").textContent = analisa.remaks;
 
+  // Tombol Mulai Sesi Baru
   document
     .getElementById("btn-start-new")
     .addEventListener("click", function (e) {

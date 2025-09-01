@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
       showConfirmButton: false,
       timer: 2500,
     }).then(() => {
-      window.location.href = "index2.html"; // Redirect ke halaman awal
+      window.location.href = "index2.html";
     });
     return;
   }
@@ -21,11 +21,13 @@ document.addEventListener("DOMContentLoaded", function () {
   const initialData = data.initialData;
   const loaderSessions = data.cycleTime.loader || {};
   const haulerSessions = data.cycleTime.hauler || {};
+  const loaderSessionValues = Object.values(loaderSessions);
+  const haulerSessionValues = Object.values(haulerSessions);
 
-  const jumlahSesiLoader = Object.keys(loaderSessions).length;
-  const jumlahSesiHauler = Object.keys(haulerSessions).length;
+  const jumlahSesiLoader = loaderSessionValues.length;
+  const jumlahSesiHauler = haulerSessionValues.length;
 
-  const allLoaderProcesses = Object.values(loaderSessions).flatMap(
+  const allLoaderProcesses = loaderSessionValues.flatMap(
     (session) => session.processes
   );
 
@@ -39,53 +41,55 @@ document.addEventListener("DOMContentLoaded", function () {
     return totalTime / relevantProcesses.length;
   };
 
-  // --- 4. PERHITUNGAN SEMUA 12 POIN ---
+  // --- 4. PERHITUNGAN SEMUA POIN ---
 
-  // ##### PERBAIKAN DIMULAI DI SINI #####
   // POIN 1 & 2: Informasi Umum
-  // Mencoba beberapa kemungkinan nama key dari form awal
   const perhitunganCount = jumlahSesiLoader;
-  const namaUnit = initialData.unit || initialData.unit_loader || "N/A";
-  const jenisMaterial =
-    initialData.material || initialData.jenis_material || "N/A";
-  const namaOperator =
-    initialData.operator || initialData.nama_operator || "N/A";
+  const namaUnit = initialData.unit_loader || "N/A";
+  const jenisMaterial = initialData.jenis_material || "N/A";
+  const namaOperator = initialData.nama_operator || "N/A";
 
   // POIN 3: Rata-rata Jumlah Passing
   const totalDumps = allLoaderProcesses.filter(
     (p) => p.name.toUpperCase() === "BUCKET DUMP"
   ).length;
   const rataRataPassing =
-    jumlahSesiLoader > 0 ? Math.round(totalDumps / jumlahSesiLoader) : 0;
+    jumlahSesiLoader > 0 ? totalDumps / jumlahSesiLoader : 0;
 
-  // POIN 4: Rata-rata Waktu Proses Loader
+  // POIN 4: Rata-rata Waktu Proses Individual Loader
   const avgDiggingMs = calculateAverageProcessTime("DIGGING");
   const avgSwingLoadMs = calculateAverageProcessTime("SWING LOAD");
   const avgBucketDumpMs = calculateAverageProcessTime("BUCKET DUMP");
   const avgSwingEmptyMs = calculateAverageProcessTime("SWING EMPTY");
   const avgSpottingMs = calculateAverageProcessTime("SPOTTING");
 
-  // POIN 5 & 6: Rata-rata Cycle Time & Loading Time Loader
-  const totalCycleTimeLoaderMs = Object.values(loaderSessions).reduce(
+  // POIN 5: Perhitungan Rata-rata Cycle Time Loader (BENAR: Tanpa Spotting)
+  let totalPureCycleTimeMs = 0;
+  loaderSessionValues.forEach((session) => {
+    session.processes.forEach((proc) => {
+      if (proc.name.toUpperCase() !== "SPOTTING") {
+        totalPureCycleTimeMs += proc.time;
+      }
+    });
+  });
+  const avgCycleTimeLoaderMs =
+    totalDumps > 0 ? totalPureCycleTimeMs / totalDumps : 0;
+
+  // POIN 6: Perhitungan Rata-rata Loading Time (BENAR: Termasuk Spotting)
+  const totalLoadingTimeMs = loaderSessionValues.reduce(
     (sum, session) => sum + session.totalTime,
     0
   );
-  const avgCycleTimeLoaderMs =
-    jumlahSesiLoader > 0 ? totalCycleTimeLoaderMs / jumlahSesiLoader : 0;
-  const avgLoadingTimeMin = avgCycleTimeLoaderMs / 1000 / 60;
+  const avgLoadingTimeMs =
+    jumlahSesiLoader > 0 ? totalLoadingTimeMs / jumlahSesiLoader : 0;
+  const avgLoadingTimeMin = avgLoadingTimeMs / 1000 / 60;
 
   // POIN 7: Informasi Hauler
-  // Mencoba beberapa kemungkinan nama key dari form awal
-  const jarakDumping = parseFloat(
-    initialData.jarak || initialData.jarak_dumping || 0
-  );
-  const jumlahHauler = parseFloat(
-    initialData.jumlahHauler || initialData.jumlah_hauler || 0
-  );
-  // ##### PERBAIKAN SELESAI DI SINI #####
+  const jarakDumping = parseFloat(initialData.jarak_dumping || 0);
+  const jumlahHauler = parseFloat(initialData.jumlah_hauler || 0);
 
   // POIN 8: Rata-rata Cycle Time Hauler
-  const totalCycleTimeHaulerMs = Object.values(haulerSessions).reduce(
+  const totalCycleTimeHaulerMs = haulerSessionValues.reduce(
     (sum, session) => sum + session.totalTime,
     0
   );
@@ -101,13 +105,34 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // POIN 10: Matching Fleet
   const matchingFleet =
-    avgCycleTimeHaulerMin > 0
-      ? (jumlahHauler * avgLoadingTimeMin) / avgCycleTimeHaulerMin
+    avgCycleTimeHaulerMin > 0 && avgLoadingTimeMin > 0
+      ? jumlahHauler / (avgCycleTimeHaulerMin / avgLoadingTimeMin)
       : 0;
 
   // POIN 11: Proyeksi Produktivitas
-  const proyeksiProdty =
-    avgLoadingTimeMin > 0 ? Math.round(60 / avgLoadingTimeMin) : 0;
+  const proyeksiProdty = avgLoadingTimeMin > 0 ? 60 / avgLoadingTimeMin : 0;
+
+  // --- BAGIAN BARU: SIMPAN SEMUA HASIL PERHITUNGAN ---
+  // Kita buat objek baru 'calculatedResults' di dalam data utama
+  data.calculatedResults = {
+    perhitunganCount: perhitunganCount,
+    rataRataPassing: rataRataPassing,
+    avgDiggingMs: avgDiggingMs,
+    avgSwingLoadMs: avgSwingLoadMs,
+    avgBucketDumpMs: avgBucketDumpMs,
+    avgSwingEmptyMs: avgSwingEmptyMs,
+    avgSpottingMs: avgSpottingMs,
+    avgCycleTimeLoaderMs: avgCycleTimeLoaderMs,
+    avgLoadingTimeMin: avgLoadingTimeMin,
+    avgCycleTimeHaulerMin: avgCycleTimeHaulerMin,
+    avgKecepatanHauler: avgKecepatanHauler,
+    matchingFleet: matchingFleet,
+    proyeksiProdty: proyeksiProdty,
+  };
+
+  // Simpan kembali objek 'data' yang sudah diperbarui ke localStorage
+  localStorage.setItem("fullCycleReportData", JSON.stringify(data));
+  // -------------------------------------------------------------
 
   // --- 5. TAMPILKAN HASIL KE HTML ---
   document.getElementById(
@@ -117,7 +142,9 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("jenis-material").textContent = `: ${jenisMaterial}`;
   document.getElementById("nama-operator").textContent = `: ${namaOperator}`;
 
-  document.getElementById("rata-passing").textContent = `: ${rataRataPassing}`;
+  document.getElementById(
+    "rata-passing"
+  ).textContent = `: ${rataRataPassing.toFixed(1)}`;
   document.getElementById("rata-digging").textContent = `: ${(
     avgDiggingMs / 1000
   ).toFixed(2)} detik`;
@@ -146,18 +173,17 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById(
     "jumlah-hauler"
   ).textContent = `: ${jumlahHauler} Unit`;
-  document.getElementById("rata-cycletime-hauler").textContent = `: ${
-    avgCycleTimeHaulerMin > 0 ? avgCycleTimeHaulerMin.toFixed(2) : "0.00"
-  } menit`;
-  document.getElementById("rata-kecepatan-hauler").textContent = `: ${
-    avgKecepatanHauler > 0 ? avgKecepatanHauler.toFixed(2) : "0.00"
-  } km/jam`;
-
-  document.getElementById("matching-fleet").textContent =
-    matchingFleet > 0 ? matchingFleet.toFixed(2) : "0.00";
   document.getElementById(
-    "proyeksi-produktivitas"
-  ).innerHTML = `${proyeksiProdty} <span class="text-base">Ritase</span>`;
+    "rata-cycletime-hauler"
+  ).textContent = `: ${avgCycleTimeHaulerMin.toFixed(2)} menit`;
+  document.getElementById(
+    "rata-kecepatan-hauler"
+  ).textContent = `: ${avgKecepatanHauler.toFixed(2)} km/jam`;
+  document.getElementById("matching-fleet").textContent =
+    matchingFleet.toFixed(2);
+  document.getElementById("proyeksi-produktivitas").innerHTML = `${Math.round(
+    proyeksiProdty
+  )} <span class="text-base">Ritase</span>`;
 
   // --- 6. EVENT LISTENERS ---
   document.getElementById("btn-ulangi").addEventListener("click", (e) => {
@@ -180,6 +206,6 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   document.getElementById("btn-selesai").addEventListener("click", () => {
-    // localStorage.clear();
+    // Aksi untuk tombol selesai, jika ada.
   });
 });
