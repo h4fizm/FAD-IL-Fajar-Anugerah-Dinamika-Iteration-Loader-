@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", function () {
     matchingFleet.toFixed(2);
   document.getElementById(
     "data-proyeksi-produktivitas"
-  ).textContent = `${proyeksiProdty} Ritase/Jam`;
+  ).textContent = `${proyeksiProdty} Ritase`;
 
   const formatAnalysis = (arr) =>
     arr.length === 1 && arr[0].includes("-KOSONG") ? "Nihil" : arr.join("; ");
