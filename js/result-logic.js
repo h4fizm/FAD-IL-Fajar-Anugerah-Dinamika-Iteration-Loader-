@@ -53,7 +53,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const totalDumps = allLoaderProcesses.filter(
     (p) => p.name.toUpperCase() === "BUCKET DUMP"
   ).length;
-  // Perbaikan: Sekarang rata-rata passing dihitung dengan desimal, dan hanya dibulatkan saat ditampilkan.
   const rataRataPassing =
     jumlahSesiLoader > 0 ? totalDumps / jumlahSesiLoader : 0;
 
@@ -64,25 +63,17 @@ document.addEventListener("DOMContentLoaded", function () {
   const avgSwingEmptyMs = calculateAverageProcessTime("SWING EMPTY");
   const avgSpottingMs = calculateAverageProcessTime("SPOTTING");
 
-  // POIN 5: Perhitungan Rata-rata Cycle Time Loader (BENAR: Tanpa Spotting)
-  let totalPureCycleTimeMs = 0;
-  loaderSessionValues.forEach((session) => {
-    session.processes.forEach((proc) => {
-      if (proc.name.toUpperCase() !== "SPOTTING") {
-        totalPureCycleTimeMs += proc.time;
-      }
-    });
-  });
-  const avgCycleTimeLoaderMs =
-    totalDumps > 0 ? totalPureCycleTimeMs / totalDumps : 0;
-
-  // POIN 6: Perhitungan Rata-rata Loading Time (BENAR: Termasuk Spotting)
-  const totalLoadingTimeMs = loaderSessionValues.reduce(
+  // POIN 5: Perhitungan Rata-rata Cycle Time Loader
+  // PERBAIKAN: Menggunakan total waktu dari setiap sesi, karena cycle time adalah total dari semua proses.
+  const totalCycleTimeLoaderMs = loaderSessionValues.reduce(
     (sum, session) => sum + session.totalTime,
     0
   );
-  const avgLoadingTimeMs =
-    jumlahSesiLoader > 0 ? totalLoadingTimeMs / jumlahSesiLoader : 0;
+  const avgCycleTimeLoaderMs =
+    jumlahSesiLoader > 0 ? totalCycleTimeLoaderMs / jumlahSesiLoader : 0;
+
+  // POIN 6: Perhitungan Rata-rata Loading Time (sama dengan avgCycleTimeLoaderMs)
+  const avgLoadingTimeMs = avgCycleTimeLoaderMs;
   const avgLoadingTimeMin = avgLoadingTimeMs / 1000 / 60;
 
   // POIN 7: Informasi Hauler
@@ -111,8 +102,9 @@ document.addEventListener("DOMContentLoaded", function () {
       : 0;
 
   // POIN 11: Proyeksi Produktivitas
+  // PERBAIKAN: Mengubah operator pembagian menjadi perkalian
   const proyeksiProdty =
-    avgLoadingTimeMin > 0 ? 60 / avgLoadingTimeMin / 0.83 : 0;
+    avgLoadingTimeMin > 0 ? (60 / avgLoadingTimeMin) * 0.83 : 0;
 
   // --- BAGIAN BARU: SIMPAN SEMUA HASIL PERHITUNGAN ---
   data.calculatedResults = {
@@ -142,7 +134,6 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("jenis-material").textContent = `: ${jenisMaterial}`;
   document.getElementById("nama-operator").textContent = `: ${namaOperator}`;
 
-  // Perbaikan: Menampilkan rata-rata passing dengan 1 desimal
   document.getElementById(
     "rata-passing"
   ).textContent = `: ${rataRataPassing.toFixed(1)}`;

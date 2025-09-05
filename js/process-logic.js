@@ -44,7 +44,7 @@ function initializeProcess() {
     "swing-empty",
     "spotting",
   ];
-  const haulerProcesses = ["out", "in"];
+  const haulerProcesses = ["start-hauler", "stop-hauler"];
 
   let processTimers = {
     digging: 0,
@@ -52,8 +52,8 @@ function initializeProcess() {
     "bucket-dump": 0,
     "swing-empty": 0,
     spotting: 0,
-    out: 0,
-    in: 0,
+    "start-hauler": 0,
+    "stop-hauler": 0,
   };
   let processIntervals = {};
 
@@ -64,11 +64,11 @@ function initializeProcess() {
   const observerNameEl = document.getElementById("observerName");
   observerNameEl.textContent = JSON.parse(formData).observer;
   const finishLoaderBtn = document.getElementById("btn-finish");
-  const finishHaulerBtn = document.getElementById("btn-finish-hauler");
+  const finishHaulerBtn = document.getElementById("btn-done-hauler");
   if (finishLoaderBtn)
-    finishLoaderBtn.querySelector("span:last-child").textContent = "STOP";
+    finishLoaderBtn.querySelector("span:last-child").textContent = "DONE";
   if (finishHaulerBtn)
-    finishHaulerBtn.querySelector("span:last-child").textContent = "STOP";
+    finishHaulerBtn.querySelector("span:last-child").textContent = "DONE";
 
   // --- HELPER FUNCTIONS ---
   const saveHistory = () => {
@@ -100,12 +100,25 @@ function initializeProcess() {
     else haulerTimerDisplay.textContent = formatTime(haulerTimer);
   };
 
-  const updateProcessTimerDisplay = (processName) => {
+  const updateProcessTimerDisplay = (processName, showTime = true) => {
     const button = document.getElementById(`btn-${processName}`);
     if (button) {
-      const timerEl = button.querySelector(".font-mono");
-      if (timerEl)
-        timerEl.textContent = formatTimeShort(processTimers[processName]);
+      // Periksa apakah elemen timer sudah ada
+      let timerEl = button.querySelector(".font-mono");
+      if (!timerEl && showTime) {
+        // Jika tidak ada, buat elemen baru
+        timerEl = document.createElement("span");
+        timerEl.classList.add("font-mono", "text-gray-500", "text-sm", "mt-1");
+        button.appendChild(timerEl);
+      }
+      if (timerEl) {
+        if (showTime) {
+          timerEl.textContent = formatTimeShort(processTimers[processName]);
+        } else {
+          // Jika showTime false, hapus elemen timer
+          button.removeChild(timerEl);
+        }
+      }
     }
   };
 
@@ -143,11 +156,8 @@ function initializeProcess() {
 
       saveHistory();
       processTimers[processName] = 0;
-      updateProcessTimerDisplay(processName);
+      updateProcessTimerDisplay(processName, false); // Sembunyikan waktu
       button.classList.remove("active");
-      button.querySelector(".uppercase").textContent = processName
-        .toUpperCase()
-        .replace("-", " ");
     }
   };
 
@@ -173,10 +183,13 @@ function initializeProcess() {
       loaderActiveProcess = processName;
       startMainTimer("loader");
     } else if (isHaulerProcess) {
-      if (processName === "in" && prevHaulerProcess !== "out") {
+      if (
+        processName === "stop-hauler" &&
+        prevHaulerProcess !== "start-hauler"
+      ) {
         Swal.fire(
           "Urutan Salah",
-          "Proses Hauler harus diawali dengan 'OUT'.",
+          "Proses Hauler harus diawali dengan 'START'.",
           "error"
         );
         return;
@@ -199,12 +212,7 @@ function initializeProcess() {
     const button = document.getElementById(`btn-${processName}`);
     button.classList.add("active");
 
-    if (
-      (isLoaderProcess && !prevLoaderProcess) ||
-      (isHaulerProcess && !prevHaulerProcess)
-    ) {
-      button.querySelector(".uppercase").textContent = "START";
-    }
+    updateProcessTimerDisplay(processName); // Tampilkan dan mulai perbarui waktu
 
     processIntervals[processName] = setInterval(() => {
       processTimers[processName] += 10;
@@ -226,12 +234,9 @@ function initializeProcess() {
       loaderProcesses.forEach((pName) => {
         if (processIntervals[pName]) clearInterval(processIntervals[pName]);
         processTimers[pName] = 0;
-        updateProcessTimerDisplay(pName);
+        updateProcessTimerDisplay(pName, false); // Sembunyikan waktu
         const button = document.getElementById(`btn-${pName}`);
         button.classList.remove("active");
-        button.querySelector(".uppercase").textContent = pName
-          .toUpperCase()
-          .replace("-", " ");
       });
     } else {
       if (haulerActiveProcess) {
@@ -246,10 +251,9 @@ function initializeProcess() {
       haulerProcesses.forEach((pName) => {
         if (processIntervals[pName]) clearInterval(processIntervals[pName]);
         processTimers[pName] = 0;
-        updateProcessTimerDisplay(pName);
+        updateProcessTimerDisplay(pName, false); // Sembunyikan waktu
         const button = document.getElementById(`btn-${pName}`);
         button.classList.remove("active");
-        button.querySelector(".uppercase").textContent = pName.toUpperCase();
       });
     }
 
@@ -410,17 +414,13 @@ function initializeProcess() {
         : 0;
 
     const proyeksiProdty =
-      avgLoadingTimeMin > 0 ? 60 / avgLoadingTimeMin / 0.83 : 0;
+      avgLoadingTimeMin > 0 ? (60 / avgLoadingTimeMin) * 0.83 : 0;
 
-    const today = new Date();
+    const pengajuanTanggal = `Hari, 11 Agustus 2025`;
+
     const allFinalData = {
       pengajuan: {
-        hari: today.toLocaleDateString("id-ID", { weekday: "long" }),
-        tanggal: today.toLocaleDateString("id-ID", {
-          day: "2-digit",
-          month: "long",
-          year: "numeric",
-        }),
+        hari: pengajuanTanggal,
       },
       initialData: JSON.parse(formData),
       cycleTime: {
@@ -478,7 +478,7 @@ function initializeProcess() {
       resetSpecificCycle("hauler");
     } else if (id === "btn-finish") {
       stopLoaderCycle();
-    } else if (id === "btn-finish-hauler") {
+    } else if (id === "btn-done-hauler") {
       stopHaulerCycle();
     } else if (id === "btn-submit-all") {
       submitAllData();

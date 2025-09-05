@@ -29,15 +29,19 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
-  // --- AMBIL DATA YANG SUDAH JADI DARI LOCALSTORAGE ---
   const initialData = data.initialData;
-  const results = data.calculatedResults; // Ambil semua hasil perhitungan yang sudah matang
+  const results = data.calculatedResults;
   const analisa = data.analisaProblem;
+
+  // --- gunakan analisa.pengajuanAnalisa untuk tanggal & jam ---
+  const pengajuanHari = analisa.pengajuanAnalisa?.hari || "-";
+  const pengajuanTanggal = analisa.pengajuanAnalisa?.tanggal || "-";
+  const pengajuanJam = analisa.pengajuanAnalisa?.jam || "-";
 
   // --- TAMPILKAN DATA KE HTML (MENGGUNAKAN VARIABEL BARU) ---
   document.getElementById(
     "report-date"
-  ).textContent = `${data.pengajuan.hari}, ${data.pengajuan.tanggal}`;
+  ).textContent = `${pengajuanHari}, ${pengajuanTanggal}`;
   document.getElementById("data-nama-unit").textContent =
     initialData.unit_loader || "N/A";
   document.getElementById("data-jenis-material").textContent =
@@ -213,12 +217,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
         doc.setFontSize(10).setFont("helvetica", "normal");
         doc.text(
-          `Pengamatan: ${pengajuan.hari}, ${pengajuan.tanggal} (Pukul Pengamatan: ${analisa.pengajuanAnalisa.jam})`,
+          `Pengamatan: ${pengajuanHari}, ${pengajuanTanggal} (Pukul Pengamatan: ${pengajuanJam})`,
           doc.internal.pageSize.getWidth() / 2,
           currentY + 3,
           { align: "center" }
         );
-        currentY += 3 + 5;
 
         const tableOptions = {
           theme: "grid",
@@ -369,9 +372,9 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         setTimeout(() => {
-          const fileName = `Laporan_FAD_${initialData.unit_loader || "UNIT"}_${
-            pengajuan.tanggal
-          }.pdf`;
+          const fileName = `Laporan_FAD_${
+            initialData.unit_loader || "UNIT"
+          }_${pengajuanTanggal}.pdf`;
           doc.save(fileName);
           Swal.close();
         }, 1000);
