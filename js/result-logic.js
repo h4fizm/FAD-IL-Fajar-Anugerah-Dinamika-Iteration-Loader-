@@ -53,6 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const totalDumps = allLoaderProcesses.filter(
     (p) => p.name.toUpperCase() === "BUCKET DUMP"
   ).length;
+  // Perbaikan: Sekarang rata-rata passing dihitung dengan desimal, dan hanya dibulatkan saat ditampilkan.
   const rataRataPassing =
     jumlahSesiLoader > 0 ? totalDumps / jumlahSesiLoader : 0;
 
@@ -110,10 +111,10 @@ document.addEventListener("DOMContentLoaded", function () {
       : 0;
 
   // POIN 11: Proyeksi Produktivitas
-  const proyeksiProdty = avgLoadingTimeMin > 0 ? 60 / avgLoadingTimeMin : 0;
+  const proyeksiProdty =
+    avgLoadingTimeMin > 0 ? 60 / avgLoadingTimeMin / 0.83 : 0;
 
   // --- BAGIAN BARU: SIMPAN SEMUA HASIL PERHITUNGAN ---
-  // Kita buat objek baru 'calculatedResults' di dalam data utama
   data.calculatedResults = {
     perhitunganCount: perhitunganCount,
     rataRataPassing: rataRataPassing,
@@ -130,7 +131,6 @@ document.addEventListener("DOMContentLoaded", function () {
     proyeksiProdty: proyeksiProdty,
   };
 
-  // Simpan kembali objek 'data' yang sudah diperbarui ke localStorage
   localStorage.setItem("fullCycleReportData", JSON.stringify(data));
   // -------------------------------------------------------------
 
@@ -142,6 +142,7 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("jenis-material").textContent = `: ${jenisMaterial}`;
   document.getElementById("nama-operator").textContent = `: ${namaOperator}`;
 
+  // Perbaikan: Menampilkan rata-rata passing dengan 1 desimal
   document.getElementById(
     "rata-passing"
   ).textContent = `: ${rataRataPassing.toFixed(1)}`;

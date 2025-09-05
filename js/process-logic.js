@@ -30,12 +30,8 @@ function initializeProcess() {
     haulerTimer = 0;
   let loaderInterval, haulerInterval;
 
-  // --- PERUBAHAN KUNCI 1: Pisahkan status proses aktif ---
-  // Kita tidak lagi menggunakan satu 'activeProcess' dan 'activeCycle'.
-  // Sekarang setiap siklus punya status aktifnya sendiri.
   let loaderActiveProcess = null;
   let haulerActiveProcess = null;
-  // --------------------------------------------------------
 
   let processHistory = JSON.parse(localStorage.getItem("processHistory")) || [];
   let loaderSessionCount = 0;
@@ -67,9 +63,14 @@ function initializeProcess() {
   const mainContainer = document.querySelector("main");
   const observerNameEl = document.getElementById("observerName");
   observerNameEl.textContent = JSON.parse(formData).observer;
+  const finishLoaderBtn = document.getElementById("btn-finish");
+  const finishHaulerBtn = document.getElementById("btn-finish-hauler");
+  if (finishLoaderBtn)
+    finishLoaderBtn.querySelector("span:last-child").textContent = "STOP";
+  if (finishHaulerBtn)
+    finishHaulerBtn.querySelector("span:last-child").textContent = "STOP";
 
   // --- HELPER FUNCTIONS ---
-  // Fungsi toggleButtons tidak lagi diperlukan karena kedua siklus selalu aktif
   const saveHistory = () => {
     localStorage.setItem("processHistory", JSON.stringify(processHistory));
   };
@@ -127,14 +128,14 @@ function initializeProcess() {
       clearInterval(processIntervals[processName]);
       delete processIntervals[processName];
       const button = document.getElementById(`btn-${processName}`);
-      const processLabel = button.querySelector(".uppercase").textContent;
 
       const sessionNumber =
         cycleType === "loader"
           ? loaderSessionCount + 1
           : haulerSessionCount + 1;
+
       processHistory.push({
-        name: processLabel,
+        name: processName.toUpperCase().replace("-", " "),
         time: processTimers[processName],
         cycle: cycleType,
         session: sessionNumber,
@@ -144,20 +145,24 @@ function initializeProcess() {
       processTimers[processName] = 0;
       updateProcessTimerDisplay(processName);
       button.classList.remove("active");
+      button.querySelector(".uppercase").textContent = processName
+        .toUpperCase()
+        .replace("-", " ");
     }
   };
 
-  // --- PERUBAHAN KUNCI 2: Logic startProcess dirombak total ---
   const startProcess = (processName) => {
     const isLoaderProcess = loaderProcesses.includes(processName);
     const isHaulerProcess = haulerProcesses.includes(processName);
 
+    const prevLoaderProcess = loaderActiveProcess;
+    const prevHaulerProcess = haulerActiveProcess;
+
     if (isLoaderProcess) {
-      // Jika ada proses loader lain yang aktif, hentikan dulu
-      if (loaderActiveProcess && loaderActiveProcess !== processName) {
-        stopProcess(loaderActiveProcess, "loader");
+      if (prevLoaderProcess && prevLoaderProcess !== processName) {
+        stopProcess(prevLoaderProcess, "loader");
       }
-      if (loaderActiveProcess === processName) {
+      if (prevLoaderProcess === processName) {
         Swal.fire(
           "Proses Sedang Berjalan",
           "Proses ini sudah aktif.",
@@ -168,8 +173,7 @@ function initializeProcess() {
       loaderActiveProcess = processName;
       startMainTimer("loader");
     } else if (isHaulerProcess) {
-      // Validasi urutan khusus untuk hauler
-      if (processName === "in" && haulerActiveProcess !== "out") {
+      if (processName === "in" && prevHaulerProcess !== "out") {
         Swal.fire(
           "Urutan Salah",
           "Proses Hauler harus diawali dengan 'OUT'.",
@@ -177,11 +181,10 @@ function initializeProcess() {
         );
         return;
       }
-      // Jika ada proses hauler lain yang aktif, hentikan dulu
-      if (haulerActiveProcess && haulerActiveProcess !== processName) {
-        stopProcess(haulerActiveProcess, "hauler");
+      if (prevHaulerProcess && prevHaulerProcess !== processName) {
+        stopProcess(prevHaulerProcess, "hauler");
       }
-      if (haulerActiveProcess === processName) {
+      if (prevHaulerProcess === processName) {
         Swal.fire(
           "Proses Sedang Berjalan",
           "Proses ini sudah aktif.",
@@ -193,58 +196,63 @@ function initializeProcess() {
       startMainTimer("hauler");
     }
 
-    // Jalankan timer untuk proses yang baru
-    document.getElementById(`btn-${processName}`).classList.add("active");
+    const button = document.getElementById(`btn-${processName}`);
+    button.classList.add("active");
+
+    if (
+      (isLoaderProcess && !prevLoaderProcess) ||
+      (isHaulerProcess && !prevHaulerProcess)
+    ) {
+      button.querySelector(".uppercase").textContent = "START";
+    }
+
     processIntervals[processName] = setInterval(() => {
       processTimers[processName] += 10;
       updateProcessTimerDisplay(processName);
     }, 10);
   };
-  // -----------------------------------------------------------------
 
   const resetSpecificCycle = (cycleType) => {
     if (cycleType === "loader") {
-      // Hentikan proses loader yang mungkin aktif
       if (loaderActiveProcess) {
         stopProcess(loaderActiveProcess, "loader");
         loaderActiveProcess = null;
       }
-      // Reset timer utama loader
       clearInterval(loaderInterval);
       loaderInterval = null;
       loaderTimer = 0;
       loaderSessionCount = 0;
       updateMainTimerDisplay("loader");
-      // Reset semua timer proses loader
       loaderProcesses.forEach((pName) => {
         if (processIntervals[pName]) clearInterval(processIntervals[pName]);
         processTimers[pName] = 0;
         updateProcessTimerDisplay(pName);
-        document.getElementById(`btn-${pName}`).classList.remove("active");
+        const button = document.getElementById(`btn-${pName}`);
+        button.classList.remove("active");
+        button.querySelector(".uppercase").textContent = pName
+          .toUpperCase()
+          .replace("-", " ");
       });
     } else {
-      // cycleType === 'hauler'
-      // Hentikan proses hauler yang mungkin aktif
       if (haulerActiveProcess) {
         stopProcess(haulerActiveProcess, "hauler");
         haulerActiveProcess = null;
       }
-      // Reset timer utama hauler
       clearInterval(haulerInterval);
       haulerInterval = null;
       haulerTimer = 0;
       haulerSessionCount = 0;
       updateMainTimerDisplay("hauler");
-      // Reset semua timer proses hauler
       haulerProcesses.forEach((pName) => {
         if (processIntervals[pName]) clearInterval(processIntervals[pName]);
         processTimers[pName] = 0;
         updateProcessTimerDisplay(pName);
-        document.getElementById(`btn-${pName}`).classList.remove("active");
+        const button = document.getElementById(`btn-${pName}`);
+        button.classList.remove("active");
+        button.querySelector(".uppercase").textContent = pName.toUpperCase();
       });
     }
 
-    // Hapus riwayat untuk siklus yang di-reset
     processHistory = processHistory.filter((p) => p.cycle !== cycleType);
     saveHistory();
 
@@ -260,25 +268,21 @@ function initializeProcess() {
     });
   };
 
-  const finishLoaderCycle = () => {
-    if (!loaderActiveProcess && loaderTimer === 0) {
+  const stopLoaderCycle = () => {
+    if (!loaderActiveProcess) {
       Swal.fire(
-        "Proses Belum Dimulai",
-        "Anda harus menjalankan setidaknya satu proses loader.",
+        "Tidak Ada Proses Aktif",
+        "Anda harus memulai sebuah proses terlebih dahulu.",
         "warning"
       );
       return;
     }
-    // Hentikan proses loader yang sedang berjalan
-    if (loaderActiveProcess) {
-      stopProcess(loaderActiveProcess, "loader");
-    }
-
+    stopProcess(loaderActiveProcess, "loader");
     clearInterval(loaderInterval);
     loaderInterval = null;
     loaderActiveProcess = null;
     loaderSessionCount++;
-    loaderTimer = 0; // Reset timer sesi
+    loaderTimer = 0;
     updateMainTimerDisplay("loader");
 
     Swal.fire({
@@ -290,25 +294,21 @@ function initializeProcess() {
     });
   };
 
-  const finishHaulerCycle = () => {
-    if (!haulerActiveProcess && haulerTimer === 0) {
+  const stopHaulerCycle = () => {
+    if (!haulerActiveProcess) {
       Swal.fire(
-        "Proses Belum Dimulai",
-        "Anda harus menjalankan setidaknya satu proses hauler.",
+        "Tidak Ada Proses Aktif",
+        "Anda harus memulai sebuah proses terlebih dahulu.",
         "warning"
       );
       return;
     }
-    // Hentikan proses hauler yang sedang berjalan
-    if (haulerActiveProcess) {
-      stopProcess(haulerActiveProcess, "hauler");
-    }
-
+    stopProcess(haulerActiveProcess, "hauler");
     clearInterval(haulerInterval);
     haulerInterval = null;
     haulerActiveProcess = null;
     haulerSessionCount++;
-    haulerTimer = 0; // Reset timer sesi
+    haulerTimer = 0;
     updateMainTimerDisplay("hauler");
 
     Swal.fire({
@@ -320,7 +320,6 @@ function initializeProcess() {
     });
   };
 
-  // Fungsi submit tidak perlu diubah karena sudah memproses berdasarkan 'processHistory'
   const submitAllData = () => {
     if (processHistory.length === 0) {
       Swal.fire({
@@ -330,10 +329,8 @@ function initializeProcess() {
       });
       return;
     }
-    // Hentikan SEMUA proses yang mungkin masih berjalan sebelum submit
     if (loaderActiveProcess) stopProcess(loaderActiveProcess, "loader");
     if (haulerActiveProcess) stopProcess(haulerActiveProcess, "hauler");
-
     clearInterval(loaderInterval);
     clearInterval(haulerInterval);
 
@@ -343,10 +340,7 @@ function initializeProcess() {
         .reduce((acc, process) => {
           const sessionKey = process.session;
           if (!acc[sessionKey]) {
-            acc[sessionKey] = {
-              totalTime: 0,
-              processes: [],
-            };
+            acc[sessionKey] = { totalTime: 0, processes: [] };
           }
           acc[sessionKey].processes.push({
             name: process.name,
@@ -360,7 +354,64 @@ function initializeProcess() {
     const loaderDataBySession = groupProcessesBySession("loader");
     const haulerDataBySession = groupProcessesBySession("hauler");
 
-    // Mengingat permintaan Anda sebelumnya
+    const allLoaderProcesses = Object.values(loaderDataBySession).flatMap(
+      (session) => session.processes
+    );
+    const totalDumps = allLoaderProcesses.filter(
+      (p) => p.name.toUpperCase() === "BUCKET DUMP"
+    ).length;
+    const jumlahSesiLoader = Object.keys(loaderDataBySession).length;
+    const rataRataPassing =
+      jumlahSesiLoader > 0 ? totalDumps / jumlahSesiLoader : 0;
+
+    const calculateAverageProcessTime = (processName) => {
+      const relevant = allLoaderProcesses.filter(
+        (p) => p.name.toUpperCase() === processName.toUpperCase()
+      );
+      if (relevant.length === 0) return 0;
+      const totalTime = relevant.reduce((sum, p) => sum + p.time, 0);
+      return totalTime / relevant.length;
+    };
+
+    const avgDiggingMs = calculateAverageProcessTime("DIGGING");
+    const avgSwingLoadMs = calculateAverageProcessTime("SWING LOAD");
+    const avgBucketDumpMs = calculateAverageProcessTime("BUCKET DUMP");
+    const avgSwingEmptyMs = calculateAverageProcessTime("SWING EMPTY");
+    const avgSpottingMs = calculateAverageProcessTime("SPOTTING");
+
+    const totalLoadingTimeMs = Object.values(loaderDataBySession).reduce(
+      (sum, session) => sum + session.totalTime,
+      0
+    );
+    const avgCycleTimeLoaderMs =
+      jumlahSesiLoader > 0 ? totalLoadingTimeMs / jumlahSesiLoader : 0;
+    const avgLoadingTimeMin = avgCycleTimeLoaderMs / 1000 / 60;
+
+    const totalCycleTimeHaulerMs = Object.values(haulerDataBySession).reduce(
+      (sum, session) => sum + session.totalTime,
+      0
+    );
+    const jumlahSesiHauler = Object.keys(haulerDataBySession).length;
+    const avgCycleTimeHaulerMs =
+      jumlahSesiHauler > 0 ? totalCycleTimeHaulerMs / jumlahSesiHauler : 0;
+    const avgCycleTimeHaulerMin = avgCycleTimeHaulerMs / 1000 / 60;
+
+    const jarakDumping = parseFloat(JSON.parse(formData).jarak_dumping || 0);
+    const jumlahHauler = parseFloat(JSON.parse(formData).jumlah_hauler || 0);
+    const avgCycleTimeHaulerJam = avgCycleTimeHaulerMin / 60;
+    const avgKecepatanHauler =
+      avgCycleTimeHaulerJam > 0
+        ? (2 * (jarakDumping / 1000)) / avgCycleTimeHaulerJam
+        : 0;
+
+    const matchingFleet =
+      avgCycleTimeHaulerMin > 0 && avgLoadingTimeMin > 0
+        ? jumlahHauler / (avgCycleTimeHaulerMin / avgLoadingTimeMin)
+        : 0;
+
+    const proyeksiProdty =
+      avgLoadingTimeMin > 0 ? 60 / avgLoadingTimeMin / 0.83 : 0;
+
     const today = new Date();
     const allFinalData = {
       pengajuan: {
@@ -375,6 +426,22 @@ function initializeProcess() {
       cycleTime: {
         loader: loaderDataBySession,
         hauler: haulerDataBySession,
+      },
+      calculatedResults: {
+        perhitunganCount: jumlahSesiLoader,
+        rataRataPassing: rataRataPassing,
+        avgDiggingMs: avgDiggingMs,
+        avgSwingLoadMs: avgSwingLoadMs,
+        avgBucketDumpMs: avgBucketDumpMs,
+        avgSwingEmptyMs: avgSwingEmptyMs,
+        avgSpottingMs: avgSpottingMs,
+        avgCycleTimeLoaderMs: avgCycleTimeLoaderMs,
+        avgLoadingTimeMin: avgLoadingTimeMin,
+        avgCycleTimeHaulerMs: avgCycleTimeHaulerMs,
+        avgCycleTimeHaulerMin: avgCycleTimeHaulerMin,
+        avgKecepatanHauler: avgKecepatanHauler,
+        matchingFleet: matchingFleet,
+        proyeksiProdty: proyeksiProdty,
       },
     };
 
@@ -410,9 +477,9 @@ function initializeProcess() {
     } else if (id === "btn-reset-hauler") {
       resetSpecificCycle("hauler");
     } else if (id === "btn-finish") {
-      finishLoaderCycle();
+      stopLoaderCycle();
     } else if (id === "btn-finish-hauler") {
-      finishHaulerCycle();
+      stopHaulerCycle();
     } else if (id === "btn-submit-all") {
       submitAllData();
     }
