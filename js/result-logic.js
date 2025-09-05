@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
     (p) => p.name.toUpperCase() === "BUCKET DUMP"
   ).length;
   const rataRataPassing =
-    jumlahSesiLoader > 0 ? totalDumps / jumlahSesiLoader : 0;
+    jumlahSesiLoader > 0 ? Math.round(totalDumps / jumlahSesiLoader) : 0;
 
   // POIN 4: Rata-rata Waktu Proses Individual Loader
   const avgDiggingMs = calculateAverageProcessTime("DIGGING");
@@ -134,9 +134,8 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("jenis-material").textContent = `: ${jenisMaterial}`;
   document.getElementById("nama-operator").textContent = `: ${namaOperator}`;
 
-  document.getElementById(
-    "rata-passing"
-  ).textContent = `: ${rataRataPassing.toFixed(1)}`;
+  // Perubahan di sini: Menggunakan rataRataPassing tanpa toFixed()
+  document.getElementById("rata-passing").textContent = `: ${rataRataPassing}`;
   document.getElementById("rata-digging").textContent = `: ${(
     avgDiggingMs / 1000
   ).toFixed(2)} detik`;
@@ -182,7 +181,7 @@ document.addEventListener("DOMContentLoaded", function () {
     e.preventDefault();
     Swal.fire({
       title: "Ulangi Proses?",
-      text: "Data monitoring saat ini akan dihapus dan Anda akan kembali ke halaman timer.",
+      text: "Data monitoring saat ini akan dihapus dan Anda akan kembali ke halaman awal.",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#38A169",
