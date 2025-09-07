@@ -9,22 +9,21 @@ const form = document.getElementById("dataForm");
 form.addEventListener("submit", function (event) {
   event.preventDefault();
 
-  // Mengambil nilai dari semua form, termasuk yang baru
+  // Mengambil nilai dari semua form
   const unitLoader = document.getElementById("unitLoader").value;
-  const jenisMaterial = document.getElementById("jenisMaterial").value;
+  // const jenisMaterial = document.getElementById("jenisMaterial").value; // Dihapus
   const namaOperator = document.getElementById("namaOperator").value;
   const observer = document.getElementById("observer").value;
-  const jarakDumping = document.getElementById("jarakDumping").value; // DITAMBAHKAN
-  const jumlahHauler = document.getElementById("jumlahHauler").value; // DITAMBAHKAN
+  const jarakDumping = document.getElementById("jarakDumping").value;
+  const jumlahHauler = document.getElementById("jumlahHauler").value;
 
-  // Memperbarui validasi untuk form baru
+  // Memperbarui validasi untuk form yang tersisa
   if (
-    unitLoader === "UNIT LOADER" ||
-    jenisMaterial === "JENIS MATERIAL" ||
-    namaOperator === "NAMA OPERATOR" ||
-    observer === "" ||
-    jarakDumping === "" || // DITAMBAHKAN
-    jumlahHauler === "" // DITAMBAHKAN
+    unitLoader.trim() === "" ||
+    namaOperator.trim() === "" ||
+    observer.trim() === "" ||
+    jarakDumping.trim() === "" ||
+    jumlahHauler.trim() === ""
   ) {
     Swal.fire({
       icon: "error",
@@ -37,11 +36,11 @@ form.addEventListener("submit", function (event) {
   // Menambahkan data baru ke dalam objek
   const data = {
     unit_loader: unitLoader,
-    jenis_material: jenisMaterial,
+    // jenis_material: jenisMaterial, // Dihapus
     nama_operator: namaOperator,
     observer: observer,
-    jarak_dumping: jarakDumping, // DITAMBAHKAN
-    jumlah_hauler: jumlahHauler, // DITAMBAHKAN
+    jarak_dumping: jarakDumping,
+    jumlah_hauler: jumlahHauler,
     tanggal_pengajuan: new Date().toLocaleDateString("id-ID", {
       weekday: "long",
       year: "numeric",

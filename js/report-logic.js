@@ -1,51 +1,61 @@
-// File: js/report-logic.js (Final - Hanya Menampilkan Data)
 document.addEventListener("DOMContentLoaded", function () {
+  // --- 1. PENGAMBILAN & VALIDASI DATA ---
   const dataString = localStorage.getItem("fullCycleReportData");
+
   if (!dataString) {
     Swal.fire({
       icon: "error",
       title: "Data Tidak Ditemukan",
-      text: "Tidak ada data laporan untuk ditampilkan. Silakan mulai dari awal.",
-      confirmButtonText: "Kembali ke Awal",
-      allowOutsideClick: false,
+      text: "Silakan jalankan proses monitoring terlebih dahulu.",
+      showConfirmButton: false,
+      timer: 2500,
     }).then(() => {
-      window.location.href = "index.html";
+      window.location.href = "index2.html";
     });
     return;
   }
 
   const data = JSON.parse(dataString);
-
-  // Validasi jika data hasil kalkulasi belum tersimpan
-  if (!data.calculatedResults) {
-    Swal.fire({
-      icon: "error",
-      title: "Data Tidak Lengkap",
-      text: "Hasil kalkulasi tidak ditemukan. Harap ulangi dari halaman resume.",
-      confirmButtonText: "Kembali",
-    }).then(() => {
-      window.location.href = "index3.html";
-    });
-    return;
-  }
-
   const initialData = data.initialData;
   const results = data.calculatedResults;
   const analisa = data.analisaProblem;
 
-  // --- gunakan analisa.pengajuanAnalisa untuk tanggal & jam ---
-  const pengajuanHari = analisa.pengajuanAnalisa?.hari || "-";
-  const pengajuanTanggal = analisa.pengajuanAnalisa?.tanggal || "-";
-  const pengajuanJam = analisa.pengajuanAnalisa?.jam || "-";
+  // Validasi jika data hasil kalkulasi atau analisa belum tersimpan
+  if (!results || !analisa) {
+    Swal.fire({
+      icon: "error",
+      title: "Data Tidak Lengkap",
+      text: "Hasil kalkulasi tidak ditemukan. Harap ulangi dari halaman analisa.",
+      confirmButtonText: "Kembali",
+    }).then(() => {
+      window.location.href = "index4.html";
+    });
+    return;
+  }
 
-  // --- TAMPILKAN DATA KE HTML (MENGGUNAKAN VARIABEL BARU) ---
+  // --- FUNGSI BANTUAN (HELPERS) ---
+  const formatMinutesAndSeconds = (ms) => {
+    const totalSeconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes} menit ${String(seconds).padStart(2, "0")} detik`;
+  };
+
+  const formatAnalysisForDisplay = (arr) => {
+    if (!arr || arr.length === 0) return "N/A";
+    return arr.length === 1 && arr[0] === "Nihil" ? "Nihil" : arr.join(", ");
+  };
+
+  // --- 2. TAMPILKAN HASIL KE HTML ---
+  const pengajuanTanggal = initialData.tanggal_pengajuan.split(", ")[1];
   document.getElementById(
     "report-date"
-  ).textContent = `${pengajuanHari}, ${pengajuanTanggal}`;
+  ).textContent = `Pengamatan: ${pengajuanTanggal} (Pukul Analisa: ${analisa.pengajuanAnalisa.jam})`;
+
   document.getElementById("data-nama-unit").textContent =
     initialData.unit_loader || "N/A";
   document.getElementById("data-jenis-material").textContent =
-    initialData.jenis_material || "N/A";
+    analisa.jenisMaterial || "N/A";
   document.getElementById("data-nama-operator").textContent =
     initialData.nama_operator || "N/A";
   document.getElementById("data-observer").textContent =
@@ -54,11 +64,10 @@ document.addEventListener("DOMContentLoaded", function () {
     "data-sesi-loader"
   ).textContent = `${results.perhitunganCount} kali`;
 
-  // Penyesuaian: Menggunakan toFixed(0) untuk membulatkan
-  document.getElementById(
-    "data-rata-passing"
-  ).textContent = `${results.rataRataPassing.toFixed(0)} passing`;
-
+  // Analisis Loader
+  document.getElementById("data-rata-passing").textContent = `${Math.round(
+    results.rataRataPassing
+  )} passing`;
   document.getElementById("data-rata-digging").textContent = `${(
     results.avgDiggingMs / 1000
   ).toFixed(2)} detik`;
@@ -74,57 +83,49 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("data-rata-spotting").textContent = `${(
     results.avgSpottingMs / 1000
   ).toFixed(2)} detik`;
-  document.getElementById("data-rata-cycletime-loader").textContent = `${(
-    results.avgCycleTimeLoaderMs / 1000
+  document.getElementById("data-rata-hanging-time").textContent = `${(
+    results.avgHangingMs / 1000
   ).toFixed(2)} detik`;
-  document.getElementById(
-    "data-rata-loadingtime"
-  ).textContent = `${results.avgLoadingTimeMin.toFixed(2)} menit`;
 
+  document.getElementById("data-rata-cycletime-loader").textContent =
+    formatMinutesAndSeconds(results.avgCycleTimeLoaderMs);
+  document.getElementById("data-rata-loadingtime").textContent =
+    formatMinutesAndSeconds(results.avgLoadingTimeMs);
+
+  // Analisis Hauler & Produktivitas
   document.getElementById(
     "data-jarak-dumping"
   ).textContent = `${initialData.jarak_dumping} meter`;
   document.getElementById(
     "data-jumlah-hauler"
   ).textContent = `${initialData.jumlah_hauler} Unit`;
-  document.getElementById(
-    "data-rata-cycletime-hauler"
-  ).textContent = `${results.avgCycleTimeHaulerMin.toFixed(2)} menit`;
+  document.getElementById("data-rata-cycletime-hauler").textContent =
+    formatMinutesAndSeconds(results.avgCycleTimeHaulerMs);
   document.getElementById(
     "data-rata-kecepatan-hauler"
   ).textContent = `${results.avgKecepatanHauler.toFixed(2)} km/jam`;
   document.getElementById("data-matching-fleet").textContent =
     results.matchingFleet.toFixed(2);
-
-  // Penyesuaian: Menggunakan toFixed(0) untuk membulatkan
   document.getElementById(
     "data-proyeksi-produktivitas"
-  ).textContent = `${results.proyeksiProdty.toFixed(0)} Ritase`;
+  ).textContent = `${Math.round(results.proyeksiProdty)} Ritase`;
 
-  // Menampilkan data analisa masalah
-  const formatAnalysis = (arr) => {
-    if (!arr || arr.length === 0) return "Nihil";
-    return arr.length === 1 &&
-      (arr[0] === "-KOSONG-" || arr[0].includes("Nihil"))
-      ? "Nihil"
-      : arr.join("; ");
-  };
-  document.getElementById("data-man").textContent = formatAnalysis(analisa.man);
-  document.getElementById("data-machine").textContent = formatAnalysis(
-    analisa.machine
+  // Analisa Problem Produktivitas
+  document.getElementById("data-man").textContent = formatAnalysisForDisplay(
+    analisa.man
   );
-  document.getElementById("data-material").textContent = formatAnalysis(
-    analisa.material
-  );
-  document.getElementById("data-method").textContent = formatAnalysis(
+  document.getElementById("data-machine").textContent =
+    formatAnalysisForDisplay(analisa.machine);
+  document.getElementById("data-material").textContent =
+    formatAnalysisForDisplay(analisa.material);
+  document.getElementById("data-method").textContent = formatAnalysisForDisplay(
     analisa.method
   );
-  document.getElementById("data-environment").textContent = formatAnalysis(
-    analisa.environment
-  );
+  document.getElementById("data-environment").textContent =
+    formatAnalysisForDisplay(analisa.environment);
   document.getElementById("data-remaks").textContent = analisa.remaks;
 
-  // Tombol Mulai Sesi Baru
+  // --- 3. EVENT LISTENER UNTUK TOMBOL "Selesai & Mulai Baru" ---
   document
     .getElementById("btn-start-new")
     .addEventListener("click", function (e) {
@@ -135,70 +136,76 @@ document.addEventListener("DOMContentLoaded", function () {
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#38A169",
-        cancelButtonColor: "#d33",
+        cancelButtonColor: "#E53E3E",
         confirmButtonText: "Ya, Mulai Baru!",
         cancelButtonText: "Batal",
       }).then((result) => {
         if (result.isConfirmed) {
           localStorage.clear();
-          window.location.href = "index.html";
+          window.location.href = e.target.href;
         }
       });
     });
 
-  // Skrip PDF - Cukup mengambil data yang sudah diformat
+  // --- 4. LOGIKA UNTUK PDF ---
+  const imageToBase64 = async (url) => {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("Network response was not ok.");
+      const blob = await response.blob();
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    } catch (error) {
+      console.error("Gagal memuat gambar untuk PDF:", error);
+      return null;
+    }
+  };
+
   document
     .getElementById("btn-preview-pdf")
     .addEventListener("click", async function () {
       const { jsPDF } = window.jspdf;
-      const reportDataString = localStorage.getItem("fullCycleReportData");
 
-      if (
-        !reportDataString ||
-        !JSON.parse(reportDataString).calculatedResults
-      ) {
+      if (!results || !analisa) {
         Swal.fire(
           "Data Tidak Lengkap",
-          "Data laporan tidak lengkap atau belum dihitung. Harap ulangi proses.",
+          "Data laporan tidak lengkap. Harap ulangi proses.",
           "error"
         );
         return;
       }
 
-      const reportData = JSON.parse(reportDataString);
-
       Swal.fire({
         title: "Sedang menyiapkan PDF...",
-        text: "Harap tunggu sebentar",
+        text: "Harap tunggu sebentar.",
         allowOutsideClick: false,
         didOpen: () => Swal.showLoading(),
       });
 
       try {
-        const logoData = await imageToBase64("img/icon.jpg");
-
-        const initialData = reportData.initialData;
-        const results = reportData.calculatedResults;
-        const analisa = reportData.analisaProblem;
-        const pengajuan = reportData.pengajuan;
+        const logoData = await imageToBase64("img/picture.jpg");
 
         const doc = new jsPDF();
-
         let currentY = 10;
+        const marginX = 14;
+
         if (logoData) {
           const img = new Image();
           img.src = logoData;
           await new Promise((resolve) => (img.onload = resolve));
           const imgWidth = img.width;
           const imgHeight = img.height;
-
           const logoDisplayWidth = 40;
           const logoDisplayHeight = (imgHeight / imgWidth) * logoDisplayWidth;
 
           doc.addImage(
             logoData,
             "JPEG",
-            14,
+            doc.internal.pageSize.getWidth() / 2 - logoDisplayWidth / 2,
             currentY,
             logoDisplayWidth,
             logoDisplayHeight
@@ -216,16 +223,35 @@ document.addEventListener("DOMContentLoaded", function () {
         currentY += 5 + 7;
 
         doc.setFontSize(10).setFont("helvetica", "normal");
+        const pengamatanDate = initialData.tanggal_pengajuan;
+        const analisaTime = analisa.pengajuanAnalisa.jam;
         doc.text(
-          `Pengamatan: ${pengajuanHari}, ${pengajuanTanggal} (Pukul Pengamatan: ${pengajuanJam})`,
+          `Pengamatan: ${pengamatanDate} (Pukul Analisa: ${analisaTime})`,
           doc.internal.pageSize.getWidth() / 2,
           currentY + 3,
           { align: "center" }
         );
+        currentY += 3 + 10;
+
+        const formatMinutesAndSecondsPDF = (ms) => {
+          const totalSeconds = Math.floor(ms / 1000);
+          const minutes = Math.floor(totalSeconds / 60);
+          const seconds = totalSeconds % 60;
+          return `${minutes} menit ${String(seconds).padStart(2, "0")} detik`;
+        };
+        const formatAnalysisForPDF = (arr) => {
+          if (!arr || arr.length === 0) return "Nihil";
+          const formattedArr = arr.map((it) => {
+            const bagian = it.split(" : ");
+            return "• " + (bagian[1] || it);
+          });
+          return formattedArr.join("\n");
+        };
 
         const tableOptions = {
+          startY: currentY,
           theme: "grid",
-          styles: { fontSize: 8, cellPadding: 1.5 },
+          styles: { fontSize: 8, cellPadding: 1.5, overflow: "linebreak" },
           headStyles: {
             fillColor: [210, 210, 210],
             textColor: 20,
@@ -237,21 +263,21 @@ document.addEventListener("DOMContentLoaded", function () {
             0: { fontStyle: "bold", cellWidth: 60 },
             1: { cellWidth: "auto" },
           },
-          margin: { left: 14, right: 14 },
+          margin: { left: marginX, right: marginX },
         };
+
         const generalInfo = [
           ["Nama Unit", initialData.unit_loader || "-"],
-          ["Jenis Material", initialData.jenis_material || "-"],
+          ["Jenis Material", analisa.jenisMaterial || "-"],
           ["Nama Operator", initialData.nama_operator || "-"],
           ["Observer", initialData.observer || "-"],
           ["Jumlah Sesi Loader", `${results.perhitunganCount} Kali`],
         ];
 
-        // Penyesuaian untuk PDF: Menggunakan toFixed(0)
         const loaderAnalysis = [
           [
             "Rata-rata Jumlah Passing",
-            `${results.rataRataPassing.toFixed(0)} passing`,
+            `${Math.round(results.rataRataPassing)} passing`,
           ],
           [
             "Rata-rata Digging Time",
@@ -274,12 +300,16 @@ document.addEventListener("DOMContentLoaded", function () {
             `${(results.avgSpottingMs / 1000).toFixed(2)} detik`,
           ],
           [
+            "Rata-rata Hanging Time",
+            `${(results.avgHangingMs / 1000).toFixed(2)} detik`,
+          ],
+          [
             "Rata-rata Cycle Time Loader",
-            `${(results.avgCycleTimeLoaderMs / 1000).toFixed(2)} detik`,
+            formatMinutesAndSecondsPDF(results.avgCycleTimeLoaderMs),
           ],
           [
             "Rata-rata Loading Time",
-            `${results.avgLoadingTimeMin.toFixed(2)} menit`,
+            formatMinutesAndSecondsPDF(results.avgLoadingTimeMs),
           ],
         ];
 
@@ -288,7 +318,7 @@ document.addEventListener("DOMContentLoaded", function () {
           ["Jumlah Hauler", `${initialData.jumlah_hauler} Unit`],
           [
             "Rata-rata Cycle Time Hauler",
-            `${results.avgCycleTimeHaulerMin.toFixed(2)} menit`,
+            formatMinutesAndSecondsPDF(results.avgCycleTimeHaulerMs),
           ],
           [
             "Rata-rata Kecepatan Hauler",
@@ -297,17 +327,10 @@ document.addEventListener("DOMContentLoaded", function () {
           ["Matching Fleet", results.matchingFleet.toFixed(2)],
           [
             "Proyeksi Produktivitas",
-            `${results.proyeksiProdty.toFixed(0)} Ritase`,
+            `${Math.round(results.proyeksiProdty)} Ritase`,
           ],
         ];
 
-        const formatAnalysisForPDF = (arr) => {
-          if (!arr || arr.length === 0) return "Nihil";
-          return arr.length === 1 &&
-            (arr[0] === "-KOSONG-" || arr[0].includes("Nihil"))
-            ? "Nihil"
-            : arr.join("; ");
-        };
         const problemAnalysis = [
           ["Man", formatAnalysisForPDF(analisa.man)],
           ["Machine", formatAnalysisForPDF(analisa.machine)],
@@ -318,73 +341,71 @@ document.addEventListener("DOMContentLoaded", function () {
         ];
 
         doc.autoTable({
-          startY: currentY + 5,
+          ...tableOptions,
           head: [
             [
               {
                 content: "Informasi Umum",
                 colSpan: 2,
-                styles: { halign: "left" },
+                styles: { halign: "left", fillColor: [210, 210, 210] },
               },
             ],
           ],
           body: generalInfo,
-          ...tableOptions,
         });
+
         doc.autoTable({
+          ...tableOptions,
           head: [
             [
               {
                 content: "Analisis Loader",
                 colSpan: 2,
-                styles: { halign: "left" },
+                styles: { halign: "left", fillColor: [210, 210, 210] },
               },
             ],
           ],
           body: loaderAnalysis,
-          ...tableOptions,
         });
+
         doc.autoTable({
+          ...tableOptions,
           head: [
             [
               {
                 content: "Analisis Hauler & Produktivitas",
                 colSpan: 2,
-                styles: { halign: "left" },
+                styles: { halign: "left", fillColor: [210, 210, 210] },
               },
             ],
           ],
           body: haulerAnalysis,
-          ...tableOptions,
         });
+
         doc.autoTable({
+          ...tableOptions,
           head: [
             [
               {
                 content: "Analisa Problem Produktivitas",
                 colSpan: 2,
-                styles: { halign: "left" },
+                styles: { halign: "left", fillColor: [210, 210, 210] },
               },
             ],
           ],
           body: problemAnalysis,
-          ...tableOptions,
         });
 
         setTimeout(() => {
-          const fileName = `Laporan_FAD_${
-            initialData.unit_loader || "UNIT"
-          }_${pengajuanTanggal}.pdf`;
+          const fileName = `Laporan_FAD_${initialData.unit_loader || "UNIT"}_${
+            analisa.pengajuanAnalisa.tanggal
+          }.pdf`;
           doc.save(fileName);
           Swal.close();
         }, 1000);
       } catch (error) {
         console.error("Gagal membuat PDF:", error);
-        Swal.fire(
-          "Gagal",
-          "Tidak dapat memuat logo atau membuat PDF.",
-          "error"
-        );
+        Swal.fire("Gagal", "Tidak dapat membuat PDF.", "error");
       }
     });
 });

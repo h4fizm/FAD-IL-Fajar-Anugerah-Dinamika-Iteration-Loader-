@@ -97,42 +97,6 @@
             </button>
 
             <button
-              id="btn-digging"
-              class="flex flex-col items-center justify-center bg-white hover:bg-gray-100 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
-            >
-              <img
-                src="img/digging.jpg"
-                alt="Digging Icon"
-                class="w-16 h-16 object-contain"
-              />
-              <span class="text-[11px] mt-1 uppercase font-bold">DIGGING</span>
-              <span class="font-mono text-gray-500 text-sm mt-1">00:00</span>
-            </button>
-
-            <button
-              id="btn-swing-load"
-              class="flex flex-col items-center justify-center bg-white hover:bg-gray-100 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
-            >
-              <img
-                src="img/swing load.jpg"
-                alt="Swing Load Icon"
-                class="w-16 h-16 object-contain"
-              />
-              <span class="text-[11px] mt-1 uppercase font-bold"
-                >SWING LOAD</span
-              >
-              <span class="font-mono text-gray-500 text-sm mt-1">00:00</span>
-            </button>
-
-            <button
-              id="btn-reset"
-              class="flex flex-col items-center justify-center bg-fad-red hover:bg-red-600 text-white font-semibold py-3 rounded-lg shadow-md transition-transform transform hover:scale-105"
-            >
-              <span class="text-3xl">🔄</span>
-              <span class="text-xs mt-1 uppercase">RESET</span>
-            </button>
-
-            <button
               id="btn-bucket-dump"
               class="flex flex-col items-center justify-center bg-white hover:bg-gray-100 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
             >
@@ -163,8 +127,59 @@
             </button>
 
             <button
+              id="btn-hanging"
+              class="flex flex-col items-center justify-center bg-white hover:bg-gray-100 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
+            >
+              <img
+                src="img/spotting.jpg"
+                alt="Hanging Icon"
+                class="w-16 h-16 object-contain"
+              />
+              <span class="text-[11px] mt-1 uppercase font-bold">HANGING</span>
+              <span class="font-mono text-gray-500 text-sm mt-1">00:00</span>
+            </button>
+
+            <button
+              id="btn-swing-load"
+              class="flex flex-col items-center justify-center bg-white hover:bg-gray-100 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
+            >
+              <img
+                src="img/swing load.jpg"
+                alt="Swing Load Icon"
+                class="w-16 h-16 object-contain"
+              />
+              <span class="text-[11px] mt-1 uppercase font-bold"
+                >SWING LOAD</span
+              >
+              <span class="font-mono text-gray-500 text-sm mt-1">00:00</span>
+            </button>
+
+            <button
+              id="btn-digging"
+              class="flex flex-col items-center justify-center bg-white hover:bg-gray-100 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
+            >
+              <img
+                src="img/digging.jpg"
+                alt="Digging Icon"
+                class="w-16 h-16 object-contain"
+              />
+              <span class="text-[11px] mt-1 uppercase font-bold">DIGGING</span>
+              <span class="font-mono text-gray-500 text-sm mt-1">00:00</span>
+            </button>
+          </div>
+
+          <div class="flex flex-col gap-3 mt-4">
+            <button
+              id="btn-reset"
+              class="w-full h-20 flex items-center justify-center space-x-2 bg-fad-red hover:bg-red-600 text-white font-semibold rounded-lg shadow-md transition-transform transform hover:scale-105"
+            >
+              <span>🔄</span>
+              <span>RESET</span>
+            </button>
+
+            <button
               id="btn-finish"
-              class="col-span-3 mt-2 flex items-center justify-center space-x-2 bg-fad-yellow hover:bg-amber-500 text-fad-dark font-bold py-3 rounded-lg shadow-md transition-transform transform hover:scale-105"
+              class="w-full h-20 flex items-center justify-center space-x-2 bg-fad-yellow hover:bg-amber-500 text-fad-dark font-bold rounded-lg shadow-md transition-transform transform hover:scale-105"
             >
               <span>✅</span>
               <span>DONE</span>
@@ -184,37 +199,54 @@
               00:00:00
             </p>
           </div>
+
+          <div class="mb-4">
+            <select
+              id="haulerUnitSelector"
+              class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-500 hover:text-gray-700"
+            >
+              <option disabled selected>PILIHAN UNIT HAULER</option>
+              <option value="FDT740">FDT740</option>
+              <option value="FDT741">FDT741</option>
+              <option value="FDT742">FDT742</option>
+              <option value="FDT743">FDT743</option>
+              <option value="FDT752">FDT752</option>
+              <option value="FDT753">FDT753</option>
+              <option value="FDT771">FDT771</option>
+              <option value="FDT772">FDT772</option>
+              <option value="FDT773">FDT773</option>
+              <option value="FDT774">FDT774</option>
+              <option value="FDT775">FDT775</option>
+              <option value="FDT760">FDT760</option>
+            </select>
+          </div>
+
           <div id="hauler-grid" class="grid grid-cols-2 gap-3">
             <button
               id="btn-start-hauler"
-              class="flex flex-col items-center justify-center bg-white hover:bg-gray-100 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
+              class="flex flex-col items-center justify-center bg-white hover:bg-gray-100 text-fad-dark font-semibold h-24 rounded-lg shadow-md transition-transform transform hover:scale-105"
             >
               <span class="text-3xl">📤</span>
               <span class="text-[11px] mt-1 uppercase font-bold">START</span>
-              <span class="font-mono text-gray-500 text-sm mt-1">00:00</span>
+              <!-- Timer akan ditambahkan via JS -->
             </button>
             <button
               id="btn-stop-hauler"
-              class="flex flex-col items-center justify-center bg-white hover:bg-gray-100 text-fad-dark font-semibold py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
+              class="flex flex-col items-center justify-center bg-white hover:bg-gray-100 text-fad-dark font-semibold h-24 rounded-lg shadow-md transition-transform transform hover:scale-105"
             >
               <span class="text-3xl">📥</span>
               <span class="text-[11px] mt-1 uppercase font-bold">STOP</span>
-              <span class="font-mono text-gray-500 text-sm mt-1">00:00</span>
+              <!-- Timer akan ditambahkan via JS -->
             </button>
-            <button
-              id="btn-done-hauler"
-              class="flex items-center justify-center space-x-2 bg-fad-yellow hover:bg-amber-500 text-fad-dark font-bold py-3 rounded-lg shadow-md transition-transform transform hover:scale-105"
-            >
-              <span>✅</span>
-              <span>DONE</span>
-            </button>
+
             <button
               id="btn-reset-hauler"
-              class="flex flex-col items-center justify-center bg-fad-red hover:bg-red-600 text-white font-semibold py-3 rounded-lg shadow-md transition-transform transform hover:scale-105"
+              class="col-span-2 flex items-center justify-center space-x-2 bg-fad-red hover:bg-red-600 text-white font-semibold h-20 rounded-lg shadow-md transition-transform transform hover:scale-105"
             >
-              <span class="text-3xl">🔄</span>
-              <span class="text-xs mt-1 uppercase">RESET</span>
+              <span>🔄</span>
+              <span>RESET</span>
             </button>
+
             <div class="col-span-2 mt-2 flex items-center space-x-3">
               <a
                 href="index.html"
@@ -237,7 +269,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="js/process-logic.js"></script>
     <script>
-      // Script untuk preloader
       const preloader = document.getElementById("preloader");
       if (preloader) {
         window.addEventListener("load", function () {
