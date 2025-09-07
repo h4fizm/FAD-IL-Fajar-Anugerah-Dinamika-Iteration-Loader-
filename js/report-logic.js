@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // --- PENGAMBILAN & VALIDASI DATA ---
+  // --- 1. PENGAMBILAN & VALIDASI DATA ---
   const dataString = localStorage.getItem("fullCycleReportData");
 
   if (!dataString) {
@@ -16,11 +16,12 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   const data = JSON.parse(dataString);
-  const initialData = data.initialData;
-  const results = data.calculatedResults;
-  const analisa = data.analisaProblem;
+  const {
+    initialData,
+    calculatedResults: results,
+    analisaProblem: analisa,
+  } = data;
 
-  // Validasi data tambahan
   if (!results || !analisa) {
     Swal.fire({
       icon: "error",
@@ -50,93 +51,69 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!arr || arr.length === 0 || (arr.length === 1 && arr[0] === "Nihil")) {
       return "Nihil";
     }
-    const formattedArr = arr.map((it) => {
-      const bagian = it.split(" : ");
-      return "• " + (bagian[1] || it);
-    });
+    const formattedArr = arr.map((it) => `• ${it.split(" : ")[1] || it}`);
     return formattedArr.join("\n");
   };
 
-  // --- TAMPILKAN HASIL KE HTML ---
+  // --- 2. TAMPILKAN HASIL KE HTML ---
   const pengajuanTanggal = initialData.tanggal_pengajuan.split(", ")[1];
   document.getElementById(
     "report-date"
   ).textContent = `Pengamatan: ${pengajuanTanggal} (Pukul Analisa: ${analisa.pengajuanAnalisa.jam})`;
 
-  document.getElementById("data-nama-unit").textContent =
-    initialData.unit_loader || "N/A";
-  document.getElementById("data-jenis-material").textContent =
-    analisa.jenisMaterial || "N/A";
-  document.getElementById("data-nama-operator").textContent =
-    initialData.nama_operator || "N/A";
-  document.getElementById("data-observer").textContent =
-    initialData.observer || "N/A";
-  document.getElementById(
-    "data-sesi-loader"
-  ).textContent = `${results.perhitunganCount} kali`;
+  // Menggunakan perulangan untuk mengisi data ke HTML
+  const fields = {
+    "data-nama-unit": initialData.unit_loader,
+    "data-jenis-material": analisa.jenisMaterial,
+    "data-nama-operator": initialData.nama_operator,
+    "data-observer": initialData.observer,
+    "data-sesi-loader": `${results.perhitunganCount} kali`,
+    "data-rata-passing": `${Math.round(results.rataRataPassing)} passing`,
+    "data-rata-digging": `${(results.avgDiggingMs / 1000).toFixed(2)} detik`,
+    "data-rata-swing-load": `${(results.avgSwingLoadMs / 1000).toFixed(
+      2
+    )} detik`,
+    "data-rata-bucket-dump": `${(results.avgBucketDumpMs / 1000).toFixed(
+      2
+    )} detik`,
+    "data-rata-swing-empty": `${(results.avgSwingEmptyMs / 1000).toFixed(
+      2
+    )} detik`,
+    "data-rata-spotting": `${(results.avgSpottingMs / 1000).toFixed(2)} detik`,
+    "data-rata-hanging-time": `${(results.avgHangingMs / 1000).toFixed(
+      2
+    )} detik`,
+    "data-rata-cycletime-loader": formatMinutesAndSeconds(
+      results.avgCycleTimeLoaderMs
+    ),
+    "data-rata-loadingtime": formatMinutesAndSeconds(results.avgLoadingTimeMs),
+    "data-jarak-dumping": `${initialData.jarak_dumping} meter`,
+    "data-jumlah-hauler": `${initialData.jumlah_hauler} Unit`,
+    "data-rata-cycletime-hauler": formatMinutesAndSeconds(
+      results.avgCycleTimeHaulerMs
+    ),
+    "data-rata-kecepatan-hauler": `${results.avgKecepatanHauler.toFixed(
+      2
+    )} km/jam`,
+    "data-matching-fleet": results.matchingFleet.toFixed(2),
+    "data-proyeksi-produktivitas": `${Math.round(
+      results.proyeksiProdty
+    )} Ritase`,
+    "data-man": formatAnalysisForDisplay(analisa.man),
+    "data-machine": formatAnalysisForDisplay(analisa.machine),
+    "data-material": formatAnalysisForDisplay(analisa.material),
+    "data-method": formatAnalysisForDisplay(analisa.method),
+    "data-environment": formatAnalysisForDisplay(analisa.environment),
+    "data-remaks": analisa.remaks,
+  };
 
-  // Analisis Loader
-  document.getElementById("data-rata-passing").textContent = `${Math.round(
-    results.rataRataPassing
-  )} passing`;
-  document.getElementById("data-rata-digging").textContent = `${(
-    results.avgDiggingMs / 1000
-  ).toFixed(2)} detik`;
-  document.getElementById("data-rata-swing-load").textContent = `${(
-    results.avgSwingLoadMs / 1000
-  ).toFixed(2)} detik`;
-  document.getElementById("data-rata-bucket-dump").textContent = `${(
-    results.avgBucketDumpMs / 1000
-  ).toFixed(2)} detik`;
-  document.getElementById("data-rata-swing-empty").textContent = `${(
-    results.avgSwingEmptyMs / 1000
-  ).toFixed(2)} detik`;
-  document.getElementById("data-rata-spotting").textContent = `${(
-    results.avgSpottingMs / 1000
-  ).toFixed(2)} detik`;
-  document.getElementById("data-rata-hanging-time").textContent = `${(
-    results.avgHangingMs / 1000
-  ).toFixed(2)} detik`;
+  for (const id in fields) {
+    if (document.getElementById(id)) {
+      document.getElementById(id).textContent = fields[id] || "N/A";
+    }
+  }
 
-  document.getElementById("data-rata-cycletime-loader").textContent =
-    formatMinutesAndSeconds(results.avgCycleTimeLoaderMs);
-  document.getElementById("data-rata-loadingtime").textContent =
-    formatMinutesAndSeconds(results.avgLoadingTimeMs);
-
-  // Analisis Hauler & Produktivitas
-  document.getElementById(
-    "data-jarak-dumping"
-  ).textContent = `${initialData.jarak_dumping} meter`;
-  document.getElementById(
-    "data-jumlah-hauler"
-  ).textContent = `${initialData.jumlah_hauler} Unit`;
-  document.getElementById("data-rata-cycletime-hauler").textContent =
-    formatMinutesAndSeconds(results.avgCycleTimeHaulerMs);
-  document.getElementById(
-    "data-rata-kecepatan-hauler"
-  ).textContent = `${results.avgKecepatanHauler.toFixed(2)} km/jam`;
-  document.getElementById("data-matching-fleet").textContent =
-    results.matchingFleet.toFixed(2);
-  document.getElementById(
-    "data-proyeksi-produktivitas"
-  ).textContent = `${Math.round(results.proyeksiProdty)} Ritase`;
-
-  // Analisa Problem Produktivitas
-  document.getElementById("data-man").textContent = formatAnalysisForDisplay(
-    analisa.man
-  );
-  document.getElementById("data-machine").textContent =
-    formatAnalysisForDisplay(analisa.machine);
-  document.getElementById("data-material").textContent =
-    formatAnalysisForDisplay(analisa.material);
-  document.getElementById("data-method").textContent = formatAnalysisForDisplay(
-    analisa.method
-  );
-  document.getElementById("data-environment").textContent =
-    formatAnalysisForDisplay(analisa.environment);
-  document.getElementById("data-remaks").textContent = analisa.remaks;
-
-  // --- EVENT LISTENER UNTUK TOMBOL "Selesai & Mulai Baru" ---
+  // --- 3. EVENT LISTENER UNTUK TOMBOL "Selesai & Mulai Baru" ---
   document
     .getElementById("btn-start-new")
     .addEventListener("click", function (e) {
@@ -158,7 +135,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
 
-  // --- LOGIKA UNTUK PDF ---
+  // --- 4. LOGIKA UNTUK PDF ---
   const imageToBase64 = async (url) => {
     try {
       const response = await fetch(url);
@@ -243,13 +220,6 @@ document.addEventListener("DOMContentLoaded", function () {
           { align: "center" }
         );
         doc.setFontSize(10);
-        // Baris ini dihapus/dinonaktifkan untuk menghilangkan "Mining Services"
-        // doc.text(
-        //   "Mining Services",
-        //   doc.internal.pageSize.getWidth() / 2,
-        //   currentY + 18,
-        //   { align: "center" }
-        // );
         currentY += 18 + 5;
 
         // Tanggal
@@ -275,7 +245,7 @@ document.addEventListener("DOMContentLoaded", function () {
             fillColor: [210, 210, 210],
             textColor: 20,
             fontStyle: "bold",
-            halign: "left", // Perbaikan: Mengubah halign ke kiri
+            halign: "left",
             fontSize: 10,
           },
           columnStyles: {
@@ -368,7 +338,7 @@ document.addEventListener("DOMContentLoaded", function () {
               {
                 content: "Informasi Umum",
                 colSpan: 2,
-                styles: { halign: "center", fillColor: [210, 210, 210] },
+                styles: { halign: "left", fillColor: [210, 210, 210] },
               },
             ],
           ],
@@ -382,7 +352,7 @@ document.addEventListener("DOMContentLoaded", function () {
               {
                 content: "Analisis Loader",
                 colSpan: 2,
-                styles: { halign: "center", fillColor: [210, 210, 210] },
+                styles: { halign: "left", fillColor: [210, 210, 210] },
               },
             ],
           ],
@@ -396,7 +366,7 @@ document.addEventListener("DOMContentLoaded", function () {
               {
                 content: "Analisis Hauler & Produktivitas",
                 colSpan: 2,
-                styles: { halign: "center", fillColor: [210, 210, 210] },
+                styles: { halign: "left", fillColor: [210, 210, 210] },
               },
             ],
           ],
@@ -410,7 +380,7 @@ document.addEventListener("DOMContentLoaded", function () {
               {
                 content: "Analisa Problem Produktivitas",
                 colSpan: 2,
-                styles: { halign: "center", fillColor: [210, 210, 210] },
+                styles: { halign: "left", fillColor: [210, 210, 210] },
               },
             ],
           ],
