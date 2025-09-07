@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // --- 1. PENGAMBILAN & VALIDASI DATA ---
+  // --- PENGAMBILAN & VALIDASI DATA ---
   const dataString = localStorage.getItem("fullCycleReportData");
 
   if (!dataString) {
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const results = data.calculatedResults;
   const analisa = data.analisaProblem;
 
-  // Validasi jika data hasil kalkulasi atau analisa belum tersimpan
+  // Validasi data tambahan
   if (!results || !analisa) {
     Swal.fire({
       icon: "error",
@@ -46,7 +46,18 @@ document.addEventListener("DOMContentLoaded", function () {
     return arr.length === 1 && arr[0] === "Nihil" ? "Nihil" : arr.join(", ");
   };
 
-  // --- 2. TAMPILKAN HASIL KE HTML ---
+  const formatAnalysisForPDF = (arr) => {
+    if (!arr || arr.length === 0 || (arr.length === 1 && arr[0] === "Nihil")) {
+      return "Nihil";
+    }
+    const formattedArr = arr.map((it) => {
+      const bagian = it.split(" : ");
+      return "• " + (bagian[1] || it);
+    });
+    return formattedArr.join("\n");
+  };
+
+  // --- TAMPILKAN HASIL KE HTML ---
   const pengajuanTanggal = initialData.tanggal_pengajuan.split(", ")[1];
   document.getElementById(
     "report-date"
@@ -125,7 +136,7 @@ document.addEventListener("DOMContentLoaded", function () {
     formatAnalysisForDisplay(analisa.environment);
   document.getElementById("data-remaks").textContent = analisa.remaks;
 
-  // --- 3. EVENT LISTENER UNTUK TOMBOL "Selesai & Mulai Baru" ---
+  // --- EVENT LISTENER UNTUK TOMBOL "Selesai & Mulai Baru" ---
   document
     .getElementById("btn-start-new")
     .addEventListener("click", function (e) {
@@ -147,7 +158,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
 
-  // --- 4. LOGIKA UNTUK PDF ---
+  // --- LOGIKA UNTUK PDF ---
   const imageToBase64 = async (url) => {
     try {
       const response = await fetch(url);
@@ -187,12 +198,15 @@ document.addEventListener("DOMContentLoaded", function () {
       });
 
       try {
-        const logoData = await imageToBase64("img/picture.jpg");
-
         const doc = new jsPDF();
         let currentY = 10;
         const marginX = 14;
+        const unit_loader = initialData.unit_loader || "UNIT";
+        const pengamatanDate = initialData.tanggal_pengajuan;
+        const analisaTime = analisa.pengajuanAnalisa.jam;
 
+        // Mendapatkan logo
+        const logoData = await imageToBase64("img/picture.jpg");
         if (logoData) {
           const img = new Image();
           img.src = logoData;
@@ -213,64 +227,70 @@ document.addEventListener("DOMContentLoaded", function () {
           currentY += logoDisplayHeight + 5;
         }
 
-        doc.setFontSize(16).setFont("helvetica", "bold");
+        // Judul Laporan
+        doc.setFontSize(14).setFont("helvetica", "bold");
         doc.text(
-          "Laporan Monitoring dan Evaluasi Productivity",
+          "PT FAJAR ANUGERAH DINAMIKA",
           doc.internal.pageSize.getWidth() / 2,
           currentY + 5,
           { align: "center" }
         );
-        currentY += 5 + 7;
-
-        doc.setFontSize(10).setFont("helvetica", "normal");
-        const pengamatanDate = initialData.tanggal_pengajuan;
-        const analisaTime = analisa.pengajuanAnalisa.jam;
+        doc.setFontSize(12).setFont("helvetica", "normal");
         doc.text(
-          `Pengamatan: ${pengamatanDate} (Pukul Analisa: ${analisaTime})`,
+          "Laporan Monitoring dan Evaluasi Productivity",
+          doc.internal.pageSize.getWidth() / 2,
+          currentY + 12,
+          { align: "center" }
+        );
+        doc.setFontSize(10);
+        // Baris ini dihapus/dinonaktifkan untuk menghilangkan "Mining Services"
+        // doc.text(
+        //   "Mining Services",
+        //   doc.internal.pageSize.getWidth() / 2,
+        //   currentY + 18,
+        //   { align: "center" }
+        // );
+        currentY += 18 + 5;
+
+        // Tanggal
+        doc.setFontSize(10).setFont("helvetica", "normal");
+        doc.text(
+          `Pengamatan: ${pengamatanDate} (Pukul Pengamatan: ${analisaTime})`,
           doc.internal.pageSize.getWidth() / 2,
           currentY + 3,
           { align: "center" }
         );
         currentY += 3 + 10;
 
-        const formatMinutesAndSecondsPDF = (ms) => {
-          const totalSeconds = Math.floor(ms / 1000);
-          const minutes = Math.floor(totalSeconds / 60);
-          const seconds = totalSeconds % 60;
-          return `${minutes} menit ${String(seconds).padStart(2, "0")} detik`;
-        };
-        const formatAnalysisForPDF = (arr) => {
-          if (!arr || arr.length === 0) return "Nihil";
-          const formattedArr = arr.map((it) => {
-            const bagian = it.split(" : ");
-            return "• " + (bagian[1] || it);
-          });
-          return formattedArr.join("\n");
-        };
-
+        // Opsi tabel
         const tableOptions = {
-          startY: currentY,
           theme: "grid",
-          styles: { fontSize: 8, cellPadding: 1.5, overflow: "linebreak" },
+          styles: {
+            fontSize: 9,
+            cellPadding: 1.5,
+            overflow: "linebreak",
+            valign: "middle",
+          },
           headStyles: {
             fillColor: [210, 210, 210],
             textColor: 20,
             fontStyle: "bold",
-            halign: "left",
-            fontSize: 9,
+            halign: "left", // Perbaikan: Mengubah halign ke kiri
+            fontSize: 10,
           },
           columnStyles: {
-            0: { fontStyle: "bold", cellWidth: 60 },
+            0: { fontStyle: "bold", cellWidth: 70 },
             1: { cellWidth: "auto" },
           },
           margin: { left: marginX, right: marginX },
         };
 
+        // Data untuk tabel
         const generalInfo = [
-          ["Nama Unit", initialData.unit_loader || "-"],
-          ["Jenis Material", analisa.jenisMaterial || "-"],
-          ["Nama Operator", initialData.nama_operator || "-"],
-          ["Observer", initialData.observer || "-"],
+          ["Nama Unit", initialData.unit_loader || "N/A"],
+          ["Jenis Material", analisa.jenisMaterial || "N/A"],
+          ["Nama Operator", initialData.nama_operator || "N/A"],
+          ["Observer", initialData.observer || "N/A"],
           ["Jumlah Sesi Loader", `${results.perhitunganCount} Kali`],
         ];
 
@@ -305,11 +325,11 @@ document.addEventListener("DOMContentLoaded", function () {
           ],
           [
             "Rata-rata Cycle Time Loader",
-            formatMinutesAndSecondsPDF(results.avgCycleTimeLoaderMs),
+            formatMinutesAndSeconds(results.avgCycleTimeLoaderMs),
           ],
           [
             "Rata-rata Loading Time",
-            formatMinutesAndSecondsPDF(results.avgLoadingTimeMs),
+            formatMinutesAndSeconds(results.avgLoadingTimeMs),
           ],
         ];
 
@@ -318,7 +338,7 @@ document.addEventListener("DOMContentLoaded", function () {
           ["Jumlah Hauler", `${initialData.jumlah_hauler} Unit`],
           [
             "Rata-rata Cycle Time Hauler",
-            formatMinutesAndSecondsPDF(results.avgCycleTimeHaulerMs),
+            formatMinutesAndSeconds(results.avgCycleTimeHaulerMs),
           ],
           [
             "Rata-rata Kecepatan Hauler",
@@ -340,66 +360,69 @@ document.addEventListener("DOMContentLoaded", function () {
           ["Remaks Tambahan", analisa.remaks || "-"],
         ];
 
+        // Buat tabel di PDF secara berurutan
         doc.autoTable({
-          ...tableOptions,
+          startY: currentY,
           head: [
             [
               {
                 content: "Informasi Umum",
                 colSpan: 2,
-                styles: { halign: "left", fillColor: [210, 210, 210] },
+                styles: { halign: "center", fillColor: [210, 210, 210] },
               },
             ],
           ],
           body: generalInfo,
+          ...tableOptions,
         });
 
         doc.autoTable({
-          ...tableOptions,
           head: [
             [
               {
                 content: "Analisis Loader",
                 colSpan: 2,
-                styles: { halign: "left", fillColor: [210, 210, 210] },
+                styles: { halign: "center", fillColor: [210, 210, 210] },
               },
             ],
           ],
           body: loaderAnalysis,
+          ...tableOptions,
         });
 
         doc.autoTable({
-          ...tableOptions,
           head: [
             [
               {
                 content: "Analisis Hauler & Produktivitas",
                 colSpan: 2,
-                styles: { halign: "left", fillColor: [210, 210, 210] },
+                styles: { halign: "center", fillColor: [210, 210, 210] },
               },
             ],
           ],
           body: haulerAnalysis,
+          ...tableOptions,
         });
 
         doc.autoTable({
-          ...tableOptions,
           head: [
             [
               {
                 content: "Analisa Problem Produktivitas",
                 colSpan: 2,
-                styles: { halign: "left", fillColor: [210, 210, 210] },
+                styles: { halign: "center", fillColor: [210, 210, 210] },
               },
             ],
           ],
           body: problemAnalysis,
+          ...tableOptions,
         });
 
         setTimeout(() => {
-          const fileName = `Laporan_FAD_${initialData.unit_loader || "UNIT"}_${
-            analisa.pengajuanAnalisa.tanggal
-          }.pdf`;
+          const fileName = `Laporan_FAD_${unit_loader}_${pengamatanDate.replace(
+            / /g,
+            "-"
+          )}.pdf`;
           doc.save(fileName);
           Swal.close();
         }, 1000);
