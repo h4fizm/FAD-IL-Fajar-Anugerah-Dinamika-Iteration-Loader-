@@ -2,9 +2,8 @@
 document.addEventListener("DOMContentLoaded", function () {
   // --- KONFIGURASI ---
   const SCRIPT_URL =
-    "https://script.google.com/macros/s/AKfycbxfbwIuMsngftdCMrKgwjAoPBo_HVsJM8xjlOVuM2avtA05TMagdu5BrJp1dVJ4yH4Kqg/exec";
+    "https://script.google.com/macros/s/AKfycbxfbwIuMsngftdCMrKgwjAoPBo_HVsJM8xjlOVuM2avtA05TMagdu5BrJp1dVJ4yH4Kqg/exec"; // --- CEK DATA AWAL ---
 
-  // --- CEK DATA AWAL ---
   if (!localStorage.getItem("fullCycleReportData")) {
     Swal.fire({
       icon: "error",
@@ -16,9 +15,8 @@ document.addEventListener("DOMContentLoaded", function () {
       window.location.href = "index3.html";
     });
     return;
-  }
+  } // --- FUNGSI MULTISELECT DROPDOWN ---
 
-  // --- FUNGSI MULTISELECT DROPDOWN ---
   const dropdowns = document.querySelectorAll("[data-multiselect-dropdown]");
 
   const updateMultiselectButtonText = (dropdown) => {
@@ -101,14 +99,12 @@ document.addEventListener("DOMContentLoaded", function () {
     dropdowns.forEach((d) =>
       d.querySelector(".multiselect-panel").classList.add("hidden")
     );
-  });
+  }); // --- FORM SUBMISSION ---
 
-  // --- FORM SUBMISSION ---
   const form = document.getElementById("dataForm");
   form.addEventListener("submit", async function (event) {
-    event.preventDefault();
+    event.preventDefault(); // Fungsi untuk mengambil nilai dari dropdown multiselect
 
-    // Fungsi untuk mengambil nilai dari dropdown multiselect
     const getSelectedValues = (container) => {
       const checkedBoxes = container.querySelectorAll(
         'input[type="checkbox"]:checked:not([data-kosong="true"])'
@@ -147,9 +143,8 @@ document.addEventListener("DOMContentLoaded", function () {
       document
         .getElementById("environmentProblem")
         .closest("[data-multiselect-dropdown]")
-    );
+    ); // Validasi Jenis Material (dropdown standar)
 
-    // Validasi Jenis Material (dropdown standar)
     if (jenisMaterial === "JENIS MATERIAL") {
       Swal.fire({
         icon: "error",
@@ -157,9 +152,8 @@ document.addEventListener("DOMContentLoaded", function () {
         text: "Silakan pilih Jenis Material terlebih dahulu.",
       });
       return;
-    }
+    } // Validasi Multiselect Dropdown
 
-    // Validasi Multiselect Dropdown
     if (
       manProblems.length === 0 ||
       machineProblems.length === 0 ||
