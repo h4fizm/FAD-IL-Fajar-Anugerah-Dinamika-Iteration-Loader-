@@ -100,17 +100,17 @@ document.addEventListener("DOMContentLoaded", function () {
   const jarakDumping = parseFloat(initialData.jarak_dumping || 0);
   const jumlahHauler = parseFloat(initialData.jumlah_hauler || 0);
 
+  // --- PERUBAHAN DI SINI: SESUAI DENGAN RUMUS ANDA ---
   // POIN 8: Rata-rata Cycle Time Hauler
-  const totalCycleTimeHaulerMs = data.cycleTime.hauler
-    ? Object.values(data.cycleTime.hauler).reduce(
-        (sum, session) => sum + session.processes[0].time,
-        0
-      )
-    : 0;
+  const totalCycleTimeHaulerMs = haulerSessionValues.reduce(
+    (sum, session) => sum + session.totalTime,
+    0
+  );
   const avgCycleTimeHaulerMs =
     jumlahSesiHauler > 0 ? totalCycleTimeHaulerMs / jumlahSesiHauler : 0;
-  // Memperbaiki Cycle Time Hauler dengan membaginya dengan rata-rata passing
-  const correctedAvgCycleTimeHaulerMs = avgCycleTimeHaulerMs / rataRataPassing;
+
+  // RUMUS 2: cycle time hauler = (stop - start - 90 detik) / berapa kali dilakukan
+  const correctedAvgCycleTimeHaulerMs = avgCycleTimeHaulerMs - 90 * 1000; // 90 detik = 90000 ms
   const avgCycleTimeHaulerMin = correctedAvgCycleTimeHaulerMs / 1000 / 60;
 
   // POIN 9: Rata-rata Kecepatan Hauler
@@ -119,10 +119,10 @@ document.addEventListener("DOMContentLoaded", function () {
   const avgKecepatanHauler =
     avgCycleTimeHaulerJam > 0 ? (2 * jarakKm) / avgCycleTimeHaulerJam : 0;
 
-  // POIN 10: Matching Fleet
+  // RUMUS 1: Matching Fleet = (jumlah hauler x loading time loader) / cycle time hauler
   const matchingFleet =
-    avgCycleTimeHaulerMin > 0 && avgLoadingTimeMs > 0
-      ? jumlahHauler / (avgCycleTimeHaulerMin / (avgLoadingTimeMs / 1000 / 60))
+    correctedAvgCycleTimeHaulerMs > 0
+      ? (jumlahHauler * avgLoadingTimeMs) / correctedAvgCycleTimeHaulerMs
       : 0;
 
   // POIN 11: Proyeksi Produktivitas
@@ -161,8 +161,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const observerEl = document.createElement("div");
   observerEl.classList.add("flex", "text-sm");
   observerEl.innerHTML = `
-    <span class="w-3/5 text-gray-600">Nama Observer</span>
-    <span id="nama-observer" class="w-2/5 font-semibold text-fad-dark">: ${observerName}</span>
+      <span class="w-3/5 text-gray-600">Nama Observer</span>
+      <span id="nama-observer" class="w-2/5 font-semibold text-fad-dark">: ${observerName}</span>
   `;
   document
     .querySelector(".space-y-3")
