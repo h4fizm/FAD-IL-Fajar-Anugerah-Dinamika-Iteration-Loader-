@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
       window.location.href = "index3.html";
     });
     return;
-  } // --- MULTISELECT DROPDOWN (Tidak ada perubahan) ---
+  } // --- FUNGSI MULTISELECT DROPDOWN ---
 
   const dropdowns = document.querySelectorAll("[data-multiselect-dropdown]");
 
@@ -77,7 +77,9 @@ document.addEventListener("DOMContentLoaded", function () {
           if (checkbox.dataset.kosong === "true") {
             normalCheckboxes.forEach((cb) => (cb.checked = false));
           } else {
-            kosongCheckbox.checked = false;
+            if (kosongCheckbox) {
+              kosongCheckbox.checked = false;
+            }
           }
         }
         allCheckboxes.forEach((cb) => {
@@ -97,22 +99,60 @@ document.addEventListener("DOMContentLoaded", function () {
     dropdowns.forEach((d) =>
       d.querySelector(".multiselect-panel").classList.add("hidden")
     );
-  }); // --- FORM SUBMISSION (DIPERBARUI) ---
+  }); // --- FORM SUBMISSION ---
 
   const form = document.getElementById("dataForm");
   form.addEventListener("submit", async function (event) {
-    event.preventDefault();
+    event.preventDefault(); // Fungsi untuk mengambil nilai dari dropdown multiselect
 
-    const getSelectedValues = (id) =>
-      Array.from(document.getElementById(id).selectedOptions).map(
-        (opt) => opt.value
+    const getSelectedValues = (container) => {
+      const checkedBoxes = container.querySelectorAll(
+        'input[type="checkbox"]:checked:not([data-kosong="true"])'
       );
+      const kosongBox = container.querySelector(
+        'input[type="checkbox"][data-kosong="true"]'
+      );
+      if (kosongBox && kosongBox.checked) {
+        return ["Nihil"];
+      }
+      return Array.from(checkedBoxes).map((cb) => cb.value);
+    };
 
-    const manProblems = getSelectedValues("manProblem");
-    const machineProblems = getSelectedValues("machineProblem");
-    const materialProblems = getSelectedValues("materialProblem");
-    const methodProblems = getSelectedValues("methodProblem");
-    const environmentProblems = getSelectedValues("environmentProblem");
+    const jenisMaterial = document.getElementById("jenisMaterial").value;
+    const manProblems = getSelectedValues(
+      document
+        .getElementById("manProblem")
+        .closest("[data-multiselect-dropdown]")
+    );
+    const machineProblems = getSelectedValues(
+      document
+        .getElementById("machineProblem")
+        .closest("[data-multiselect-dropdown]")
+    );
+    const materialProblems = getSelectedValues(
+      document
+        .getElementById("materialProblem")
+        .closest("[data-multiselect-dropdown]")
+    );
+    const methodProblems = getSelectedValues(
+      document
+        .getElementById("methodProblem")
+        .closest("[data-multiselect-dropdown]")
+    );
+    const environmentProblems = getSelectedValues(
+      document
+        .getElementById("environmentProblem")
+        .closest("[data-multiselect-dropdown]")
+    ); // Validasi Jenis Material (dropdown standar)
+
+    if (jenisMaterial === "JENIS MATERIAL") {
+      Swal.fire({
+        icon: "error",
+        title: "Data Tidak Lengkap!",
+        text: "Silakan pilih Jenis Material terlebih dahulu.",
+      });
+      return;
+    } // Validasi Multiselect Dropdown
 
     if (
       manProblems.length === 0 ||
@@ -147,6 +187,7 @@ document.addEventListener("DOMContentLoaded", function () {
           minute: "2-digit",
         }),
       },
+      jenisMaterial: jenisMaterial,
       man: manProblems,
       machine: machineProblems,
       material: materialProblems,
@@ -168,11 +209,9 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     try {
-      // Kirim ke Google Apps Script dan BACA RESPONNYA
       const response = await fetch(SCRIPT_URL, {
         method: "POST",
         body: JSON.stringify(fullReportData),
-        // PERUBAHAN PENTING DI BAWAH INI
         headers: {
           "Content-Type": "text/plain;charset=utf-8",
         },
@@ -192,7 +231,6 @@ document.addEventListener("DOMContentLoaded", function () {
           }
         });
       } else {
-        // Jika server mengembalikan pesan error, kita lempar agar ditangkap blok catch
         throw new Error(
           result.message || "Terjadi error yang tidak diketahui dari server."
         );
@@ -201,7 +239,7 @@ document.addEventListener("DOMContentLoaded", function () {
       console.error("Error submitting data:", error);
       Swal.fire({
         icon: "error",
-        title: "Gagal Mengirim", // Tampilkan pesan error yang sebenarnya
+        title: "Gagal Mengirim",
         text: `Terjadi kesalahan: ${error.message}`,
         confirmButtonText: "OK",
       }).then((res) => {

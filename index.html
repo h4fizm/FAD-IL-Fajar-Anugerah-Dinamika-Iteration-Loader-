@@ -36,7 +36,6 @@
               "fad-dark": "#1A202C",
               "fad-light": "#F7FAFC",
             },
-            // PERUBAHAN 4: Mengatur Poppins sebagai font default
             fontFamily: {
               sans: ["Poppins", "sans-serif"],
             },
@@ -74,66 +73,23 @@
       <main class="w-full bg-white p-6 rounded-lg shadow-xl">
         <form id="dataForm" class="space-y-4">
           <div>
-            <select
+            <input
+              type="text"
               id="unitLoader"
-              class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-500 hover:text-gray-700"
-            >
-              <option disabled selected>UNIT LOADER</option>
-              <option value="FEX 1208">FEX 1208</option>
-              <option value="FEX 1211">FEX 1211</option>
-              <option value="FEX 1214">FEX 1214</option>
-            </select>
+              placeholder="UNIT LOADER"
+              class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-700"
+              required
+            />
           </div>
 
           <div>
-            <select
-              id="jenisMaterial"
-              class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-500 hover:text-gray-700"
-            >
-              <option disabled selected>JENIS MATERIAL</option>
-              <option value="Blasting (OB)">Blasting (OB)</option>
-              <option value="Ripping (RP)">Ripping (RP)</option>
-              <option value="Selective Ripping Mud (RM)">
-                Selective Ripping Mud (RM)
-              </option>
-              <option value="Non Ripping (ON)">Non Ripping (ON)</option>
-              <option value="Top Soil (TS)">Top Soil (TS)</option>
-              <option value="MUD (MD)">MUD (MD)</option>
-              <option value="Selective Non Ripping Soil (NS)">
-                Selective Non Ripping Soil (NS)
-              </option>
-              <option value="Selective Blasting Soil (BS)">
-                Selective Blasting Soil (BS)
-              </option>
-              <option value="Selective Blasting Mud (BM)">
-                Selective Blasting Mud (BM)
-              </option>
-              <option value="Selective Blasting Non Ripping Soil (BNS)">
-                Selective Blasting Non Ripping Soil (BNS)
-              </option>
-              <option value="Selective Blasting Non Ripping (BN)">
-                Selective Blasting Non Ripping (BN)
-              </option>
-              <option value="Soil lunak (SL)">Soil lunak (SL)</option>
-            </select>
-          </div>
-
-          <div>
-            <select
+            <input
+              type="text"
               id="namaOperator"
-              class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-500 hover:text-gray-700"
-            >
-              <option disabled selected>NAMA OPERATOR</option>
-              <option value="RUDI">RUDI</option>
-              <option value="HERU WIBISONO">HERU WIBISONO</option>
-              <option value="THAMRIN NABABAN">THAMRIN NABABAN</option>
-              <option value="ACCA BANGKARA">ACCA BANGKARA</option>
-              <option value="RONY SETIAWAN">RONY SETIAWAN</option>
-              <option value="EKO GOPINDO SINAGA">EKO GOPINDO SINAGA</option>
-              <option value="HAIRIL SANI">HAIRIL SANI</option>
-              <option value="JURAIS">JURAIS</option>
-              <option value="NOBERTUS DEDI">NOBERTUS DEDI</option>
-            </select>
+              placeholder="NAMA OPERATOR"
+              class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-700"
+              required
+            />
           </div>
 
           <div>
@@ -142,6 +98,7 @@
               id="observer"
               placeholder="OBSERVER"
               class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-700"
+              required
             />
           </div>
 
@@ -151,6 +108,7 @@
               id="jarakDumping"
               placeholder="JARAK DUMPING (METER)"
               class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-700"
+              required
             />
           </div>
 
@@ -160,6 +118,7 @@
               id="jumlahHauler"
               placeholder="JUMLAH HAULER"
               class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-700"
+              required
             />
           </div>
 

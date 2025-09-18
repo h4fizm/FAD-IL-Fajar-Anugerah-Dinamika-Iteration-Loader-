@@ -1,130 +1,119 @@
-// File: js/report-logic.js (Final - Hanya Menampilkan Data)
 document.addEventListener("DOMContentLoaded", function () {
+  // --- 1. PENGAMBILAN & VALIDASI DATA ---
   const dataString = localStorage.getItem("fullCycleReportData");
+
   if (!dataString) {
     Swal.fire({
       icon: "error",
       title: "Data Tidak Ditemukan",
-      text: "Tidak ada data laporan untuk ditampilkan. Silakan mulai dari awal.",
-      confirmButtonText: "Kembali ke Awal",
-      allowOutsideClick: false,
+      text: "Silakan jalankan proses monitoring terlebih dahulu.",
+      showConfirmButton: false,
+      timer: 2500,
     }).then(() => {
-      window.location.href = "index.html";
+      window.location.href = "index2.html";
     });
     return;
   }
 
   const data = JSON.parse(dataString);
+  const {
+    initialData,
+    calculatedResults: results,
+    analisaProblem: analisa,
+  } = data;
 
-  // Validasi jika data hasil kalkulasi belum tersimpan
-  if (!data.calculatedResults) {
+  if (!results || !analisa) {
     Swal.fire({
       icon: "error",
       title: "Data Tidak Lengkap",
-      text: "Hasil kalkulasi tidak ditemukan. Harap ulangi dari halaman resume.",
+      text: "Hasil kalkulasi tidak ditemukan. Harap ulangi dari halaman analisa.",
       confirmButtonText: "Kembali",
     }).then(() => {
-      window.location.href = "index3.html";
+      window.location.href = "index4.html";
     });
     return;
   }
 
-  const initialData = data.initialData;
-  const results = data.calculatedResults;
-  const analisa = data.analisaProblem;
+  // --- FUNGSI BANTUAN (HELPERS) ---
+  const formatMinutesAndSeconds = (ms) => {
+    const totalSeconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes} menit ${String(seconds).padStart(2, "0")} detik`;
+  };
 
-  // --- gunakan analisa.pengajuanAnalisa untuk tanggal & jam ---
-  const pengajuanHari = analisa.pengajuanAnalisa?.hari || "-";
-  const pengajuanTanggal = analisa.pengajuanAnalisa?.tanggal || "-";
-  const pengajuanJam = analisa.pengajuanAnalisa?.jam || "-";
+  const formatAnalysisForDisplay = (arr) => {
+    if (!arr || arr.length === 0) return "N/A";
+    return arr.length === 1 && arr[0] === "Nihil" ? "Nihil" : arr.join(", ");
+  };
 
-  // --- TAMPILKAN DATA KE HTML (MENGGUNAKAN VARIABEL BARU) ---
+  const formatAnalysisForPDF = (arr) => {
+    if (!arr || arr.length === 0 || (arr.length === 1 && arr[0] === "Nihil")) {
+      return "Nihil";
+    }
+    const formattedArr = arr.map((it) => `• ${it.split(" : ")[1] || it}`);
+    return formattedArr.join("\n");
+  };
+
+  // --- 2. TAMPILKAN HASIL KE HTML ---
+  const pengajuanTanggal = initialData.tanggal_pengajuan.split(", ")[1];
   document.getElementById(
     "report-date"
-  ).textContent = `${pengajuanHari}, ${pengajuanTanggal}`;
-  document.getElementById("data-nama-unit").textContent =
-    initialData.unit_loader || "N/A";
-  document.getElementById("data-jenis-material").textContent =
-    initialData.jenis_material || "N/A";
-  document.getElementById("data-nama-operator").textContent =
-    initialData.nama_operator || "N/A";
-  document.getElementById("data-observer").textContent =
-    initialData.observer || "N/A";
-  document.getElementById(
-    "data-sesi-loader"
-  ).textContent = `${results.perhitunganCount} kali`;
+  ).textContent = `Pengamatan: ${pengajuanTanggal} (Pukul Analisa: ${analisa.pengajuanAnalisa.jam})`;
 
-  // Penyesuaian: Menggunakan toFixed(0) untuk membulatkan
-  document.getElementById(
-    "data-rata-passing"
-  ).textContent = `${results.rataRataPassing.toFixed(0)} passing`;
-
-  document.getElementById("data-rata-digging").textContent = `${(
-    results.avgDiggingMs / 1000
-  ).toFixed(2)} detik`;
-  document.getElementById("data-rata-swing-load").textContent = `${(
-    results.avgSwingLoadMs / 1000
-  ).toFixed(2)} detik`;
-  document.getElementById("data-rata-bucket-dump").textContent = `${(
-    results.avgBucketDumpMs / 1000
-  ).toFixed(2)} detik`;
-  document.getElementById("data-rata-swing-empty").textContent = `${(
-    results.avgSwingEmptyMs / 1000
-  ).toFixed(2)} detik`;
-  document.getElementById("data-rata-spotting").textContent = `${(
-    results.avgSpottingMs / 1000
-  ).toFixed(2)} detik`;
-  document.getElementById("data-rata-cycletime-loader").textContent = `${(
-    results.avgCycleTimeLoaderMs / 1000
-  ).toFixed(2)} detik`;
-  document.getElementById(
-    "data-rata-loadingtime"
-  ).textContent = `${results.avgLoadingTimeMin.toFixed(2)} menit`;
-
-  document.getElementById(
-    "data-jarak-dumping"
-  ).textContent = `${initialData.jarak_dumping} meter`;
-  document.getElementById(
-    "data-jumlah-hauler"
-  ).textContent = `${initialData.jumlah_hauler} Unit`;
-  document.getElementById(
-    "data-rata-cycletime-hauler"
-  ).textContent = `${results.avgCycleTimeHaulerMin.toFixed(2)} menit`;
-  document.getElementById(
-    "data-rata-kecepatan-hauler"
-  ).textContent = `${results.avgKecepatanHauler.toFixed(2)} km/jam`;
-  document.getElementById("data-matching-fleet").textContent =
-    results.matchingFleet.toFixed(2);
-
-  // Penyesuaian: Menggunakan toFixed(0) untuk membulatkan
-  document.getElementById(
-    "data-proyeksi-produktivitas"
-  ).textContent = `${results.proyeksiProdty.toFixed(0)} Ritase`;
-
-  // Menampilkan data analisa masalah
-  const formatAnalysis = (arr) => {
-    if (!arr || arr.length === 0) return "Nihil";
-    return arr.length === 1 &&
-      (arr[0] === "-KOSONG-" || arr[0].includes("Nihil"))
-      ? "Nihil"
-      : arr.join("; ");
+  // Menggunakan perulangan untuk mengisi data ke HTML
+  const fields = {
+    "data-nama-unit": initialData.unit_loader,
+    "data-jenis-material": analisa.jenisMaterial,
+    "data-nama-operator": initialData.nama_operator,
+    "data-observer": initialData.observer,
+    "data-sesi-loader": `${results.perhitunganCount} kali`,
+    "data-rata-passing": `${Math.round(results.rataRataPassing)} passing`,
+    "data-rata-digging": `${(results.avgDiggingMs / 1000).toFixed(2)} detik`,
+    "data-rata-swing-load": `${(results.avgSwingLoadMs / 1000).toFixed(
+      2
+    )} detik`,
+    "data-rata-bucket-dump": `${(results.avgBucketDumpMs / 1000).toFixed(
+      2
+    )} detik`,
+    "data-rata-swing-empty": `${(results.avgSwingEmptyMs / 1000).toFixed(
+      2
+    )} detik`,
+    "data-rata-spotting": `${(results.avgSpottingMs / 1000).toFixed(2)} detik`,
+    "data-rata-hanging-time": `${(results.avgHangingMs / 1000).toFixed(
+      2
+    )} detik`,
+    "data-rata-cycletime-loader": formatMinutesAndSeconds(
+      results.avgCycleTimeLoaderMs
+    ),
+    "data-rata-loadingtime": formatMinutesAndSeconds(results.avgLoadingTimeMs),
+    "data-jarak-dumping": `${initialData.jarak_dumping} meter`,
+    "data-jumlah-hauler": `${initialData.jumlah_hauler} Unit`,
+    "data-rata-cycletime-hauler": formatMinutesAndSeconds(
+      results.avgCycleTimeHaulerMs
+    ),
+    "data-rata-kecepatan-hauler": `${results.avgKecepatanHauler.toFixed(
+      2
+    )} km/jam`,
+    "data-matching-fleet": results.matchingFleet.toFixed(2),
+    "data-proyeksi-produktivitas": `${Math.round(
+      results.proyeksiProdty
+    )} Ritase`,
+    "data-man": formatAnalysisForDisplay(analisa.man),
+    "data-machine": formatAnalysisForDisplay(analisa.machine),
+    "data-material": formatAnalysisForDisplay(analisa.material),
+    "data-method": formatAnalysisForDisplay(analisa.method),
+    "data-environment": formatAnalysisForDisplay(analisa.environment),
+    "data-remaks": analisa.remaks,
   };
-  document.getElementById("data-man").textContent = formatAnalysis(analisa.man);
-  document.getElementById("data-machine").textContent = formatAnalysis(
-    analisa.machine
-  );
-  document.getElementById("data-material").textContent = formatAnalysis(
-    analisa.material
-  );
-  document.getElementById("data-method").textContent = formatAnalysis(
-    analisa.method
-  );
-  document.getElementById("data-environment").textContent = formatAnalysis(
-    analisa.environment
-  );
-  document.getElementById("data-remaks").textContent = analisa.remaks;
 
-  // Tombol Mulai Sesi Baru
+  for (const id in fields) {
+    if (document.getElementById(id)) {
+      document.getElementById(id).textContent = fields[id] || "N/A";
+    }
+  }
+
+  // --- 3. EVENT LISTENER UNTUK TOMBOL "Selesai & Mulai Baru" ---
   document
     .getElementById("btn-start-new")
     .addEventListener("click", function (e) {
@@ -135,70 +124,79 @@ document.addEventListener("DOMContentLoaded", function () {
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#38A169",
-        cancelButtonColor: "#d33",
+        cancelButtonColor: "#E53E3E",
         confirmButtonText: "Ya, Mulai Baru!",
         cancelButtonText: "Batal",
       }).then((result) => {
         if (result.isConfirmed) {
           localStorage.clear();
-          window.location.href = "index.html";
+          window.location.href = e.target.href;
         }
       });
     });
 
-  // Skrip PDF - Cukup mengambil data yang sudah diformat
+  // --- 4. LOGIKA UNTUK PDF ---
+  const imageToBase64 = async (url) => {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("Network response was not ok.");
+      const blob = await response.blob();
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    } catch (error) {
+      console.error("Gagal memuat gambar untuk PDF:", error);
+      return null;
+    }
+  };
+
   document
     .getElementById("btn-preview-pdf")
     .addEventListener("click", async function () {
       const { jsPDF } = window.jspdf;
-      const reportDataString = localStorage.getItem("fullCycleReportData");
 
-      if (
-        !reportDataString ||
-        !JSON.parse(reportDataString).calculatedResults
-      ) {
+      if (!results || !analisa) {
         Swal.fire(
           "Data Tidak Lengkap",
-          "Data laporan tidak lengkap atau belum dihitung. Harap ulangi proses.",
+          "Data laporan tidak lengkap. Harap ulangi proses.",
           "error"
         );
         return;
       }
 
-      const reportData = JSON.parse(reportDataString);
-
       Swal.fire({
         title: "Sedang menyiapkan PDF...",
-        text: "Harap tunggu sebentar",
+        text: "Harap tunggu sebentar.",
         allowOutsideClick: false,
         didOpen: () => Swal.showLoading(),
       });
 
       try {
-        const logoData = await imageToBase64("img/icon.jpg");
-
-        const initialData = reportData.initialData;
-        const results = reportData.calculatedResults;
-        const analisa = reportData.analisaProblem;
-        const pengajuan = reportData.pengajuan;
-
         const doc = new jsPDF();
-
         let currentY = 10;
+        const marginX = 14;
+        const unit_loader = initialData.unit_loader || "UNIT";
+        const pengamatanDate = initialData.tanggal_pengajuan;
+        const analisaTime = analisa.pengajuanAnalisa.jam;
+
+        // Mendapatkan logo
+        const logoData = await imageToBase64("img/picture.jpg");
         if (logoData) {
           const img = new Image();
           img.src = logoData;
           await new Promise((resolve) => (img.onload = resolve));
           const imgWidth = img.width;
           const imgHeight = img.height;
-
           const logoDisplayWidth = 40;
           const logoDisplayHeight = (imgHeight / imgWidth) * logoDisplayWidth;
 
           doc.addImage(
             logoData,
             "JPEG",
-            14,
+            doc.internal.pageSize.getWidth() / 2 - logoDisplayWidth / 2,
             currentY,
             logoDisplayWidth,
             logoDisplayHeight
@@ -206,52 +204,70 @@ document.addEventListener("DOMContentLoaded", function () {
           currentY += logoDisplayHeight + 5;
         }
 
-        doc.setFontSize(16).setFont("helvetica", "bold");
+        // Judul Laporan
+        doc.setFontSize(14).setFont("helvetica", "bold");
         doc.text(
-          "Laporan Monitoring dan Evaluasi Productivity",
+          "PT FAJAR ANUGERAH DINAMIKA",
           doc.internal.pageSize.getWidth() / 2,
           currentY + 5,
           { align: "center" }
         );
-        currentY += 5 + 7;
+        doc.setFontSize(12).setFont("helvetica", "normal");
+        doc.text(
+          "Laporan Monitoring dan Evaluasi Productivity",
+          doc.internal.pageSize.getWidth() / 2,
+          currentY + 12,
+          { align: "center" }
+        );
+        doc.setFontSize(10);
+        currentY += 18 + 5;
 
+        // Tanggal
         doc.setFontSize(10).setFont("helvetica", "normal");
         doc.text(
-          `Pengamatan: ${pengajuanHari}, ${pengajuanTanggal} (Pukul Pengamatan: ${pengajuanJam})`,
+          `Pengamatan: ${pengamatanDate} (Pukul Pengamatan: ${analisaTime})`,
           doc.internal.pageSize.getWidth() / 2,
           currentY + 3,
           { align: "center" }
         );
+        currentY += 3 + 10;
 
+        // Opsi tabel
         const tableOptions = {
           theme: "grid",
-          styles: { fontSize: 8, cellPadding: 1.5 },
+          styles: {
+            fontSize: 9,
+            cellPadding: 1.5,
+            overflow: "linebreak",
+            valign: "middle",
+          },
           headStyles: {
             fillColor: [210, 210, 210],
             textColor: 20,
             fontStyle: "bold",
             halign: "left",
-            fontSize: 9,
+            fontSize: 10,
           },
           columnStyles: {
-            0: { fontStyle: "bold", cellWidth: 60 },
+            0: { fontStyle: "bold", cellWidth: 70 },
             1: { cellWidth: "auto" },
           },
-          margin: { left: 14, right: 14 },
+          margin: { left: marginX, right: marginX },
         };
+
+        // Data untuk tabel
         const generalInfo = [
-          ["Nama Unit", initialData.unit_loader || "-"],
-          ["Jenis Material", initialData.jenis_material || "-"],
-          ["Nama Operator", initialData.nama_operator || "-"],
-          ["Observer", initialData.observer || "-"],
+          ["Nama Unit", initialData.unit_loader || "N/A"],
+          ["Jenis Material", analisa.jenisMaterial || "N/A"],
+          ["Nama Operator", initialData.nama_operator || "N/A"],
+          ["Observer", initialData.observer || "N/A"],
           ["Jumlah Sesi Loader", `${results.perhitunganCount} Kali`],
         ];
 
-        // Penyesuaian untuk PDF: Menggunakan toFixed(0)
         const loaderAnalysis = [
           [
             "Rata-rata Jumlah Passing",
-            `${results.rataRataPassing.toFixed(0)} passing`,
+            `${Math.round(results.rataRataPassing)} passing`,
           ],
           [
             "Rata-rata Digging Time",
@@ -274,12 +290,16 @@ document.addEventListener("DOMContentLoaded", function () {
             `${(results.avgSpottingMs / 1000).toFixed(2)} detik`,
           ],
           [
+            "Rata-rata Hanging Time",
+            `${(results.avgHangingMs / 1000).toFixed(2)} detik`,
+          ],
+          [
             "Rata-rata Cycle Time Loader",
-            `${(results.avgCycleTimeLoaderMs / 1000).toFixed(2)} detik`,
+            formatMinutesAndSeconds(results.avgCycleTimeLoaderMs),
           ],
           [
             "Rata-rata Loading Time",
-            `${results.avgLoadingTimeMin.toFixed(2)} menit`,
+            formatMinutesAndSeconds(results.avgLoadingTimeMs),
           ],
         ];
 
@@ -288,7 +308,7 @@ document.addEventListener("DOMContentLoaded", function () {
           ["Jumlah Hauler", `${initialData.jumlah_hauler} Unit`],
           [
             "Rata-rata Cycle Time Hauler",
-            `${results.avgCycleTimeHaulerMin.toFixed(2)} menit`,
+            formatMinutesAndSeconds(results.avgCycleTimeHaulerMs),
           ],
           [
             "Rata-rata Kecepatan Hauler",
@@ -297,17 +317,10 @@ document.addEventListener("DOMContentLoaded", function () {
           ["Matching Fleet", results.matchingFleet.toFixed(2)],
           [
             "Proyeksi Produktivitas",
-            `${results.proyeksiProdty.toFixed(0)} Ritase`,
+            `${Math.round(results.proyeksiProdty)} Ritase`,
           ],
         ];
 
-        const formatAnalysisForPDF = (arr) => {
-          if (!arr || arr.length === 0) return "Nihil";
-          return arr.length === 1 &&
-            (arr[0] === "-KOSONG-" || arr[0].includes("Nihil"))
-            ? "Nihil"
-            : arr.join("; ");
-        };
         const problemAnalysis = [
           ["Man", formatAnalysisForPDF(analisa.man)],
           ["Machine", formatAnalysisForPDF(analisa.machine)],
@@ -317,53 +330,57 @@ document.addEventListener("DOMContentLoaded", function () {
           ["Remaks Tambahan", analisa.remaks || "-"],
         ];
 
+        // Buat tabel di PDF secara berurutan
         doc.autoTable({
-          startY: currentY + 5,
+          startY: currentY,
           head: [
             [
               {
                 content: "Informasi Umum",
                 colSpan: 2,
-                styles: { halign: "left" },
+                styles: { halign: "left", fillColor: [210, 210, 210] },
               },
             ],
           ],
           body: generalInfo,
           ...tableOptions,
         });
+
         doc.autoTable({
           head: [
             [
               {
                 content: "Analisis Loader",
                 colSpan: 2,
-                styles: { halign: "left" },
+                styles: { halign: "left", fillColor: [210, 210, 210] },
               },
             ],
           ],
           body: loaderAnalysis,
           ...tableOptions,
         });
+
         doc.autoTable({
           head: [
             [
               {
                 content: "Analisis Hauler & Produktivitas",
                 colSpan: 2,
-                styles: { halign: "left" },
+                styles: { halign: "left", fillColor: [210, 210, 210] },
               },
             ],
           ],
           body: haulerAnalysis,
           ...tableOptions,
         });
+
         doc.autoTable({
           head: [
             [
               {
                 content: "Analisa Problem Produktivitas",
                 colSpan: 2,
-                styles: { halign: "left" },
+                styles: { halign: "left", fillColor: [210, 210, 210] },
               },
             ],
           ],
@@ -372,19 +389,16 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         setTimeout(() => {
-          const fileName = `Laporan_FAD_${
-            initialData.unit_loader || "UNIT"
-          }_${pengajuanTanggal}.pdf`;
+          const fileName = `Laporan_FAD_${unit_loader}_${pengamatanDate.replace(
+            / /g,
+            "-"
+          )}.pdf`;
           doc.save(fileName);
           Swal.close();
         }, 1000);
       } catch (error) {
         console.error("Gagal membuat PDF:", error);
-        Swal.fire(
-          "Gagal",
-          "Tidak dapat memuat logo atau membuat PDF.",
-          "error"
-        );
+        Swal.fire("Gagal", "Tidak dapat membuat PDF.", "error");
       }
     });
 });

@@ -69,13 +69,46 @@
           ANALISA PROBLEM PRODUCTIVITY
         </h2>
         <form id="dataForm" class="space-y-4">
+          <div>
+            <select
+              id="jenisMaterial"
+              class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-fad-green text-gray-500 hover:text-gray-700"
+            >
+              <option disabled selected>JENIS MATERIAL</option>
+              <option value="Blasting (OB)">Blasting (OB)</option>
+              <option value="Ripping (RP)">Ripping (RP)</option>
+              <option value="Selective Ripping Mud (RM)">
+                Selective Ripping Mud (RM)
+              </option>
+              <option value="Non Ripping (ON)">Non Ripping (ON)</option>
+              <option value="Top Soil (TS)">Top Soil (TS)</option>
+              <option value="MUD (MD)">MUD (MD)</option>
+              <option value="Selective Non Ripping Soil (NS)">
+                Selective Non Ripping Soil (NS)
+              </option>
+              <option value="Selective Blasting Soil (BS)">
+                Selective Blasting Soil (BS)
+              </option>
+              <option value="Selective Blasting Mud (BM)">
+                Selective Blasting Mud (BM)
+              </option>
+              <option value="Selective Blasting Non Ripping Soil (BNS)">
+                Selective Blasting Non Ripping Soil (BNS)
+              </option>
+              <option value="Selective Blasting Non Ripping (BN)">
+                Selective Blasting Non Ripping (BN)
+              </option>
+              <option value="Soil lunak (SL)">Soil lunak (SL)</option>
+            </select>
+          </div>
+
           <div class="relative" data-multiselect-dropdown>
             <button
               type="button"
               class="multiselect-button w-full flex justify-between items-center p-3 border border-gray-300 rounded-lg shadow-sm"
             >
-              <span>MAN</span
-              ><svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <span>MAN</span>
+              <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path
                   fill-rule="evenodd"
                   d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
@@ -138,8 +171,8 @@
               type="button"
               class="multiselect-button w-full flex justify-between items-center p-3 border border-gray-300 rounded-lg shadow-sm"
             >
-              <span>MACHINE</span
-              ><svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <span>MACHINE</span>
+              <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path
                   fill-rule="evenodd"
                   d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
@@ -319,8 +352,8 @@
               type="button"
               class="multiselect-button w-full flex justify-between items-center p-3 border border-gray-300 rounded-lg shadow-sm"
             >
-              <span>MATERIAL</span
-              ><svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <span>MATERIAL</span>
+              <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path
                   fill-rule="evenodd"
                   d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
@@ -454,8 +487,8 @@
               type="button"
               class="multiselect-button w-full flex justify-between items-center p-3 border border-gray-300 rounded-lg shadow-sm"
             >
-              <span>METHOD</span
-              ><svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <span>METHOD</span>
+              <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path
                   fill-rule="evenodd"
                   d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
@@ -545,8 +578,8 @@
               type="button"
               class="multiselect-button w-full flex justify-between items-center p-3 border border-gray-300 rounded-lg shadow-sm"
             >
-              <span>ENVIRONMENT</span
-              ><svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <span>ENVIRONMENT</span>
+              <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path
                   fill-rule="evenodd"
                   d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
@@ -778,7 +811,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="js/analisa-form.js"></script>
     <script>
-      // Script untuk preloader
       const preloader = document.getElementById("preloader");
       if (preloader) {
         window.addEventListener("load", function () {
